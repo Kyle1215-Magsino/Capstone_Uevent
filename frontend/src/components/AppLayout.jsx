@@ -4,8 +4,10 @@ import { useAuth } from '../context/AuthContext';
 import Sidebar from './Sidebar';
 import StudentSidebar from './StudentSidebar';
 import LogoutConfirmModal from './LogoutConfirmModal';
-import StudentProfileModal from './StudentProfileModal';
 import OfficerProfileModal from './OfficerProfileModal';
+import StudentProfileModal from './StudentProfileModal';
+import NotificationBell from './NotificationBell';
+import SessionTimeoutModal from './SessionTimeoutModal';
 
 const PAGE_TITLES = {
   '/dashboard': 'Dashboard',
@@ -16,6 +18,7 @@ const PAGE_TITLES = {
   '/attendance': 'Attendance Logs',
   '/reports': 'Reports',
   '/users': 'Users',
+  '/audit-logs': 'Audit Logs',
   '/student-dashboard': 'Dashboard',
   '/student-attendance': 'My Attendance',
   '/student-events': 'Events',
@@ -26,10 +29,18 @@ export default function AppLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerClosing, setDrawerClosing] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const dropdownRef = useRef(null);
+
+  const openDrawer = () => { setDrawerClosing(false); setDrawerOpen(true); };
+  const closeDrawer = () => {
+    setDrawerClosing(true);
+    setTimeout(() => { setDrawerOpen(false); setDrawerClosing(false); }, 220);
+  };
+  const toggleDrawer = () => drawerOpen ? closeDrawer() : openDrawer();
 
   const pageTitle = PAGE_TITLES[location.pathname] || 'U-EventTrack';
 
@@ -62,9 +73,12 @@ export default function AppLayout() {
       {/* ── Mobile drawer ── */}
       {drawerOpen && (
         <>
-          <div className="fixed inset-0 z-20 bg-black/40 backdrop-blur-sm lg:hidden" onClick={() => setDrawerOpen(false)} />
-          <div className="fixed top-0 left-0 z-30 h-screen lg:hidden shadow-2xl">
-            <SidebarComponent onNavigate={() => setDrawerOpen(false)} />
+          <div
+            className={`fixed inset-0 z-20 lg:hidden bg-black/40 backdrop-blur-sm ${drawerClosing ? 'animate-backdropOut' : 'animate-backdropIn'}`}
+            onClick={closeDrawer}
+          />
+          <div className={`fixed top-0 left-0 z-30 h-screen lg:hidden shadow-2xl ${drawerClosing ? 'animate-slideOutDrawer' : 'animate-slideInDrawer'}`}>
+            <SidebarComponent onNavigate={closeDrawer} />
           </div>
         </>
       )}
@@ -73,17 +87,49 @@ export default function AppLayout() {
       <div className="flex-1 flex flex-col min-h-screen min-w-0">
 
         {/* Top bar */}
-        <header className="bg-white/80 backdrop-blur-sm border-b border-gray-100 px-4 sm:px-6 h-14 flex items-center gap-3 sticky top-0 z-10">
+        <header className="bg-white border-b border-gray-100 px-4 sm:px-6 h-14 flex items-center gap-3 sticky top-0 z-10">
           <button
-            onClick={() => setDrawerOpen(!drawerOpen)}
+            onClick={() => toggleDrawer()}
             className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0 lg:hidden"
+            aria-label="Toggle menu"
           >
-            <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ transition: 'transform 0.3s ease' }}>
+              {/* Top line: rotates into \ when open */}
+              <line
+                x1="4" y1="6" x2="20" y2="6"
+                strokeLinecap="round" strokeWidth={2}
+                style={{
+                  transformOrigin: '12px 6px',
+                  transform: drawerOpen ? 'translateY(6px) rotate(45deg)' : 'none',
+                  transition: 'transform 0.3s ease',
+                }}
+              />
+              {/* Middle line: fades out when open */}
+              <line
+                x1="4" y1="12" x2="20" y2="12"
+                strokeLinecap="round" strokeWidth={2}
+                style={{
+                  transformOrigin: '12px 12px',
+                  opacity: drawerOpen ? 0 : 1,
+                  transition: 'opacity 0.2s ease',
+                }}
+              />
+              {/* Bottom line: rotates into / when open */}
+              <line
+                x1="4" y1="18" x2="20" y2="18"
+                strokeLinecap="round" strokeWidth={2}
+                style={{
+                  transformOrigin: '12px 18px',
+                  transform: drawerOpen ? 'translateY(-6px) rotate(-45deg)' : 'none',
+                  transition: 'transform 0.3s ease',
+                }}
+              />
             </svg>
           </button>
 
           <p className="font-semibold text-gray-900 text-sm flex-1 tracking-tight">{pageTitle}</p>
+
+          <NotificationBell />
 
           <div className="relative" ref={dropdownRef}>
             <button
@@ -132,7 +178,7 @@ export default function AppLayout() {
           </div>
         </header>
 
-        <main className="flex-1 p-5 sm:p-6 overflow-auto">
+        <main key={location.pathname} className="flex-1 p-5 sm:p-6 overflow-auto animate-pageEnter">
           <Outlet />
         </main>
       </div>
@@ -144,15 +190,17 @@ export default function AppLayout() {
         userName={user?.name}
       />
 
+      <OfficerProfileModal
+        open={profileOpen && user?.role !== 'student'}
+        onClose={() => setProfileOpen(false)}
+      />
+
       <StudentProfileModal
         open={profileOpen && user?.role === 'student'}
         onClose={() => setProfileOpen(false)}
       />
 
-      <OfficerProfileModal
-        open={profileOpen && user?.role !== 'student'}
-        onClose={() => setProfileOpen(false)}
-      />
+      <SessionTimeoutModal />
     </div>
   );
 }

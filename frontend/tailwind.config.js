@@ -11,7 +11,7 @@ export default {
     { pattern: /^shadow-(dark|forest|leaf|brand|accent)-/ },
     { pattern: /^hover:bg-(dark|forest|leaf|brand|accent)-/ },
     { pattern: /^hover:text-(dark|forest|leaf|brand|accent)-/ },
-    { pattern: /^animate-(fadeInUp|fadeIn|slideInLeft|scaleIn|float|pulse2)$/ },
+    { pattern: /^animate-(fadeInUp|fadeIn|slideInLeft|scaleIn|float|pulse2|slideInDrawer|slideOutDrawer|backdropIn|backdropOut|pageEnter|staggerIn)$/ },
   ],
   theme: {
     extend: {
@@ -77,6 +77,30 @@ export default {
         pulse2: {
           '0%, 100%': { opacity: '1' },
           '50%':      { opacity: '0.6' },
+        },
+        slideInDrawer: {
+          '0%':   { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(0)' },
+        },
+        slideOutDrawer: {
+          '0%':   { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-100%)' },
+        },
+        backdropIn: {
+          '0%':   { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        backdropOut: {
+          '0%':   { opacity: '1' },
+          '100%': { opacity: '0' },
+        },
+        pageEnter: {
+          '0%':   { opacity: '0', transform: 'translateY(14px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        staggerIn: {
+          '0%':   { opacity: '0', transform: 'translateY(16px) scale(0.97)' },
+          '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
         },
       },
       animation: {

@@ -16,6 +16,7 @@ import AttendanceLogsPage from './pages/AttendanceLogsPage';
 import ReportsPage from './pages/ReportsPage';
 import ArchivePage from './pages/ArchivePage';
 import UsersPage from './pages/UsersPage';
+import AuditLogPage from './pages/AuditLogPage';
 
 // Student pages
 import StudentDashboardPage from './pages/StudentDashboardPage';
@@ -45,6 +46,7 @@ export default function App() {
             <Route path="/reports" element={<ReportsPage />} />
             <Route path="/archive" element={<ArchivePage />} />
             <Route path="/users" element={<UsersPage />} />
+            <Route path="/audit-logs" element={<AuditLogPage />} />
           </Route>
 
           {/* Student routes */}

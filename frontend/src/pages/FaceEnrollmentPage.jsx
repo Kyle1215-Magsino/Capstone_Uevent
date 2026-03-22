@@ -2,7 +2,7 @@
 import { getStudents, saveFaceData } from '../api/studentApi';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { toast } from 'react-toastify';
-import { loadModels, estimateYaw, faceapi } from '../utils/faceApi';
+import { loadModels, estimateYaw, faceapi, TINY_OPTIONS, captureAveragedDescriptor } from '../utils/faceApi';
 
 const ENROLL_STEPS = [
   { title: 'Look Straight Ahead', sub: 'Position your face clearly in the camera', check: yaw => Math.abs(yaw) < 0.12 },
@@ -19,6 +19,7 @@ export default function FaceEnrollmentPage() {
   const [search, setSearch] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
   const [cameraActive, setCameraActive] = useState(false);
+  const [frontLight, setFrontLight] = useState(false);
 
   const selectRef = useRef(null);
 
@@ -70,7 +71,7 @@ export default function FaceEnrollmentPage() {
   const startCamera = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' },
+        video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' },
       });
       streamRef.current = stream;
       if (videoRef.current) {
@@ -131,13 +132,13 @@ export default function FaceEnrollmentPage() {
 
         try {
           const detection = await faceapi
-            .detectSingleFace(video, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.3 }))
+            .detectSingleFace(video, TINY_OPTIONS)
             .withFaceLandmarks()
             .withFaceDescriptor();
 
           if (!detection) {
             setEnrollStepSub('No face detected — look at the camera');
-            await new Promise(r => setTimeout(r, 250));
+            await new Promise(r => setTimeout(r, 150));
             continue;
           }
 
@@ -147,17 +148,24 @@ export default function FaceEnrollmentPage() {
             setEnrollStepStatus('active');
             setEnrollStepSub('Hold still...');
 
-            await new Promise(r => setTimeout(r, 400));
+            await new Promise(r => setTimeout(r, 300));
             await new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
 
             // Confirm pose is still correct
             const confirm = await faceapi
-              .detectSingleFace(video, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.3 }))
+              .detectSingleFace(video, TINY_OPTIONS)
               .withFaceLandmarks()
               .withFaceDescriptor();
 
             if (confirm && step.check(estimateYaw(confirm.landmarks))) {
-              descriptors.push(Array.from(confirm.descriptor));
+              // Capture 8 averaged frames for a stable descriptor per pose
+              setEnrollStepSub('Capturing samples...');
+              const avgDesc = await captureAveragedDescriptor(video, 8);
+              if (avgDesc) {
+                descriptors.push(Array.from(avgDesc));
+              } else {
+                descriptors.push(Array.from(confirm.descriptor));
+              }
               setEnrollStepStatus('done');
               setEnrollStepTitle('✓ ' + step.title);
               setEnrollStepSub('Captured!');
@@ -176,7 +184,7 @@ export default function FaceEnrollmentPage() {
           console.error('Enrollment step error:', err);
         }
 
-        await new Promise(r => setTimeout(r, 350));
+        await new Promise(r => setTimeout(r, 100));
       }
 
       if (!stepDone && !enrollCancelledRef.current) {
@@ -194,14 +202,12 @@ export default function FaceEnrollmentPage() {
       return;
     }
 
-    // Average all captured descriptors — stored as plain array (matches reference format)
-    const avgDescriptor = new Array(128).fill(0);
-    descriptors.forEach(d => d.forEach((v, i) => { avgDescriptor[i] += v; }));
-    avgDescriptor.forEach((v, i) => { avgDescriptor[i] = v / descriptors.length; });
-
+    // Store descriptors as a 2D array [[128 nums], [128 nums], [128 nums]]
+    // Keeping each pose separate gives findBestMatch more discrimination power
+    // than a single blended average.
     setSaving(true);
     try {
-      await saveFaceData(selectedStudent, { face_data: JSON.stringify(avgDescriptor) });
+      await saveFaceData(selectedStudent, { face_data: JSON.stringify(descriptors) });
       setEnrollSuccess(true);
       toast.success(`Face enrolled! ${descriptors.length} poses captured.`);
       const res = await getStudents();
@@ -332,12 +338,15 @@ export default function FaceEnrollmentPage() {
           </div>
 
           {/* Camera area */}
-          <div className="relative bg-gray-900 rounded-xl overflow-hidden mb-4" style={{ aspectRatio: '4/3' }}>
+          <div
+            className={`relative rounded-xl overflow-hidden mb-4 transition-all duration-300 ${frontLight ? 'ring-[10px] ring-white shadow-[0_0_50px_15px_rgba(255,255,255,0.85)]' : 'bg-gray-900'}`}
+            style={{ aspectRatio: '4/3', background: frontLight ? '#111' : undefined }}
+          >
             <video
               ref={videoRef}
               className="w-full h-full object-cover"
               playsInline muted
-              style={{ transform: 'scaleX(-1)', display: cameraActive ? 'block' : 'none' }}
+              style={{ transform: 'scaleX(-1)', display: cameraActive ? 'block' : 'none', filter: frontLight ? 'brightness(1.3) contrast(1.1)' : undefined }}
             />
             <canvas
               ref={canvasRef}
@@ -360,7 +369,7 @@ export default function FaceEnrollmentPage() {
             {enrolling && (
               <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center z-10">
                 {/* Face guide oval */}
-                <div className={`w-36 h-48 border-4 rounded-[50%] mb-5 transition-all duration-500 ${
+                <div className={`w-52 h-64 border-4 rounded-[50%] mb-5 transition-all duration-500 ${
                   enrollStepStatus === 'done' ? 'border-solid border-green-400' :
                   enrollStepStatus === 'active' ? 'border-dashed border-yellow-400' :
                   'border-dashed border-white/30'
@@ -454,7 +463,18 @@ export default function FaceEnrollmentPage() {
             </div>
           )}
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
+            <button
+              onClick={() => setFrontLight(f => !f)}
+              className={`px-3 py-2.5 text-sm font-medium rounded-xl border transition flex items-center gap-1.5 ${
+                frontLight
+                  ? 'bg-yellow-100 border-yellow-300 text-yellow-700 shadow-inner'
+                  : 'bg-gray-100 border-gray-300 text-gray-600 hover:bg-yellow-50 hover:border-yellow-200'
+              }`}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" /></svg>
+              {frontLight ? 'Light On' : 'Front Light'}
+            </button>
             {cameraActive && !enrolling && !enrollSuccess && (
               <button onClick={stopCamera} className="px-4 py-2.5 bg-gray-500 text-white text-sm font-medium rounded-xl hover:bg-gray-600 transition">
                 Stop Camera
@@ -491,6 +511,11 @@ export default function FaceEnrollmentPage() {
                   <div>
                     <p className="font-medium text-sm text-gray-900">{s.first_name} {s.last_name}</p>
                     <p className="text-xs text-gray-500">{s.student_id} · {s.course}</p>
+                    {s.face_enrolled_at && (
+                      <p className="text-[10px] text-green-600 mt-0.5">
+                        Enrolled {new Date(s.face_enrolled_at).toLocaleString('en', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                      </p>
+                    )}
                   </div>
                 </div>
                 <button

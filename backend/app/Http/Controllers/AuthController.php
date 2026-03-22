@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
+use App\Models\AuditLog;
 use App\Models\Event;
 use App\Models\Student;
 use App\Models\User;
@@ -45,6 +46,8 @@ class AuthController extends Controller
 
         $user->update(['archived' => true]);
 
+        AuditLog::record('deleted', "Archived user: {$user->name}", 'User', $user->id, $request->user()?->id, $request->ip());
+
         return response()->json(['message' => 'User archived.']);
     }
 
@@ -52,6 +55,8 @@ class AuthController extends Controller
     {
         $user = User::findOrFail($id);
         $user->update(['archived' => false]);
+
+        AuditLog::record('restored', "Restored user: {$user->name}", 'User', $user->id, $request->user()?->id, $request->ip());
 
         return response()->json(['message' => 'User restored.']);
     }
@@ -95,6 +100,8 @@ class AuthController extends Controller
 
         $user = Auth::user()->load('studentRecord');
 
+        AuditLog::record('login', "User logged in", 'User', $user->id, $user->id, $request->ip());
+
         return response()->json([
             'user' => $user,
             'role' => $user->role,
@@ -103,6 +110,9 @@ class AuthController extends Controller
 
     public function logout(Request $request): JsonResponse
     {
+        $userId = $request->user()?->id;
+        AuditLog::record('logout', "User logged out", 'User', $userId, $userId, $request->ip());
+
         Auth::guard('web')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
@@ -130,6 +140,8 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
             'role' => $request->role ?? 'officer',
         ]);
+
+        AuditLog::record('created', "Created account for {$user->name} ({$user->role})", 'User', $user->id, $request->user()?->id, $request->ip());
 
         return response()->json(['user' => $user, 'message' => 'Account created.'], 201);
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\EventRequest;
+use App\Models\AuditLog;
 use App\Models\Event;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -37,6 +38,8 @@ class EventController extends Controller
 
         $event = Event::create($data);
 
+        AuditLog::record('created', "Created event: {$event->event_name}", 'Event', $event->id, $request->user()->id, $request->ip());
+
         return response()->json(['event' => $event, 'message' => 'Event created.'], 201);
     }
 
@@ -61,13 +64,18 @@ class EventController extends Controller
         $event = Event::findOrFail($id);
         $event->update($request->validated());
 
+        AuditLog::record('updated', "Updated event: {$event->event_name}", 'Event', $event->id, $request->user()->id, $request->ip());
+
         return response()->json(['event' => $event, 'message' => 'Event updated.']);
     }
 
-    public function destroy(int $id): JsonResponse
+    public function destroy(Request $request, int $id): JsonResponse
     {
         $event = Event::findOrFail($id);
+        $name = $event->event_name;
         $event->delete();
+
+        AuditLog::record('deleted', "Deleted event: {$name}", 'Event', $id, $request->user()->id, $request->ip());
 
         return response()->json(['message' => 'Event deleted.']);
     }

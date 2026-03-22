@@ -15,7 +15,7 @@ export default function StudentSidebar({ onNavigate }) {
   ];
 
   return (
-    <aside className="w-64 bg-white h-screen flex flex-col border-r border-green-200">
+    <aside className="w-64 bg-white h-screen flex flex-col border-r border-green-200 animate-slideInDrawer">
       {/* Logo */}
       <div className="px-5 h-14 flex items-center border-b border-green-200 flex-shrink-0">
         <div className="flex items-center gap-2.5">

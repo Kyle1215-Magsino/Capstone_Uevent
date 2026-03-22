@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\TwoFactorController;
 use Illuminate\Support\Facades\Route;
 
 // Public auth routes
@@ -14,6 +16,14 @@ Route::post('/register-student', [AuthController::class, 'registerStudent']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    // 2FA (available to all authenticated users)
+    Route::get('/user/two-factor-status', [TwoFactorController::class, 'status']);
+    Route::post('/user/two-factor-authentication', [TwoFactorController::class, 'enable']);
+    Route::post('/user/confirmed-two-factor-authentication', [TwoFactorController::class, 'confirm']);
+    Route::delete('/user/two-factor-authentication', [TwoFactorController::class, 'disable']);
+    Route::get('/user/two-factor-qr-code', [TwoFactorController::class, 'qrCode']);
+    Route::get('/user/two-factor-recovery-codes', [TwoFactorController::class, 'recoveryCodes']);
 
     // Officer and admin routes
     Route::middleware('role:officer,admin')->group(function () {
@@ -52,6 +62,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/attendance/live/{eventId}', [AttendanceController::class, 'liveAttendance']);
         Route::get('/attendance', [AttendanceController::class, 'index']);
         Route::get('/reports', [AttendanceController::class, 'reports']);
+
+        // Audit Logs (admin only)
+        Route::middleware('role:admin')->group(function () {
+            Route::get('/audit-logs', [AuditLogController::class, 'index']);
+        });
     });
 
     // Student routes

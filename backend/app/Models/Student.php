@@ -18,6 +18,7 @@ class Student extends Model
         'year_level',
         'rfid_tag',
         'face_data',
+        'face_enrolled_at',
         'profile_image',
         'status',
         'archived',
@@ -26,8 +27,9 @@ class Student extends Model
     protected function casts(): array
     {
         return [
-            'archived' => 'boolean',
-            'year_level' => 'integer',
+            'archived'         => 'boolean',
+            'year_level'        => 'integer',
+            'face_enrolled_at'  => 'datetime',
         ];
     }
 

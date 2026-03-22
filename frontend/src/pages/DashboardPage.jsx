@@ -64,8 +64,8 @@ export default function DashboardPage() {
 
       {/* Stat cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-        {statCardConfig.map(card => (
-          <div key={card.key} className="bg-white rounded-xl p-5 shadow-sm border border-green-300 hover:shadow-md transition-shadow">
+        {statCardConfig.map((card, i) => (
+          <div key={card.key} style={{ animationDelay: `${i * 0.07}s` }} className="animate-staggerIn bg-white rounded-xl p-5 shadow-sm border border-green-300 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
             <div className="flex items-center justify-between mb-3">
               <span className={`${card.iconBg} ${card.iconColor} rounded-lg p-2.5`}>{card.icon}</span>
             </div>

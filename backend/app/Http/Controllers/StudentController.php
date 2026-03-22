@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StudentRequest;
+use App\Models\AuditLog;
 use App\Models\Student;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,6 +23,8 @@ class StudentController extends Controller
     {
         $student = Student::create($request->validated());
 
+        AuditLog::record('created', "Added student: {$student->first_name} {$student->last_name}", 'Student', $student->id, $request->user()?->id, $request->ip());
+
         return response()->json(['student' => $student, 'message' => 'Student created.'], 201);
     }
 
@@ -37,13 +40,17 @@ class StudentController extends Controller
         $student = Student::findOrFail($id);
         $student->update($request->validated());
 
+        AuditLog::record('updated', "Updated student: {$student->first_name} {$student->last_name}", 'Student', $student->id, $request->user()?->id, $request->ip());
+
         return response()->json(['student' => $student, 'message' => 'Student updated.']);
     }
 
-    public function destroy(int $id): JsonResponse
+    public function destroy(Request $request, int $id): JsonResponse
     {
         $student = Student::findOrFail($id);
         $student->update(['archived' => true]);
+
+        AuditLog::record('deleted', "Archived student: {$student->first_name} {$student->last_name}", 'Student', $student->id, $request->user()?->id, $request->ip());
 
         return response()->json(['message' => 'Student archived.']);
     }
@@ -57,10 +64,12 @@ class StudentController extends Controller
         return response()->json($students);
     }
 
-    public function restore(int $id): JsonResponse
+    public function restore(Request $request, int $id): JsonResponse
     {
         $student = Student::findOrFail($id);
         $student->update(['archived' => false, 'status' => 'active']);
+
+        AuditLog::record('restored', "Restored student: {$student->first_name} {$student->last_name}", 'Student', $student->id, $request->user()?->id, $request->ip());
 
         return response()->json(['message' => 'Student restored.']);
     }
@@ -88,9 +97,12 @@ class StudentController extends Controller
         ]);
 
         $student = Student::findOrFail($id);
-        $student->update(['face_data' => $request->face_data]);
+        $student->update([
+            'face_data'        => $request->face_data,
+            'face_enrolled_at' => $request->face_data ? now() : null,
+        ]);
 
-        return response()->json(['message' => 'Face data saved.']);
+        return response()->json(['message' => 'Face data saved.', 'face_enrolled_at' => $student->fresh()->face_enrolled_at]);
     }
 
     public function getFaceData(): JsonResponse
@@ -98,7 +110,7 @@ class StudentController extends Controller
         $students = Student::active()
             ->whereNotNull('face_data')
             ->where('face_data', '!=', '')
-            ->select(['id', 'student_id', 'first_name', 'last_name', 'face_data'])
+            ->select(['id', 'student_id', 'first_name', 'last_name', 'face_data', 'face_enrolled_at'])
             ->get();
 
         return response()->json($students);

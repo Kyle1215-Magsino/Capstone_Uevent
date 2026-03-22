@@ -3,7 +3,7 @@ import { getActiveEvents } from '../api/eventApi';
 import { processCheckin, getLiveAttendance } from '../api/attendanceApi';
 import { getFaceData } from '../api/studentApi';
 import { toast } from 'react-toastify';
-import { loadModels, findBestMatch, faceapi } from '../utils/faceApi';
+import { loadModels, findBestMatch, faceapi, TINY_OPTIONS, prepareDescriptors, captureAveragedDescriptor } from '../utils/faceApi';
 
 export default function CheckinPage() {
   const [events, setEvents] = useState([]);
@@ -25,6 +25,7 @@ export default function CheckinPage() {
   const [cameraStatusColor, setCameraStatusColor] = useState('yellow');
   const [matchedStudent, setMatchedStudent] = useState(null);
   const [enrolledFaces, setEnrolledFaces] = useState([]);
+  const [frontLight, setFrontLight] = useState(false);
   const faceVideoRef = useRef(null);
   const faceCanvasRef = useRef(null);
   const faceStreamRef = useRef(null);
@@ -68,7 +69,7 @@ export default function CheckinPage() {
   useEffect(() => {
     if (method === 'facial') {
       loadModels().then(() => setModelsReady(true));
-      getFaceData().then(res => setEnrolledFaces(res.data)).catch(() => {});
+      getFaceData().then(res => setEnrolledFaces(prepareDescriptors(res.data))).catch(() => {});
     } else {
       stopFaceCamera();
     }
@@ -88,7 +89,7 @@ export default function CheckinPage() {
   const startFaceCamera = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' },
+        video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' },
       });
       faceStreamRef.current = stream;
       if (faceVideoRef.current) {
@@ -119,11 +120,11 @@ export default function CheckinPage() {
       // Yield to browser before heavy detection
       await new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
 
-      // Up to 3 attempts with 300ms delay between
+      // Get one detection first for quality check + bounding box
       let detection = null;
       for (let attempt = 0; attempt < 3; attempt++) {
         detection = await faceapi
-          .detectSingleFace(video, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.3 }))
+          .detectSingleFace(video, TINY_OPTIONS)
           .withFaceLandmarks()
           .withFaceDescriptor();
         if (detection) break;
@@ -143,10 +144,10 @@ export default function CheckinPage() {
         return;
       }
 
-      // Quality check: face must be at least 1% of frame area
+      // Quality check: face must be at least 4% of frame area for a reliable descriptor
       const faceArea = detection.detection.box.width * detection.detection.box.height;
       const frameArea = video.videoWidth * video.videoHeight;
-      if (faceArea / frameArea < 0.01) {
+      if (faceArea / frameArea < 0.04) {
         setCameraStatusText('Move closer to camera');
         setCameraStatusColor('red');
         toast.error('Face too far away — move closer to the camera.');
@@ -167,14 +168,18 @@ export default function CheckinPage() {
         ctx.fill();
       });
 
+      // Average 5 frames for a stable descriptor before matching
+      setCameraStatusText('Analyzing...');
+      const avgDescriptor = await captureAveragedDescriptor(video, 5);
+      const descriptorToMatch = avgDescriptor ?? new Float32Array(detection.descriptor);
+
       // Find best match
-      const match = findBestMatch(Array.from(detection.descriptor), enrolledFaces);
+      const match = findBestMatch(descriptorToMatch, enrolledFaces);
       if (match) {
         const confidence = ((1 - match.distance) * 100).toFixed(1);
         setCameraStatusText(`Matched: ${match.student.first_name} ${match.student.last_name} (${confidence}%)`);
         setCameraStatusColor('green');
         setMatchedStudent({ ...match.student, confidence });
-        // Use student_id string if available, fall back to numeric id
         handleCheckin(match.student.student_id || String(match.student.id), 'facial');
       } else {
         setCameraStatusText('No match found');
@@ -347,12 +352,15 @@ export default function CheckinPage() {
                     </div>
                   ) : (
                     <>
-                      <div className="relative bg-gray-900 rounded-xl overflow-hidden mb-4" style={{ aspectRatio: '4/3' }}>
+                      <div
+                        className={`relative rounded-xl overflow-hidden mb-4 transition-all duration-300 ${frontLight ? 'ring-[10px] ring-white shadow-[0_0_50px_15px_rgba(255,255,255,0.85)]' : 'bg-gray-900'}`}
+                        style={{ aspectRatio: '4/3', background: frontLight ? '#111' : undefined }}
+                      >
                         <video
                           ref={faceVideoRef}
                           className="w-full h-full object-cover"
                           playsInline muted
-                          style={{ display: faceCamera ? 'block' : 'none' }}
+                          style={{ display: faceCamera ? 'block' : 'none', filter: frontLight ? 'brightness(1.3) contrast(1.1)' : undefined }}
                         />
                         <canvas
                           ref={faceCanvasRef}
@@ -398,7 +406,18 @@ export default function CheckinPage() {
                         )}
                       </div>
 
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 flex-wrap">
+                        <button
+                          onClick={() => setFrontLight(f => !f)}
+                          className={`px-3 py-2.5 text-sm font-medium rounded-xl border transition flex items-center gap-1.5 ${
+                            frontLight
+                              ? 'bg-yellow-100 border-yellow-300 text-yellow-700 shadow-inner'
+                              : 'bg-gray-100 border-gray-300 text-gray-600 hover:bg-yellow-50 hover:border-yellow-200'
+                          }`}
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" /></svg>
+                          {frontLight ? 'Light On' : 'Front Light'}
+                        </button>
                         {!faceCamera ? (
                           <button
                             onClick={startFaceCamera}
