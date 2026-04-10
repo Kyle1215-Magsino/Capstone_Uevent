@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\AuthController;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 // Public auth routes
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register-student', [AuthController::class, 'registerStudent']);
+Route::get('/announcements/public', [AnnouncementController::class, 'public']);
 
 // Authenticated routes
 Route::middleware('auth:sanctum')->group(function () {
@@ -66,6 +68,16 @@ Route::middleware('auth:sanctum')->group(function () {
         // Audit Logs (admin only)
         Route::middleware('role:admin')->group(function () {
             Route::get('/audit-logs', [AuditLogController::class, 'index']);
+
+            // Announcements
+            Route::get('/announcements', [AnnouncementController::class, 'index']);
+            Route::post('/announcements', [AnnouncementController::class, 'store']);
+            Route::put('/announcements/{id}', [AnnouncementController::class, 'update']);
+            Route::delete('/announcements/{id}', [AnnouncementController::class, 'destroy']);
+            Route::post('/announcements/sync-events', function () {
+                \App\Services\EventAnnouncementService::syncAllEventAnnouncements();
+                return response()->json(['message' => 'Event announcements synced successfully.']);
+            });
         });
     });
 

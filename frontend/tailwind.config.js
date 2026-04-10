@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: [
     "./index.html",
     "./src/**/*.{js,jsx}",
@@ -79,12 +80,13 @@ export default {
           '50%':      { opacity: '0.6' },
         },
         slideInDrawer: {
-          '0%':   { transform: 'translateX(-100%)' },
+          '0%':   { transform: 'translateX(-100%)', opacity: '0' },
+          '60%':  { transform: 'translateX(2%)', opacity: '1' },
           '100%': { transform: 'translateX(0)' },
         },
         slideOutDrawer: {
-          '0%':   { transform: 'translateX(0)' },
-          '100%': { transform: 'translateX(-100%)' },
+          '0%':   { transform: 'translateX(0)', opacity: '1' },
+          '100%': { transform: 'translateX(-100%)', opacity: '0' },
         },
         backdropIn: {
           '0%':   { opacity: '0' },
@@ -99,17 +101,23 @@ export default {
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
         staggerIn: {
-          '0%':   { opacity: '0', transform: 'translateY(16px) scale(0.97)' },
-          '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+          '0%':   { opacity: '0', transform: 'translateX(-20px)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' },
         },
       },
       animation: {
-        fadeInUp:    'fadeInUp 0.5s ease-out both',
-        fadeIn:      'fadeIn 0.4s ease-out both',
-        slideInLeft: 'slideInLeft 0.4s ease-out both',
-        scaleIn:     'scaleIn 0.35s ease-out both',
-        float:       'float 3s ease-in-out infinite',
-        pulse2:      'pulse2 2s ease-in-out infinite',
+        fadeInUp:       'fadeInUp 0.5s ease-out both',
+        fadeIn:         'fadeIn 0.4s ease-out both',
+        slideInLeft:    'slideInLeft 0.4s ease-out both',
+        scaleIn:        'scaleIn 0.35s ease-out both',
+        float:          'float 3s ease-in-out infinite',
+        pulse2:         'pulse2 2s ease-in-out infinite',
+        slideInDrawer:  'slideInDrawer 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both',
+        slideOutDrawer: 'slideOutDrawer 0.25s cubic-bezier(0.4, 0, 0.6, 1) both',
+        backdropIn:     'backdropIn 0.25s ease-out both',
+        backdropOut:    'backdropOut 0.22s ease-out both',
+        pageEnter:      'pageEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1) both',
+        staggerIn:      'staggerIn 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) both',
       },
     },
   },

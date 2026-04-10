@@ -42,29 +42,29 @@ export default function EventAddModal({ open, onClose, onCreated }) {
     <Modal open={open} onClose={onClose} maxWidth="max-w-2xl">
       <div className="p-8">
         <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Create Event</h2>
-          <p className="text-sm text-gray-500 mt-1">Set up a new USG event</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Create Event</h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Set up a new USG event</p>
         </div>
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Event Name</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Event Name</label>
             <input type="text" required value={form.event_name} onChange={e => set('event_name', e.target.value)}
-              className="w-full px-4 py-2.5 border border-green-400 rounded-xl bg-gray-50 text-gray-900 text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400" />
+              className="w-full px-4 py-2.5 border border-green-400 dark:border-green-600 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500" />
           </div>
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
             <textarea value={form.description} onChange={e => set('description', e.target.value)}
-              className="w-full px-4 py-2.5 border border-green-400 rounded-xl bg-gray-50 text-gray-900 text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400" rows="3" />
+              className="w-full px-4 py-2.5 border border-green-400 dark:border-green-600 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500" rows="3" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date</label>
             <input type="date" required value={form.event_date} onChange={e => set('event_date', e.target.value)}
-              className="w-full px-4 py-2.5 border border-green-400 rounded-xl bg-gray-50 text-gray-900 text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400" />
+              className="w-full px-4 py-2.5 border border-green-400 dark:border-green-600 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Venue</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Venue</label>
             <select required value={form.venue} onChange={e => set('venue', e.target.value)}
-              className="w-full px-4 py-2.5 border border-green-400 rounded-xl bg-gray-50 text-gray-900 text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400">
+              className="w-full px-4 py-2.5 border border-green-400 dark:border-green-600 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500">
               <option value="">Select Venue</option>
               <option value="Main Auditorium">Main Auditorium</option>
               <option value="University Gymnasium">University Gymnasium</option>
@@ -77,24 +77,24 @@ export default function EventAddModal({ open, onClose, onCreated }) {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Start Time</label>
             <input type="time" required value={form.start_time} onChange={e => set('start_time', e.target.value)}
-              className="w-full px-4 py-2.5 border border-green-400 rounded-xl bg-gray-50 text-gray-900 text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400" />
+              className="w-full px-4 py-2.5 border border-green-400 dark:border-green-600 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">End Time</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">End Time</label>
             <input type="time" required value={form.end_time} onChange={e => set('end_time', e.target.value)}
-              className="w-full px-4 py-2.5 border border-green-400 rounded-xl bg-gray-50 text-gray-900 text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400" />
+              className="w-full px-4 py-2.5 border border-green-400 dark:border-green-600 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Venue Latitude (Optional)</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Venue Latitude (Optional)</label>
             <input type="text" value={form.venue_lat} onChange={e => set('venue_lat', e.target.value)}
-              className="w-full px-4 py-2.5 border border-green-400 rounded-xl bg-gray-50 text-gray-900 text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400" placeholder="e.g. 14.5995" />
+              className="w-full px-4 py-2.5 border border-green-400 dark:border-green-600 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500" placeholder="e.g. 14.5995" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Venue Longitude (Optional)</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Venue Longitude (Optional)</label>
             <input type="text" value={form.venue_lng} onChange={e => set('venue_lng', e.target.value)}
-              className="w-full px-4 py-2.5 border border-green-400 rounded-xl bg-gray-50 text-gray-900 text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400" placeholder="e.g. 120.9842" />
+              className="w-full px-4 py-2.5 border border-green-400 dark:border-green-600 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500" placeholder="e.g. 120.9842" />
           </div>
           <div className="md:col-span-2 flex gap-2 pt-2">
             <button type="submit" disabled={loading}
@@ -102,7 +102,7 @@ export default function EventAddModal({ open, onClose, onCreated }) {
               {loading ? 'Creating...' : 'Create Event'}
             </button>
             <button type="button" onClick={onClose}
-              className="px-6 py-2.5 bg-gray-100 text-gray-800 rounded-xl hover:bg-slate-600 text-sm font-medium transition">
+              className="px-6 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 text-sm font-medium transition">
               Cancel
             </button>
           </div>

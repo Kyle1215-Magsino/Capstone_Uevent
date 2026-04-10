@@ -71,15 +71,15 @@ export default function DataTable({ columns, data, searchable = true, pageSize: 
             placeholder="Search..."
             value={search}
             onChange={e => { setSearch(e.target.value); setPage(1); }}
-            className="w-full max-w-sm px-4 py-2.5 border border-green-400 rounded-xl focus:ring-2 focus:ring-green-400 focus:border-transparent bg-gray-50 text-gray-900 text-sm placeholder:text-gray-400"
+            className="w-full max-w-sm px-4 py-2.5 border border-green-400 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-green-400 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm placeholder:text-gray-400 dark:placeholder:text-gray-500"
           />
         )}
-        <div className="flex items-center gap-2 text-sm text-gray-500">
+        <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
           <span>Show</span>
           <select
             value={pageSize}
             onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}
-            className="px-2 py-1.5 border border-green-400 rounded-lg bg-gray-50 text-gray-900 text-sm"
+            className="px-2 py-1.5 border border-green-400 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm"
           >
             {PAGE_SIZE_OPTIONS.map(n => (
               <option key={n} value={n}>{n}</option>
@@ -90,40 +90,40 @@ export default function DataTable({ columns, data, searchable = true, pageSize: 
       </div>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-green-200">
-          <thead className="bg-gray-50/50">
+        <table className="min-w-full divide-y divide-green-200 dark:divide-gray-800">
+          <thead className="bg-gray-50/50 dark:bg-gray-800/50">
             <tr>
               {columns.map(col => (
                 <th
                   key={col.key}
                   onClick={() => col.sortable !== false && handleSort(col.key)}
-                  className={`px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider ${col.sortable !== false ? 'cursor-pointer hover:bg-gray-100/50 select-none' : ''}`}
+                  className={`px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider ${col.sortable !== false ? 'cursor-pointer hover:bg-gray-100/50 dark:hover:bg-gray-700/50 select-none' : ''}`}
                 >
                   <span className="flex items-center gap-1">
                     {col.label}
                     {sortKey === col.key && (
-                      <span className="text-green-500">{sortDir === 'asc' ? '▲' : '▼'}</span>
+                      <span className="text-green-500 dark:text-green-400">{sortDir === 'asc' ? '▲' : '▼'}</span>
                     )}
                     {col.sortable !== false && sortKey !== col.key && (
-                      <span className="text-gray-400">⇅</span>
+                      <span className="text-gray-400 dark:text-gray-500">⇅</span>
                     )}
                   </span>
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-green-200">
+          <tbody className="divide-y divide-green-200 dark:divide-gray-800">
             {paginated.length === 0 ? (
               <tr>
-                <td colSpan={columns.length} className="px-4 py-8 text-center text-gray-500">
+                <td colSpan={columns.length} className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
                   No data found.
                 </td>
               </tr>
             ) : (
               paginated.map((row, i) => (
-                <tr key={row.id ?? i} className="hover:bg-gray-50 transition-colors">
+                <tr key={row.id ?? i} className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                   {columns.map(col => (
-                    <td key={col.key} className="px-4 py-3 text-sm text-gray-700">
+                    <td key={col.key} className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">
                       {col.render ? col.render(row) : (typeof col.accessor === 'function' ? col.accessor(row) : row[col.accessor])}
                     </td>
                   ))}
@@ -135,15 +135,15 @@ export default function DataTable({ columns, data, searchable = true, pageSize: 
       </div>
 
       {sorted.length > 0 && (
-        <div className="flex flex-wrap items-center justify-between gap-3 mt-4 pt-4 border-t border-white/10">
-          <span className="text-sm text-gray-500">
+        <div className="flex flex-wrap items-center justify-between gap-3 mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
+          <span className="text-sm text-gray-600 dark:text-gray-400">
             Showing {(page - 1) * pageSize + 1}–{Math.min(page * pageSize, sorted.length)} of {sorted.length} entries
           </span>
           <div className="flex items-center gap-1">
             <button
               onClick={() => setPage(1)}
               disabled={page === 1}
-              className="px-2.5 py-1.5 text-sm border border-green-400 rounded-lg disabled:opacity-40 hover:bg-gray-100/50 transition-colors"
+              className="px-2.5 py-1.5 text-sm text-gray-700 dark:text-gray-300 border border-green-400 dark:border-gray-700 rounded-lg disabled:opacity-40 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 transition-colors"
               title="First page"
             >
               «
@@ -151,13 +151,13 @@ export default function DataTable({ columns, data, searchable = true, pageSize: 
             <button
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="px-2.5 py-1.5 text-sm border border-green-400 rounded-lg disabled:opacity-40 hover:bg-gray-100/50 transition-colors"
+              className="px-2.5 py-1.5 text-sm text-gray-700 dark:text-gray-300 border border-green-400 dark:border-gray-700 rounded-lg disabled:opacity-40 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 transition-colors"
             >
               ‹
             </button>
             {getPageNumbers().map((p, i) =>
               p === '...' ? (
-                <span key={`ellip-${i}`} className="px-2 py-1.5 text-sm text-gray-400">…</span>
+                <span key={`ellip-${i}`} className="px-2 py-1.5 text-sm text-gray-400 dark:text-gray-500">…</span>
               ) : (
                 <button
                   key={p}
@@ -165,7 +165,7 @@ export default function DataTable({ columns, data, searchable = true, pageSize: 
                   className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
                     page === p
                       ? 'bg-green-500 text-white font-medium'
-                      : 'border border-green-400 hover:bg-gray-100/50 text-gray-700'
+                      : 'border border-green-400 dark:border-gray-700 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 text-gray-700 dark:text-gray-300'
                   }`}
                 >
                   {p}
@@ -175,14 +175,14 @@ export default function DataTable({ columns, data, searchable = true, pageSize: 
             <button
               onClick={() => setPage(p => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="px-2.5 py-1.5 text-sm border border-green-400 rounded-lg disabled:opacity-40 hover:bg-gray-100/50 transition-colors"
+              className="px-2.5 py-1.5 text-sm text-gray-700 dark:text-gray-300 border border-green-400 dark:border-gray-700 rounded-lg disabled:opacity-40 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 transition-colors"
             >
               ›
             </button>
             <button
               onClick={() => setPage(totalPages)}
               disabled={page === totalPages}
-              className="px-2.5 py-1.5 text-sm border border-green-400 rounded-lg disabled:opacity-40 hover:bg-gray-100/50 transition-colors"
+              className="px-2.5 py-1.5 text-sm text-gray-700 dark:text-gray-300 border border-green-400 dark:border-gray-700 rounded-lg disabled:opacity-40 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 transition-colors"
               title="Last page"
             >
               »

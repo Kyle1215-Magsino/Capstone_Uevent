@@ -15,44 +15,46 @@ export default function StudentSidebar({ onNavigate }) {
   ];
 
   return (
-    <aside className="w-64 bg-white h-screen flex flex-col border-r border-green-200 animate-slideInDrawer">
+    <aside className="w-64 bg-white dark:bg-gray-900 h-screen flex flex-col border-r border-green-200 dark:border-gray-800 animate-slideInDrawer">
       {/* Logo */}
-      <div className="px-5 h-14 flex items-center border-b border-green-200 flex-shrink-0">
+      <div className="px-5 h-14 flex items-center border-b border-green-200 dark:border-gray-800 flex-shrink-0 animate-fadeIn">
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+          <div className="w-7 h-7 bg-green-600 dark:bg-green-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
             <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
           </div>
-          <span className="font-bold text-gray-900 text-sm tracking-tight">U-EventTrack</span>
+          <span className="font-bold text-gray-900 dark:text-white text-sm tracking-tight">U-EventTrack</span>
         </div>
       </div>
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-4 overflow-y-auto">
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 px-3 pb-1.5">Menu</p>
-        {links.map(link => (
-          <NavLink key={link.to} to={link.to} onClick={onNavigate}
-            className={({ isActive }) =>
-              `group flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 ${
-                isActive
-                  ? 'bg-green-50 text-green-700 border-l-2 border-green-500 pl-[11px]'
-                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800 border-l-2 border-transparent pl-[11px]'
-              }`
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <span className={isActive ? 'text-green-600' : 'text-gray-400 group-hover:text-gray-600'}>{link.icon}</span>
-                {link.label}
-              </>
-            )}
-          </NavLink>
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 px-3 pb-1.5">Menu</p>
+        {links.map((link, index) => (
+          <div key={link.to} style={{ animationDelay: `${0.03 + index * 0.03}s` }}>
+            <NavLink to={link.to} onClick={onNavigate}
+              className={({ isActive }) =>
+                `group flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 animate-staggerIn ${
+                  isActive
+                    ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-l-2 border-green-500 pl-[11px]'
+                    : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-800 dark:hover:text-gray-200 border-l-2 border-transparent pl-[11px]'
+                }`
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  <span className={isActive ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300'}>{link.icon}</span>
+                  {link.label}
+                </>
+              )}
+            </NavLink>
+          </div>
         ))}
       </nav>
 
       {/* Footer */}
-      <div className="px-4 py-3 border-t border-green-200 flex-shrink-0">
-        <p className="text-xs text-gray-500 font-medium truncate">{user?.name}</p>
-        <p className="text-[10px] text-gray-400">Student</p>
+      <div className="px-4 py-3 border-t border-green-200 dark:border-gray-800 flex-shrink-0 animate-fadeIn" style={{ animationDelay: '0.15s' }}>
+        <p className="text-xs text-gray-500 dark:text-gray-400 font-medium truncate">{user?.name}</p>
+        <p className="text-[10px] text-gray-400 dark:text-gray-600">Student</p>
       </div>
     </aside>
   );

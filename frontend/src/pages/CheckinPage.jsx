@@ -16,6 +16,7 @@ export default function CheckinPage() {
   const [useLocation, setUseLocation] = useState(false);
   const [coords, setCoords] = useState(null);
   const rfidRef = useRef(null);
+  const manualRef = useRef(null);
 
   // Face recognition state
   const [modelsReady, setModelsReady] = useState(false);
@@ -225,6 +226,10 @@ export default function CheckinPage() {
       toast.error(err.response?.data?.message || 'Check-in failed.');
     } finally {
       setLoading(false);
+      setTimeout(() => {
+        if (method === 'manual') manualRef.current?.focus();
+        else if (method === 'rfid') rfidRef.current?.focus();
+      }, 50);
     }
   };
 
@@ -245,21 +250,21 @@ export default function CheckinPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Event Check-In</h1>
-        <p className="text-sm text-gray-500 mt-1">Process student attendance</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Event Check-In</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Process student attendance</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left panel: Check-in controls */}
         <div className="lg:col-span-2 space-y-4">
           {/* Event selector & clock */}
-          <div className="bg-white p-4 rounded-xl shadow-sm border border-green-300 flex flex-wrap gap-4 items-center">
+          <div className="bg-white dark:bg-gray-900 p-4 rounded-xl shadow-sm border border-green-300 dark:border-gray-800 flex flex-wrap gap-4 items-center">
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Active Event</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Active Event</label>
               <select
                 value={selectedEvent}
                 onChange={e => setSelectedEvent(e.target.value)}
-                className="w-full px-4 py-2.5 border border-green-400 rounded-xl bg-gray-50 text-gray-900 text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400"
+                className="w-full px-4 py-2.5 border border-green-400 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-200 text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500"
               >
                 <option value="">Select an event...</option>
                 {events.map(ev => (
@@ -270,10 +275,10 @@ export default function CheckinPage() {
               </select>
             </div>
             <div className="text-right">
-              <p className="text-2xl font-mono font-bold">{clock.toLocaleTimeString()}</p>
-              <p className="text-sm text-gray-500">{clock.toLocaleDateString()}</p>
+              <p className="text-2xl font-mono font-bold text-gray-900 dark:text-white">{clock.toLocaleTimeString()}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{clock.toLocaleDateString()}</p>
               {selectedEventObj && (
-                <span className={`px-2 py-1 rounded text-xs ${selectedEventObj.status === 'ongoing' ? 'bg-green-100 text-green-700' : 'bg-green-100 text-green-700'}`}>
+                <span className={`px-2 py-1 rounded text-xs ${selectedEventObj.status === 'ongoing' ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' : 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300'}`}>
                   {selectedEventObj.status}
                 </span>
               )}
@@ -281,13 +286,13 @@ export default function CheckinPage() {
           </div>
 
           {/* Method tabs */}
-          <div className="bg-white rounded-xl shadow-sm border border-green-300">
-            <div className="flex border-b">
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-green-300 dark:border-gray-800">
+            <div className="flex border-b border-gray-100 dark:border-gray-800">
               {['manual', 'rfid', 'facial'].map(m => (
                 <button
                   key={m}
                   onClick={() => { setMethod(m); setIdentifier(''); }}
-                  className={`flex-1 py-3 text-sm font-medium capitalize ${method === m ? 'border-b-2 border-forest-400 text-green-600' : 'text-gray-500 hover:text-gray-700'}`}
+                  className={`flex-1 py-3 text-sm font-medium capitalize ${method === m ? 'border-b-2 border-forest-400 text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'}`}
                 >
                   {m === 'facial' ? 'Face Recognition' : m.toUpperCase()}
                 </button>
@@ -297,14 +302,15 @@ export default function CheckinPage() {
             <div className="p-4">
               {method === 'manual' && (
                 <form onSubmit={handleManualSubmit}>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Student ID</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Student ID</label>
                   <div className="flex gap-2">
                     <input
+                      ref={manualRef}
                       type="text"
                       value={identifier}
                       onChange={e => setIdentifier(e.target.value)}
                       placeholder="Enter student ID..."
-                      className="flex-1 px-4 py-2.5 border border-green-400 rounded-xl bg-gray-50 text-gray-900 text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400"
+                      className="flex-1 px-4 py-2.5 border border-green-400 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-200 text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500"
                       autoFocus
                     />
                     <button
@@ -320,7 +326,7 @@ export default function CheckinPage() {
 
               {method === 'rfid' && (
                 <div>
-                  <p className="text-sm text-gray-600 mb-2">Scan RFID tag or type &amp; press Enter:</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Scan RFID tag or type &amp; press Enter:</p>
                   <div className="flex gap-2">
                     <input
                       ref={rfidRef}
@@ -329,7 +335,7 @@ export default function CheckinPage() {
                       onChange={e => setIdentifier(e.target.value)}
                       onKeyDown={handleRfidKeyDown}
                       placeholder="Waiting for RFID scan..."
-                      className="flex-1 px-3 py-3 border-2 border-forest-300 rounded-lg text-lg font-mono focus:border-forest-400"
+                      className="flex-1 px-3 py-3 border-2 border-forest-300 dark:border-gray-700 rounded-lg text-lg font-mono bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-200 focus:border-forest-400"
                       autoFocus
                     />
                     <button
@@ -459,9 +465,9 @@ export default function CheckinPage() {
                   checked={useLocation}
                   onChange={e => setUseLocation(e.target.checked)}
                 />
-                <label htmlFor="useLocation" className="text-sm text-gray-600">
+                <label htmlFor="useLocation" className="text-sm text-gray-600 dark:text-gray-400">
                   Enable location verification
-                  {coords && <span className="text-green-600 ml-1">(GPS active)</span>}
+                  {coords && <span className="text-green-600 dark:text-green-400 ml-1">(GPS active)</span>}
                 </label>
               </div>
             </div>
@@ -471,48 +477,48 @@ export default function CheckinPage() {
         {/* Right panel: Live stats & feed */}
         <div className="space-y-4">
           {/* Stats */}
-          <div className="bg-white p-4 rounded-xl shadow-sm border border-green-300">
-            <h3 className="font-semibold text-gray-900 mb-3">Live Stats</h3>
+          <div className="bg-white dark:bg-gray-900 p-4 rounded-xl shadow-sm border border-green-300 dark:border-gray-800">
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Live Stats</h3>
             <div className="grid grid-cols-2 gap-3">
-              <div className="bg-green-50 p-3 rounded text-center">
-                <p className="text-2xl font-bold text-green-600">{liveData.stats.total}</p>
-                <p className="text-xs text-gray-500">Total</p>
+              <div className="bg-green-50 dark:bg-green-900/30 p-3 rounded text-center">
+                <p className="text-2xl font-bold text-green-600 dark:text-green-400">{liveData.stats.total}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Total</p>
               </div>
-              <div className="bg-green-50 p-3 rounded text-center">
-                <p className="text-2xl font-bold text-green-600">{liveData.stats.present}</p>
-                <p className="text-xs text-gray-500">Present</p>
+              <div className="bg-green-50 dark:bg-green-900/30 p-3 rounded text-center">
+                <p className="text-2xl font-bold text-green-600 dark:text-green-400">{liveData.stats.present}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Present</p>
               </div>
-              <div className="bg-yellow-50 p-3 rounded text-center">
-                <p className="text-2xl font-bold text-yellow-600">{liveData.stats.late}</p>
-                <p className="text-xs text-gray-500">Late</p>
+              <div className="bg-yellow-50 dark:bg-yellow-900/30 p-3 rounded text-center">
+                <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{liveData.stats.late}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Late</p>
               </div>
-              <div className="bg-purple-50 p-3 rounded text-center">
-                <p className="text-2xl font-bold text-purple-600">{liveData.stats.locationVerified}</p>
-                <p className="text-xs text-gray-500">Location Verified</p>
+              <div className="bg-purple-50 dark:bg-purple-900/30 p-3 rounded text-center">
+                <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">{liveData.stats.locationVerified}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Location Verified</p>
               </div>
             </div>
           </div>
 
           {/* Live feed */}
-          <div className="bg-white p-4 rounded-xl shadow-sm border border-green-300 max-h-96 overflow-y-auto">
-            <h3 className="font-semibold text-gray-900 mb-3">Live Feed</h3>
+          <div className="bg-white dark:bg-gray-900 p-4 rounded-xl shadow-sm border border-green-300 dark:border-gray-800 max-h-96 overflow-y-auto">
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Live Feed</h3>
             <div className="space-y-2">
               {liveData.attendances.map(a => (
-                <div key={a.id} className="flex items-center justify-between p-2 bg-green-50 rounded text-sm">
+                <div key={a.id} className="flex items-center justify-between p-2 bg-green-50 dark:bg-gray-800 rounded text-sm">
                   <div>
-                    <p className="font-medium">{a.student?.first_name} {a.student?.last_name}</p>
-                    <p className="text-xs text-gray-500">{a.student?.student_id}</p>
+                    <p className="font-medium text-gray-900 dark:text-white">{a.student?.first_name} {a.student?.last_name}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{a.student?.student_id}</p>
                   </div>
                   <div className="text-right">
-                    <span className={`px-2 py-1 rounded text-xs ${a.status === 'present' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                    <span className={`px-2 py-1 rounded text-xs ${a.status === 'present' ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' : 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300'}`}>
                       {a.status}
                     </span>
-                    <p className="text-xs text-gray-500 mt-1">{new Date(a.check_in_time).toLocaleTimeString()}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{new Date(a.check_in_time).toLocaleTimeString()}</p>
                   </div>
                 </div>
               ))}
               {liveData.attendances.length === 0 && (
-                <p className="text-gray-400 text-sm text-center py-4">No check-ins yet.</p>
+                <p className="text-gray-400 dark:text-gray-500 text-sm text-center py-4">No check-ins yet.</p>
               )}
             </div>
           </div>

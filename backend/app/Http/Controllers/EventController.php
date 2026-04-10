@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\EventRequest;
 use App\Models\AuditLog;
 use App\Models\Event;
+use App\Services\EventAnnouncementService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -38,6 +39,9 @@ class EventController extends Controller
 
         $event = Event::create($data);
 
+        // Create announcement if event is coming soon
+        EventAnnouncementService::createEventAnnouncement($event);
+
         AuditLog::record('created', "Created event: {$event->event_name}", 'Event', $event->id, $request->user()->id, $request->ip());
 
         return response()->json(['event' => $event, 'message' => 'Event created.'], 201);
@@ -63,6 +67,9 @@ class EventController extends Controller
     {
         $event = Event::findOrFail($id);
         $event->update($request->validated());
+
+        // Update announcement based on new event details
+        EventAnnouncementService::updateEventAnnouncement($event);
 
         AuditLog::record('updated', "Updated event: {$event->event_name}", 'Event', $event->id, $request->user()->id, $request->ip());
 

@@ -5,8 +5,8 @@ import LoadingSpinner from '../components/LoadingSpinner';
 const ChartTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-white border border-green-200 rounded-xl px-4 py-2.5 shadow-lg text-sm">
-      {label && <p className="font-semibold text-gray-700 mb-1">{label}</p>}
+    <div className="bg-white dark:bg-gray-800 border border-green-200 dark:border-gray-700 rounded-xl px-4 py-2.5 shadow-lg text-sm">
+      {label && <p className="font-semibold text-gray-700 dark:text-gray-200 mb-1">{label}</p>}
       {payload.map((p, i) => (
         <p key={i} style={{ color: p.color }} className="font-medium">{p.name}: {p.value}</p>
       ))}
@@ -60,50 +60,71 @@ export default function ReportsPage() {
     <div>
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Reports & Analytics</h1>
-          <p className="text-sm text-gray-500 mt-1">Attendance statistics and trends</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Reports & Analytics</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Attendance statistics and trends</p>
         </div>
-        <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1">
+        <div className="flex items-center gap-3 flex-wrap">
+        {data && (
+          <button
+            onClick={() => {
+              const headers = ['Event', 'Attendees'];
+              const lines = (data.perEvent || []).map(r =>
+                [`"${String(r.event_name).replace(/"/g,'""')}"`, r.attendees].join(','));
+              const csv = [headers.join(','), ...lines].join('\n');
+              const blob = new Blob([csv], { type: 'text/csv' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url; a.download = `report_${period}.csv`; a.click();
+              URL.revokeObjectURL(url);
+            }}
+            className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-900/30 hover:bg-green-100 dark:hover:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-lg transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+            Export CSV
+          </button>
+        )}
+        <div className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 rounded-xl p-1">
           {PERIODS.map(p => (
             <button
               key={p.key}
               onClick={() => setPeriod(p.key)}
               className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
                 period === p.key
-                  ? 'bg-white text-green-700 shadow-sm border border-green-200'
-                  : 'text-gray-500 hover:text-gray-700'
+                  ? 'bg-white dark:bg-gray-900 text-green-700 dark:text-green-400 shadow-sm border border-green-200 dark:border-green-800'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
               }`}
             >
               {p.label}
             </button>
           ))}
         </div>
+        </div>
       </div>
 
-      {(!data && loading) ? <LoadingSpinner /> : !data ? <p className="text-gray-400 text-sm py-20 text-center">Failed to load data.</p> : (
+      {(!data && loading) ? <LoadingSpinner /> : !data ? <p className="text-gray-400 dark:text-gray-500 text-sm py-20 text-center">Failed to load data.</p> : (
       <div className={loading ? 'opacity-60 pointer-events-none transition-opacity' : 'transition-opacity'}>
 
       {/* Summary cards */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
         {[
-          { label: 'Total Students', value: data.totalStudents, iconBg: 'bg-green-100', iconColor: 'text-green-600', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg> },
-          { label: 'Total Events', value: data.totalEvents, iconBg: 'bg-green-100', iconColor: 'text-green-700', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg> },
-          { label: 'Total Check-ins', value: data.totalCheckins, iconBg: 'bg-green-100', iconColor: 'text-green-600', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg> },
-          { label: 'Present', value: data.presentCount, iconBg: 'bg-emerald-100', iconColor: 'text-emerald-600', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> },
-          { label: 'Late', value: data.lateCount, iconBg: 'bg-yellow-100', iconColor: 'text-yellow-600', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> },
+          { label: 'Total Students', value: data.totalStudents, iconBg: 'bg-green-100 dark:bg-green-900/30', iconColor: 'text-green-600 dark:text-green-400', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg> },
+          { label: 'Total Events', value: data.totalEvents, iconBg: 'bg-green-100 dark:bg-green-900/30', iconColor: 'text-green-700 dark:text-green-400', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg> },
+          { label: 'Total Check-ins', value: data.totalCheckins, iconBg: 'bg-green-100 dark:bg-green-900/30', iconColor: 'text-green-600 dark:text-green-400', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg> },
+          { label: 'Present', value: data.presentCount, iconBg: 'bg-emerald-100 dark:bg-emerald-900/30', iconColor: 'text-emerald-600 dark:text-emerald-400', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> },
+          { label: 'Late', value: data.lateCount, iconBg: 'bg-yellow-100 dark:bg-yellow-900/30', iconColor: 'text-yellow-600 dark:text-yellow-400', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> },
         ].map(c => (
-          <div key={c.label} className="bg-white rounded-xl p-5 shadow-sm border border-green-300 hover:shadow-md transition-shadow">
+          <div key={c.label} className="bg-white dark:bg-gray-900 rounded-xl p-5 shadow-sm border border-green-300 dark:border-gray-800 hover:shadow-md transition-shadow">
             <div className={`w-10 h-10 ${c.iconBg} ${c.iconColor} rounded-lg flex items-center justify-center mb-3`}>{c.icon}</div>
-            <p className="text-3xl font-bold text-gray-900">{c.value}</p>
-            <p className="text-sm text-gray-500 mt-1">{c.label}</p>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white">{c.value}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{c.label}</p>
           </div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Attendance status pie chart */}
-        <div className="bg-white p-5 rounded-xl shadow-sm border border-green-300">
-          <h3 className="font-semibold text-gray-900 mb-4">Attendance Status Distribution</h3>
+        <div className="bg-white dark:bg-gray-900 p-5 rounded-xl shadow-sm border border-green-300 dark:border-gray-800">
+          <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Attendance Status Distribution</h3>
           <div key={pieData.map(d => d.value).join(',')} style={{ width: '100%', minHeight: 250 }}>
           <ResponsiveContainer width="100%" height={250} debounce={50}>
             <PieChart>
@@ -127,8 +148,8 @@ export default function ReportsPage() {
         </div>
 
         {/* Trend chart */}
-        <div className="bg-white p-5 rounded-xl shadow-sm border border-green-300">
-          <h3 className="font-semibold text-gray-900 mb-4">{TREND_TITLE[period]}</h3>
+        <div className="bg-white dark:bg-gray-900 p-5 rounded-xl shadow-sm border border-green-300 dark:border-gray-800">
+          <h3 className="font-semibold text-gray-900 dark:text-white mb-4">{TREND_TITLE[period]}</h3>
           <div key={data.monthlyTrends?.length} style={{ width: '100%', minHeight: 250 }}>
           <ResponsiveContainer width="100%" height={250} debounce={50}>
             <AreaChart data={data.monthlyTrends} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
@@ -151,8 +172,8 @@ export default function ReportsPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Per-event attendance */}
-        <div className="bg-white p-5 rounded-xl shadow-sm border border-green-300">
-          <h3 className="font-semibold text-gray-900 mb-4">Attendance by Event</h3>
+        <div className="bg-white dark:bg-gray-900 p-5 rounded-xl shadow-sm border border-green-300 dark:border-gray-800">
+          <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Attendance by Event</h3>
           <div key={data.perEvent?.length} style={{ width: '100%', minHeight: 300 }}>
           <ResponsiveContainer width="100%" height={300} debounce={50}>
             <BarChart data={data.perEvent} layout="vertical" margin={{ top: 4, right: 8, left: 4, bottom: 0 }} maxBarSize={20}>
@@ -167,8 +188,8 @@ export default function ReportsPage() {
         </div>
 
         {/* Attendance by course */}
-        <div className="bg-white p-5 rounded-xl shadow-sm border border-green-300">
-          <h3 className="font-semibold text-gray-900 mb-4">Attendance by Course</h3>
+        <div className="bg-white dark:bg-gray-900 p-5 rounded-xl shadow-sm border border-green-300 dark:border-gray-800">
+          <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Attendance by Course</h3>
           <div key={data.byCourse?.length} style={{ width: '100%', minHeight: 300 }}>
           <ResponsiveContainer width="100%" height={300} debounce={50}>
             <BarChart data={data.byCourse} margin={{ top: 4, right: 8, left: -20, bottom: 0 }} barCategoryGap="35%" maxBarSize={40}>

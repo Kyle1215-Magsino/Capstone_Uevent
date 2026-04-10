@@ -1,5 +1,14 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { dashboard, login, register } from '@/routes';
+import { useEffect, useState } from 'react';
+import { X } from 'lucide-react';
+
+interface Announcement {
+    id: number;
+    tag: 'Event' | 'Reminder' | 'Info' | 'Update' | 'Alert';
+    text: string;
+    active: boolean;
+}
 
 export default function Welcome({
     canRegister = true,
@@ -7,6 +16,54 @@ export default function Welcome({
     canRegister?: boolean;
 }) {
     const { auth } = usePage().props;
+    const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+    const [dismissedIds, setDismissedIds] = useState<number[]>([]);
+
+    useEffect(() => {
+        // Fetch public announcements
+        fetch('/api/announcements/public')
+            .then((res) => res.json())
+            .then((data) => setAnnouncements(data))
+            .catch((err) => console.error('Failed to load announcements:', err));
+
+        // Load dismissed announcements from localStorage
+        const dismissed = localStorage.getItem('dismissedAnnouncements');
+        if (dismissed) {
+            setDismissedIds(JSON.parse(dismissed));
+        }
+    }, []);
+
+    const dismissAnnouncement = (id: number) => {
+        const newDismissed = [...dismissedIds, id];
+        setDismissedIds(newDismissed);
+        localStorage.setItem('dismissedAnnouncements', JSON.stringify(newDismissed));
+    };
+
+    const getTagStyles = (tag: string) => {
+        const styles = {
+            Event: 'bg-blue-50 border-blue-200 text-blue-900 dark:bg-blue-950 dark:border-blue-800 dark:text-blue-100',
+            Reminder: 'bg-yellow-50 border-yellow-200 text-yellow-900 dark:bg-yellow-950 dark:border-yellow-800 dark:text-yellow-100',
+            Info: 'bg-gray-50 border-gray-200 text-gray-900 dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100',
+            Update: 'bg-green-50 border-green-200 text-green-900 dark:bg-green-950 dark:border-green-800 dark:text-green-100',
+            Alert: 'bg-red-50 border-red-200 text-red-900 dark:bg-red-950 dark:border-red-800 dark:text-red-100',
+        };
+        return styles[tag as keyof typeof styles] || styles.Info;
+    };
+
+    const getTagIcon = (tag: string) => {
+        const icons = {
+            Event: '📅',
+            Reminder: '⏰',
+            Info: 'ℹ️',
+            Update: '🔔',
+            Alert: '⚠️',
+        };
+        return icons[tag as keyof typeof icons] || icons.Info;
+    };
+
+    const visibleAnnouncements = announcements.filter(
+        (a) => !dismissedIds.includes(a.id)
+    );
 
     return (
         <>
@@ -18,6 +75,34 @@ export default function Welcome({
                 />
             </Head>
             <div className="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
+                {/* Announcement Banners */}
+                {visibleAnnouncements.length > 0 && (
+                    <div className="w-full max-w-[335px] space-y-2 mb-4 lg:max-w-4xl">
+                        {visibleAnnouncements.map((announcement) => (
+                            <div
+                                key={announcement.id}
+                                className={`flex items-start gap-3 rounded-lg border p-3 text-sm shadow-sm transition-all ${getTagStyles(announcement.tag)}`}
+                            >
+                                <span className="text-lg leading-none mt-0.5">
+                                    {getTagIcon(announcement.tag)}
+                                </span>
+                                <div className="flex-1 min-w-0">
+                                    <span className="font-medium mr-2">
+                                        {announcement.tag}
+                                    </span>
+                                    <span>{announcement.text}</span>
+                                </div>
+                                <button
+                                    onClick={() => dismissAnnouncement(announcement.id)}
+                                    className="shrink-0 rounded p-1 hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                                    aria-label="Dismiss announcement"
+                                >
+                                    <X className="h-4 w-4" />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
                 <header className="mb-6 w-full max-w-[335px] text-sm not-has-[nav]:hidden lg:max-w-4xl">
                     <nav className="flex items-center justify-end gap-4">
                         {auth.user ? (
@@ -137,7 +222,7 @@ export default function Welcome({
                         <div className="relative -mb-px aspect-[335/364] w-full shrink-0 overflow-hidden rounded-t-lg bg-[#fff2f2] lg:mb-0 lg:-ml-px lg:aspect-auto lg:w-[438px] lg:rounded-t-none lg:rounded-r-lg dark:bg-[#1D0002]">
                             {/* Laravel Logo */}
                             <svg
-                                className="w-full max-w-none translate-y-0 text-[#F53003] opacity-100 transition-all duration-750 dark:text-[#F61500] starting:opacity-0 motion-safe:starting:translate-y-6"
+                                className="w-full max-w-none text-[#F53003] dark:text-[#F61500]"
                                 viewBox="0 0 438 104"
                                 fill="none"
                                 xmlns="http://www.w3.org/2000/svg"

@@ -1,5 +1,6 @@
 ﻿import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AppLayout from './components/AppLayout';
 
@@ -17,6 +18,7 @@ import ReportsPage from './pages/ReportsPage';
 import ArchivePage from './pages/ArchivePage';
 import UsersPage from './pages/UsersPage';
 import AuditLogPage from './pages/AuditLogPage';
+import AnnouncementsPage from './pages/AnnouncementsPage';
 
 // Student pages
 import StudentDashboardPage from './pages/StudentDashboardPage';
@@ -26,8 +28,9 @@ import StudentEventsPage from './pages/StudentEventsPage';
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <Routes>
+      <ThemeProvider>
+        <AuthProvider>
+          <Routes>
           {/* Public routes */}
           <Route path="/" element={<HomePage />} />
 
@@ -47,6 +50,7 @@ export default function App() {
             <Route path="/archive" element={<ArchivePage />} />
             <Route path="/users" element={<UsersPage />} />
             <Route path="/audit-logs" element={<AuditLogPage />} />
+            <Route path="/announcements" element={<AnnouncementsPage />} />
           </Route>
 
           {/* Student routes */}
@@ -59,8 +63,9 @@ export default function App() {
             <Route path="/student-attendance" element={<StudentAttendancePage />} />
             <Route path="/student-events" element={<StudentEventsPage />} />
           </Route>
-        </Routes>
-      </AuthProvider>
+          </Routes>
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

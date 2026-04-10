@@ -50,18 +50,18 @@ export default function EventsPage() {
   };
 
   const statusColors = {
-    upcoming: 'bg-green-100 text-green-700',
-    ongoing: 'bg-green-100 text-green-700',
-    completed: 'bg-gray-100 text-gray-700',
-    cancelled: 'bg-red-100 text-red-700',
+    upcoming: 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300',
+    ongoing: 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300',
+    completed: 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300',
+    cancelled: 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300',
   };
 
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Events</h1>
-          <p className="text-sm text-gray-500 mt-1">Manage USG events</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Events</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage USG events</p>
         </div>
         <button onClick={() => setAddOpen(true)} className="px-4 py-2.5 bg-green-500 text-white rounded-xl hover:bg-green-600 font-medium text-sm transition shadow-sm">
           + Create Event
@@ -75,12 +75,12 @@ export default function EventsPage() {
           placeholder="Search events..."
           value={search}
           onChange={e => setSearchParams({ status, search: e.target.value, page: 1 })}
-          className="px-4 py-2.5 border border-green-400 rounded-xl bg-gray-50 text-gray-900 text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400"
+          className="px-4 py-2.5 border border-green-400 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-200 text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500"
         />
         <select
           value={status}
           onChange={e => setSearchParams({ status: e.target.value, search, page: 1 })}
-          className="px-4 py-2.5 border border-green-400 rounded-xl bg-gray-50 text-gray-900 text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400"
+          className="px-4 py-2.5 border border-green-400 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-200 text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500"
         >
           <option value="">All Statuses</option>
           <option value="upcoming">Upcoming</option>
@@ -91,25 +91,25 @@ export default function EventsPage() {
       </div>
 
       {loading ? <LoadingSpinner /> : (
-        <div className="bg-white rounded-xl shadow-sm border border-green-300 overflow-hidden">
+        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-green-300 dark:border-gray-800 overflow-hidden">
           <table className="min-w-full text-sm">
-            <thead className="bg-green-50">
+            <thead className="bg-green-50 dark:bg-gray-800">
               <tr>
-                <th className="px-4 py-3 text-left">Event Name</th>
-                <th className="px-4 py-3 text-left">Date</th>
-                <th className="px-4 py-3 text-left">Time</th>
-                <th className="px-4 py-3 text-left">Venue</th>
-                <th className="px-4 py-3 text-left">Status</th>
-                <th className="px-4 py-3 text-left">Actions</th>
+                <th className="px-4 py-3 text-left text-gray-700 dark:text-gray-300">Event Name</th>
+                <th className="px-4 py-3 text-left text-gray-700 dark:text-gray-300">Date</th>
+                <th className="px-4 py-3 text-left text-gray-700 dark:text-gray-300">Time</th>
+                <th className="px-4 py-3 text-left text-gray-700 dark:text-gray-300">Venue</th>
+                <th className="px-4 py-3 text-left text-gray-700 dark:text-gray-300">Status</th>
+                <th className="px-4 py-3 text-left text-gray-700 dark:text-gray-300">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y">
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
               {events.map(e => (
-                <tr key={e.id} className="hover:bg-green-50">
-                  <td className="px-4 py-3 font-medium">{e.event_name}</td>
-                  <td className="px-4 py-3">{e.event_date}</td>
-                  <td className="px-4 py-3">{e.start_time} - {e.end_time}</td>
-                  <td className="px-4 py-3">{e.venue}</td>
+                <tr key={e.id} className="hover:bg-green-50 dark:hover:bg-gray-800">
+                  <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">{e.event_name}</td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-300">{e.event_date}</td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-300">{e.start_time} - {e.end_time}</td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-300">{e.venue}</td>
                   <td className="px-4 py-3">
                     <span className={`px-2 py-1 rounded text-xs ${statusColors[e.status]}`}>{e.status}</span>
                   </td>
@@ -132,27 +132,27 @@ export default function EventsPage() {
                 </tr>
               ))}
               {events.length === 0 && (
-                <tr><td colSpan={6} className="px-4 py-8 text-center text-gray-500">No events found.</td></tr>
+                <tr><td colSpan={6} className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">No events found.</td></tr>
               )}
             </tbody>
           </table>
 
           {/* Pagination */}
           {pagination && pagination.last_page > 1 && (
-            <div className="flex items-center justify-between p-4 border-t">
-              <span className="text-sm text-gray-600">
+            <div className="flex items-center justify-between p-4 border-t border-gray-100 dark:border-gray-800">
+              <span className="text-sm text-gray-600 dark:text-gray-400">
                 Page {pagination.current_page} of {pagination.last_page}
               </span>
               <div className="flex gap-1">
                 <button
                   onClick={() => setSearchParams({ status, search, page: Math.max(1, pagination.current_page - 1) })}
                   disabled={pagination.current_page === 1}
-                  className="px-3 py-1 text-sm border rounded disabled:opacity-50"
+                  className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-700 rounded disabled:opacity-50 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300"
                 >Prev</button>
                 <button
                   onClick={() => setSearchParams({ status, search, page: Math.min(pagination.last_page, pagination.current_page + 1) })}
                   disabled={pagination.current_page === pagination.last_page}
-                  className="px-3 py-1 text-sm border rounded disabled:opacity-50"
+                  className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-700 rounded disabled:opacity-50 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300"
                 >Next</button>
               </div>
             </div>

@@ -66,7 +66,7 @@ export default function StudentsPage() {
     { key: 'course', label: 'Course', accessor: 'course' },
     { key: 'year_level', label: 'Year', accessor: 'year_level' },
     { key: 'status', label: 'Status', render: row => (
-      <span className={`px-2 py-1 rounded text-xs ${row.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+      <span className={`px-2 py-1 rounded text-xs font-medium ${row.status === 'active' ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300'}`}>
         {row.status}
       </span>
     )},
@@ -101,8 +101,8 @@ export default function StudentsPage() {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Students</h1>
-          <p className="text-sm text-gray-500 mt-1">Manage student records</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Students</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage student records</p>
         </div>
         {tab === 'active' && (
           <button onClick={() => setAddOpen(true)} className="px-4 py-2.5 bg-green-500 text-white rounded-xl hover:bg-green-600 font-medium text-sm transition shadow-sm">
@@ -112,31 +112,31 @@ export default function StudentsPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-5 bg-green-50 border border-green-200 rounded-xl p-1 w-fit">
+      <div className="flex gap-1 mb-5 bg-green-50 dark:bg-gray-800 border border-green-200 dark:border-gray-700 rounded-xl p-1 w-fit">
         <button
           onClick={() => setTab('active')}
           className={`px-5 py-2 rounded-lg text-sm font-medium transition-all ${
             tab === 'active'
-              ? 'bg-white text-green-700 shadow-sm border border-green-200'
-              : 'text-gray-500 hover:text-gray-700'
+              ? 'bg-white dark:bg-gray-900 text-green-700 dark:text-green-400 shadow-sm border border-green-200 dark:border-gray-700'
+              : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
           }`}
         >
           Active
           <span className={`ml-2 px-1.5 py-0.5 rounded text-xs font-semibold ${
-            tab === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
+            tab === 'active' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
           }`}>{students.length}</span>
         </button>
         <button
           onClick={() => setTab('archived')}
           className={`px-5 py-2 rounded-lg text-sm font-medium transition-all ${
             tab === 'archived'
-              ? 'bg-white text-orange-600 shadow-sm border border-orange-200'
-              : 'text-gray-500 hover:text-gray-700'
+              ? 'bg-white dark:bg-gray-900 text-orange-600 dark:text-orange-400 shadow-sm border border-orange-200 dark:border-gray-700'
+              : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
           }`}
         >
           Archived
           <span className={`ml-2 px-1.5 py-0.5 rounded text-xs font-semibold ${
-            tab === 'archived' ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-500'
+            tab === 'archived' ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
           }`}>{archived.length}</span>
         </button>
       </div>
@@ -145,18 +145,18 @@ export default function StudentsPage() {
         <>
           {/* Active tab */}
           {tab === 'active' && (
-            <div className="bg-white rounded-xl shadow-sm border border-green-300 p-5">
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-green-300 dark:border-gray-800 p-5">
               <DataTable columns={activeColumns} data={students} />
             </div>
           )}
 
           {/* Archived tab */}
           {tab === 'archived' && (
-            <div className="bg-white rounded-xl shadow-sm border border-orange-200 overflow-hidden">
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-orange-200 dark:border-gray-800 overflow-hidden">
               {/* Search */}
-              <div className="p-4 border-b border-orange-100">
+              <div className="p-4 border-b border-orange-100 dark:border-gray-800">
                 <div className="relative max-w-sm">
-                  <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                   <input
@@ -164,51 +164,51 @@ export default function StudentsPage() {
                     placeholder="Search archived students..."
                     value={search}
                     onChange={e => setSearch(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-orange-200 rounded-xl bg-orange-50 text-gray-900 text-sm focus:ring-2 focus:ring-orange-300 focus:border-transparent placeholder:text-gray-400"
+                    className="w-full pl-10 pr-4 py-2 border border-orange-200 dark:border-gray-700 rounded-xl bg-orange-50 dark:bg-gray-800 text-gray-900 dark:text-gray-200 text-sm focus:ring-2 focus:ring-orange-300 focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500"
                   />
                 </div>
               </div>
 
               {filteredArchived.length === 0 ? (
                 <div className="py-16 text-center">
-                  <div className="w-14 h-14 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <svg className="w-7 h-7 text-orange-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-14 h-14 bg-orange-50 dark:bg-orange-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <svg className="w-7 h-7 text-orange-300 dark:text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
                     </svg>
                   </div>
-                  <p className="text-gray-500 font-medium">{search ? 'No matching records.' : 'No archived students yet.'}</p>
+                  <p className="text-gray-500 dark:text-gray-400 font-medium">{search ? 'No matching records.' : 'No archived students yet.'}</p>
                 </div>
               ) : (
                 <table className="min-w-full text-sm">
-                  <thead className="bg-orange-50 border-b border-orange-100">
+                  <thead className="bg-orange-50 dark:bg-gray-800 border-b border-orange-100 dark:border-gray-800">
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Student ID</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Name</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Email</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Course</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Year</th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Action</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Student ID</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Name</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Email</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Course</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Year</th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Action</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-orange-50">
+                  <tbody className="divide-y divide-orange-50 dark:divide-gray-800">
                     {filteredArchived.map(s => (
-                      <tr key={s.id} className="hover:bg-orange-50 transition-colors">
-                        <td className="px-4 py-3 font-mono text-xs text-gray-500">{s.student_id}</td>
+                      <tr key={s.id} className="hover:bg-orange-50 dark:hover:bg-gray-800 transition-colors">
+                        <td className="px-4 py-3 font-mono text-xs text-gray-500 dark:text-gray-400">{s.student_id}</td>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-2">
-                            <div className="w-7 h-7 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
+                            <div className="w-7 h-7 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
                               {s.first_name?.charAt(0)}
                             </div>
-                            <span className="font-medium text-gray-700">{s.last_name}, {s.first_name}</span>
+                            <span className="font-medium text-gray-700 dark:text-gray-200">{s.last_name}, {s.first_name}</span>
                           </div>
                         </td>
-                        <td className="px-4 py-3 text-gray-500">{s.email}</td>
-                        <td className="px-4 py-3 text-gray-600">{s.course}</td>
-                        <td className="px-4 py-3 text-gray-600">{s.year_level}</td>
+                        <td className="px-4 py-3 text-gray-500 dark:text-gray-400">{s.email}</td>
+                        <td className="px-4 py-3 text-gray-600 dark:text-gray-300">{s.course}</td>
+                        <td className="px-4 py-3 text-gray-600 dark:text-gray-300">{s.year_level}</td>
                         <td className="px-4 py-3">
                           <button
                             onClick={() => setRestoreId(s.id)}
-                            className="flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-700 border border-green-300 rounded-lg text-xs font-medium hover:bg-green-100 transition-colors"
+                            className="flex items-center gap-1.5 px-3 py-1.5 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 border border-green-300 dark:border-green-800 rounded-lg text-xs font-medium hover:bg-green-100 dark:hover:bg-green-900/50 transition-colors"
                           >
                             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />

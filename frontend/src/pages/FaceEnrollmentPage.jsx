@@ -240,27 +240,27 @@ export default function FaceEnrollmentPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Face Enrollment</h1>
-        <p className="text-sm text-gray-500 mt-1">Enroll student face data for biometric check-in</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Face Enrollment</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Enroll student face data for biometric check-in</p>
       </div>
 
       {!modelsReady && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6 text-sm text-yellow-800">
+        <div className="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4 mb-6 text-sm text-yellow-800 dark:text-yellow-400">
           Loading face recognition models...
         </div>
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Enrollment panel */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-green-300 overflow-visible">
-          <h3 className="font-semibold text-gray-900 mb-4">Enroll Student</h3>
+        <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-green-300 dark:border-gray-800 overflow-visible">
+          <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Enroll Student</h3>
 
           <div className="mb-4 relative" ref={selectRef}>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Select Student</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Select Student</label>
 
             {/* Combobox — click or type to open the dropdown */}
             <div className="relative">
-              <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input
@@ -269,7 +269,7 @@ export default function FaceEnrollmentPage() {
                 onChange={e => { setSearch(e.target.value); setSelectedStudent(''); setShowDropdown(true); }}
                 onClick={() => setShowDropdown(true)}
                 placeholder="Search by ID or name..."
-                className="w-full pl-10 pr-9 py-2.5 border border-green-300 rounded-xl bg-gray-50 text-sm text-gray-900 focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400"
+                className="w-full pl-10 pr-9 py-2.5 border border-green-300 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-gray-800 text-sm text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500"
               />
               {search ? (
                 <button
@@ -494,25 +494,25 @@ export default function FaceEnrollmentPage() {
         </div>
 
         {/* Enrolled students list */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-green-300">
-          <h3 className="font-semibold text-gray-900 mb-4">
+        <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-green-300 dark:border-gray-800">
+          <h3 className="font-semibold text-gray-900 dark:text-white mb-4">
             Enrolled Students
-            <span className="ml-2 text-sm font-normal text-gray-500">
+            <span className="ml-2 text-sm font-normal text-gray-500 dark:text-gray-400">
               ({students.filter(s => s.face_data).length})
             </span>
           </h3>
           <div className="space-y-2 max-h-[600px] overflow-y-auto">
             {students.filter(s => s.face_data).map(s => (
-              <div key={s.id} className="flex items-center justify-between p-3 bg-green-50 rounded-xl hover:bg-green-50 transition group">
+              <div key={s.id} className="flex items-center justify-between p-3 bg-green-50 dark:bg-gray-800 rounded-xl hover:bg-green-50 dark:hover:bg-gray-800 transition group">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
+                  <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
                     ✓
                   </div>
                   <div>
-                    <p className="font-medium text-sm text-gray-900">{s.first_name} {s.last_name}</p>
-                    <p className="text-xs text-gray-500">{s.student_id} · {s.course}</p>
+                    <p className="font-medium text-sm text-gray-900 dark:text-white">{s.first_name} {s.last_name}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{s.student_id} · {s.course}</p>
                     {s.face_enrolled_at && (
-                      <p className="text-[10px] text-green-600 mt-0.5">
+                      <p className="text-[10px] text-green-600 dark:text-green-400 mt-0.5">
                         Enrolled {new Date(s.face_enrolled_at).toLocaleString('en', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                       </p>
                     )}
@@ -527,8 +527,8 @@ export default function FaceEnrollmentPage() {
               </div>
             ))}
             {students.filter(s => s.face_data).length === 0 && (
-              <div className="text-center py-10 text-gray-400">
-                <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="text-center py-10 text-gray-400 dark:text-gray-500">
+                <svg className="w-12 h-12 mx-auto mb-3 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
                 <p className="text-sm">No students enrolled yet.</p>

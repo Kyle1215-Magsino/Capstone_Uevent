@@ -42,36 +42,36 @@ export default function StudentEditModal({ studentId, open, onClose, onUpdated }
   };
 
   const set = (key, val) => setForm(f => ({ ...f, [key]: val }));
-  const inputCls = 'w-full px-4 py-2.5 border border-green-400 rounded-xl bg-gray-50 text-gray-900 text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent';
+  const inputCls = 'w-full px-4 py-2.5 border border-green-400 dark:border-green-600 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent';
 
   return (
     <Modal open={open} onClose={onClose} maxWidth="max-w-2xl">
       <div className="p-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-1">Edit Student</h2>
-        <p className="text-sm text-gray-500 mb-6">Update student information</p>
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-1">Edit Student</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Update student information</p>
 
         {loading || !form ? (
-          <div className="py-16 text-center text-gray-400">Loading...</div>
+          <div className="py-16 text-center text-gray-400 dark:text-gray-500">Loading...</div>
         ) : (
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Student ID</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Student ID</label>
               <input type="text" required value={form.student_id} onChange={e => set('student_id', e.target.value)} className={inputCls} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
               <input type="email" required value={form.email} onChange={e => set('email', e.target.value)} className={inputCls} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">First Name</label>
               <input type="text" required value={form.first_name} onChange={e => set('first_name', e.target.value)} className={inputCls} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Last Name</label>
               <input type="text" required value={form.last_name} onChange={e => set('last_name', e.target.value)} className={inputCls} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Course</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Course</label>
               <select required value={form.course} onChange={e => set('course', e.target.value)} className={inputCls}>
                 <option value="">Select Course</option>
                 <option value="BSIT">BSIT</option>
@@ -82,7 +82,7 @@ export default function StudentEditModal({ studentId, open, onClose, onUpdated }
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Year Level</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Year Level</label>
               <select required value={form.year_level} onChange={e => set('year_level', parseInt(e.target.value))} className={inputCls}>
                 <option value={1}>1st Year</option>
                 <option value={2}>2nd Year</option>
@@ -91,11 +91,11 @@ export default function StudentEditModal({ studentId, open, onClose, onUpdated }
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">RFID Tag</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">RFID Tag</label>
               <input type="text" value={form.rfid_tag} onChange={e => set('rfid_tag', e.target.value)} className={inputCls} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
               <select value={form.status} onChange={e => set('status', e.target.value)} className={inputCls}>
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
@@ -107,7 +107,7 @@ export default function StudentEditModal({ studentId, open, onClose, onUpdated }
                 {saving ? 'Saving...' : 'Update Student'}
               </button>
               <button type="button" onClick={onClose}
-                className="px-6 py-2.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-200 transition-colors">
+                className="px-6 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
                 Cancel
               </button>
             </div>

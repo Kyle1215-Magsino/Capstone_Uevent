@@ -53,11 +53,11 @@ export default function EventEditModal({ eventId, open, onClose, onUpdated }) {
   return (
     <Modal open={open} onClose={onClose} maxWidth="max-w-2xl">
       <div className="p-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-1">Edit Event</h2>
-        <p className="text-sm text-gray-500 mb-6">Modify event details</p>
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-1">Edit Event</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Modify event details</p>
 
         {loading || !form ? (
-          <div className="py-16 text-center text-gray-400">Loading...</div>
+          <div className="py-16 text-center text-gray-400 dark:text-gray-500">Loading...</div>
         ) : (
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="md:col-span-2">
@@ -87,15 +87,15 @@ export default function EventEditModal({ eventId, open, onClose, onUpdated }) {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Start Time</label>
               <input type="time" required value={form.start_time} onChange={e => set('start_time', e.target.value)} className={inputCls} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">End Time</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">End Time</label>
               <input type="time" required value={form.end_time} onChange={e => set('end_time', e.target.value)} className={inputCls} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
               <select value={form.status} onChange={e => set('status', e.target.value)} className={inputCls}>
                 <option value="upcoming">Upcoming</option>
                 <option value="ongoing">Ongoing</option>
@@ -104,15 +104,15 @@ export default function EventEditModal({ eventId, open, onClose, onUpdated }) {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Venue Radius (m)</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Venue Radius (m)</label>
               <input type="number" min="1" value={form.venue_radius} onChange={e => set('venue_radius', parseInt(e.target.value))} className={inputCls} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Latitude</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Latitude</label>
               <input type="text" value={form.venue_lat} onChange={e => set('venue_lat', e.target.value)} className={inputCls} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Longitude</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Longitude</label>
               <input type="text" value={form.venue_lng} onChange={e => set('venue_lng', e.target.value)} className={inputCls} />
             </div>
             <div className="md:col-span-2 flex gap-3 pt-2">
@@ -121,7 +121,7 @@ export default function EventEditModal({ eventId, open, onClose, onUpdated }) {
                 {saving ? 'Saving...' : 'Update Event'}
               </button>
               <button type="button" onClick={onClose}
-                className="px-6 py-2.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-200 transition-colors">
+                className="px-6 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
                 Cancel
               </button>
             </div>

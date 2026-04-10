@@ -74,7 +74,7 @@ export default function SessionTimeoutModal() {
     <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
 
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden animate-[fadeInUp_0.25s_ease]">
+      <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden animate-[fadeInUp_0.25s_ease]">
         {/* Top accent */}
         <div className="h-1.5 bg-gradient-to-r from-orange-400 to-red-500" />
 
@@ -82,7 +82,7 @@ export default function SessionTimeoutModal() {
           {/* Countdown ring */}
           <div className="relative inline-flex items-center justify-center mb-5">
             <svg width="72" height="72" className="-rotate-90">
-              <circle cx="36" cy="36" r={radius} fill="none" stroke="#fee2e2" strokeWidth="5" />
+              <circle cx="36" cy="36" r={radius} fill="none" stroke="#fee2e2" className="dark:stroke-gray-700" strokeWidth="5" />
               <circle
                 cx="36" cy="36" r={radius}
                 fill="none"
@@ -94,21 +94,21 @@ export default function SessionTimeoutModal() {
                 style={{ transition: 'stroke-dashoffset 1s linear, stroke 0.3s ease' }}
               />
             </svg>
-            <span className={`absolute text-xl font-bold tabular-nums ${countdown <= 10 ? 'text-red-500' : 'text-gray-800'}`}>
+            <span className={`absolute text-xl font-bold tabular-nums ${countdown <= 10 ? 'text-red-500' : 'text-gray-800 dark:text-white'}`}>
               {countdown}
             </span>
           </div>
 
-          <h2 className="text-lg font-bold text-gray-900 mb-2">Session Expiring</h2>
-          <p className="text-sm text-gray-500 mb-6">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Session Expiring</h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
             You've been inactive for a while. You'll be automatically logged out in{' '}
-            <span className={`font-semibold ${countdown <= 10 ? 'text-red-500' : 'text-gray-800'}`}>{countdown} second{countdown !== 1 ? 's' : ''}</span>.
+            <span className={`font-semibold ${countdown <= 10 ? 'text-red-500' : 'text-gray-800 dark:text-white'}`}>{countdown} second{countdown !== 1 ? 's' : ''}</span>.
           </p>
 
           <div className="flex gap-3">
             <button
               onClick={doLogout}
-              className="flex-1 py-2.5 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
+              className="flex-1 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition-colors"
             >
               Log Out Now
             </button>

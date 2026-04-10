@@ -13,21 +13,22 @@ const ChartIcon = () => <svg className="w-4 h-4" fill="none" stroke="currentColo
 const StudentIcon = () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>;
 const PlusUserIcon = () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg>;
 const AuditIcon = () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>;
+const BullhornIcon = () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" /></svg>;
 
 function NavItem({ to, icon, label, onClick }) {
   return (
     <NavLink to={to} onClick={onClick}
       className={({ isActive }) =>
-        `group flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 ${
+        `group flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 animate-staggerIn ${
           isActive
-            ? 'bg-green-50 text-green-700 border-l-2 border-green-500 pl-[11px]'
-            : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800 border-l-2 border-transparent pl-[11px]'
+            ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-l-2 border-green-500 pl-[11px]'
+            : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-800 dark:hover:text-gray-200 border-l-2 border-transparent pl-[11px]'
         }`
       }
     >
       {({ isActive }) => (
         <>
-          <span className={isActive ? 'text-green-600' : 'text-gray-400 group-hover:text-gray-600'}>
+          <span className={isActive ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300'}>
             {icon}
           </span>
           {label}
@@ -38,7 +39,7 @@ function NavItem({ to, icon, label, onClick }) {
 }
 
 function SectionLabel({ label }) {
-  return <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 px-3 pt-5 pb-1.5">{label}</p>;
+  return <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 px-3 pt-5 pb-1.5">{label}</p>;
 }
 
 export default function Sidebar({ onNavigate }) {
@@ -46,52 +47,72 @@ export default function Sidebar({ onNavigate }) {
   const [registerOpen, setRegisterOpen] = useState(false);
 
   return (
-    <aside className="w-64 bg-white h-screen flex flex-col border-r border-green-200 animate-slideInDrawer">
+    <aside className="w-64 bg-white dark:bg-gray-900 h-screen flex flex-col border-r border-green-200 dark:border-gray-800 animate-slideInDrawer">
       {/* Logo */}
-      <div className="px-5 h-14 flex items-center border-b border-green-200 flex-shrink-0">
+      <div className="px-5 h-14 flex items-center border-b border-green-200 dark:border-gray-800 flex-shrink-0 animate-fadeIn">
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+          <div className="w-7 h-7 bg-green-600 dark:bg-green-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
             <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
           </div>
-          <span className="font-bold text-gray-900 text-sm tracking-tight">U-EventTrack</span>
+          <span className="font-bold text-gray-900 dark:text-white text-sm tracking-tight">U-EventTrack</span>
         </div>
       </div>
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-2 overflow-y-auto">
         <SectionLabel label="Overview" />
-        <NavItem to="/dashboard" icon={<GridIcon />} label="Dashboard" onClick={onNavigate} />
+        <div style={{ animationDelay: '0.03s' }}>
+          <NavItem to="/dashboard" icon={<GridIcon />} label="Dashboard" onClick={onNavigate} />
+        </div>
 
         <SectionLabel label="Management" />
-        <NavItem to="/students" icon={<StudentIcon />} label="Students" onClick={onNavigate} />
-        <NavItem to="/events" icon={<CalendarIcon />} label="Events" onClick={onNavigate} />
+        <div style={{ animationDelay: '0.06s' }}>
+          <NavItem to="/students" icon={<StudentIcon />} label="Students" onClick={onNavigate} />
+        </div>
+        <div style={{ animationDelay: '0.09s' }}>
+          <NavItem to="/events" icon={<CalendarIcon />} label="Events" onClick={onNavigate} />
+        </div>
 
         <SectionLabel label="Operations" />
-        <NavItem to="/checkin" icon={<CheckIcon />} label="Check-In" onClick={onNavigate} />
-        <NavItem to="/face-enrollment" icon={<FaceIcon />} label="Face Enrollment" onClick={onNavigate} />
+        <div style={{ animationDelay: '0.12s' }}>
+          <NavItem to="/checkin" icon={<CheckIcon />} label="Check-In" onClick={onNavigate} />
+        </div>
+        <div style={{ animationDelay: '0.15s' }}>
+          <NavItem to="/face-enrollment" icon={<FaceIcon />} label="Face Enrollment" onClick={onNavigate} />
+        </div>
 
         <SectionLabel label="Analytics" />
-        <NavItem to="/attendance" icon={<ListIcon />} label="Attendance Logs" onClick={onNavigate} />
-        <NavItem to="/reports" icon={<ChartIcon />} label="Reports" onClick={onNavigate} />
+        <div style={{ animationDelay: '0.18s' }}>
+          <NavItem to="/attendance" icon={<ListIcon />} label="Attendance Logs" onClick={onNavigate} />
+        </div>
+        <div style={{ animationDelay: '0.21s' }}>
+          <NavItem to="/reports" icon={<ChartIcon />} label="Reports" onClick={onNavigate} />
+        </div>
 
         {user?.role === 'admin' && (
           <>
             <SectionLabel label="Admin" />
-            <NavItem to="/users" icon={<UsersIcon />} label="Users" onClick={onNavigate} />
-            <NavItem to="/audit-logs" icon={<AuditIcon />} label="Audit Logs" onClick={onNavigate} />
-            <button onClick={() => setRegisterOpen(true)}
-              className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-800 transition-all duration-150">
-              <span className="text-gray-400"><PlusUserIcon /></span>
-              Register Officer
-            </button>
+            <div style={{ animationDelay: '0.24s' }}>
+              <NavItem to="/users" icon={<UsersIcon />} label="Users" onClick={onNavigate} />
+            </div>
+            <div style={{ animationDelay: '0.27s' }}>
+              <NavItem to="/audit-logs" icon={<AuditIcon />} label="Audit Logs" onClick={onNavigate} />
+            </div>
+            <div style={{ animationDelay: '0.3s' }}>
+              <button onClick={() => setRegisterOpen(true)}
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-800 dark:hover:text-gray-200 transition-all duration-150 animate-staggerIn">
+                <span className="text-gray-400 dark:text-gray-500"><PlusUserIcon /></span>
+                Register Officer
+              </button>
+            </div>
           </>
         )}
       </nav>
 
       {/* Footer */}
-      <div className="px-4 py-3 border-t border-green-200 flex-shrink-0">
-        <p className="text-xs text-gray-400 truncate">{user?.name}</p>
-        <p className="text-[10px] text-gray-300 capitalize">{user?.role}</p>
+      <div className="px-4 py-3 border-t border-green-200 dark:border-gray-800 flex-shrink-0 animate-fadeIn" style={{ animationDelay: '0.35s' }}>
+        <p className="text-xs text-gray-400 dark:text-gray-500 truncate">{user?.name}</p>
+        <p className="text-[10px] text-gray-300 dark:text-gray-600 capitalize">{user?.role}</p>
       </div>
 
       <RegisterOfficerModal open={registerOpen} onClose={() => setRegisterOpen(false)} />

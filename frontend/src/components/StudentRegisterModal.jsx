@@ -42,9 +42,9 @@ export default function StudentRegisterModal({ open, onClose, onSwitchToLogin })
 
   const set = (key, val) => setForm(f => ({ ...f, [key]: val }));
 
-  const inputCls = "w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 bg-white text-sm text-gray-800 placeholder:text-gray-300 transition";
-  const labelCls = "block text-xs font-semibold text-gray-500 mb-1.5";
-  const selectCls = "w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 bg-white text-sm text-gray-800 transition";
+  const inputCls = "w-full pl-9 pr-3 py-2.5 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-500 transition";
+  const labelCls = "block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5";
+  const selectCls = "w-full px-3 py-2.5 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-white transition";
 
   return (
     <Modal open={open} onClose={onClose} maxWidth="max-w-lg">
@@ -59,14 +59,14 @@ export default function StudentRegisterModal({ open, onClose, onSwitchToLogin })
 
       {/* Form */}
       <div className="px-6 pt-5 pb-6">
-        <h3 className="text-center text-sm font-semibold text-gray-500 mb-4">Fill in your details to create an account</h3>
+        <h3 className="text-center text-sm font-semibold text-gray-500 dark:text-gray-400 mb-4">Fill in your details to create an account</h3>
         <form onSubmit={handleSubmit} className="space-y-3">
 
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className={labelCls}>Student ID</label>
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400 dark:text-gray-500">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0" /></svg>
                 </span>
                 <input type="text" required value={form.student_id} onChange={e => set('student_id', e.target.value)} className={inputCls} placeholder="e.g. 00414" />
@@ -75,7 +75,7 @@ export default function StudentRegisterModal({ open, onClose, onSwitchToLogin })
             <div>
               <label className={labelCls}>Email</label>
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400 dark:text-gray-500">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                 </span>
                 <input type="email" required value={form.email} onChange={e => set('email', e.target.value)} className={inputCls} placeholder="your@email.com" />
@@ -87,7 +87,7 @@ export default function StudentRegisterModal({ open, onClose, onSwitchToLogin })
             <div>
               <label className={labelCls}>First Name</label>
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400 dark:text-gray-500">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                 </span>
                 <input type="text" required value={form.first_name} onChange={e => set('first_name', e.target.value)} className={inputCls} placeholder="First name" />
@@ -96,7 +96,7 @@ export default function StudentRegisterModal({ open, onClose, onSwitchToLogin })
             <div>
               <label className={labelCls}>Last Name</label>
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400 dark:text-gray-500">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                 </span>
                 <input type="text" required value={form.last_name} onChange={e => set('last_name', e.target.value)} className={inputCls} placeholder="Last name" />
