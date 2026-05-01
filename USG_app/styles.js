@@ -964,32 +964,15 @@ export const styles = StyleSheet.create({
   buttonDisabled: {
     opacity: 0.6,
   },
-  yearLevelContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  yearButton: {
-    flex: 1,
-    paddingVertical: 12,
-    marginHorizontal: 4,
-    borderWidth: 2,
-    borderColor: '#10b981',
+  pickerContainer: {
+    borderWidth: 1,
+    borderColor: '#d1d5db',
     borderRadius: 12,
-    alignItems: 'center',
     backgroundColor: '#fff',
+    overflow: 'hidden',
   },
-  yearButtonActive: {
-    backgroundColor: '#10b981',
-    borderColor: '#059669',
-    borderWidth: 2,
-  },
-  yearButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#6b7280',
-  },
-  yearButtonTextActive: {
-    color: '#fff',
+  picker: {
+    height: 50,
   },
   // Bottom Tab Navigation
   bottomTabs: {

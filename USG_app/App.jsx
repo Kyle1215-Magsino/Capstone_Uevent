@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, ActivityIndicator, Modal, TextInput, KeyboardAvoidingView, Platform, Alert, Image } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons, MaterialIcons, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
+import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import { styles } from './styles';
 
@@ -848,7 +849,7 @@ function RegisterModal({ visible, onClose, onSuccess }) {
     last_name: '',
     email: '',
     course: '',
-    year_level: '1',
+    year_level: '',
     password: '',
     password_confirmation: '',
   });
@@ -895,7 +896,7 @@ function RegisterModal({ visible, onClose, onSuccess }) {
         last_name: '',
         email: '',
         course: '',
-        year_level: '1',
+        year_level: '',
         password: '',
         password_confirmation: '',
       });
@@ -978,36 +979,40 @@ function RegisterModal({ visible, onClose, onSuccess }) {
 
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Course</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="e.g., BSIT, BSCS, BSBA"
-                value={formData.course}
-                onChangeText={(val) => updateField('course', val)}
-                editable={!loading}
-              />
+              <View style={styles.pickerContainer}>
+                <Picker
+                  selectedValue={formData.course}
+                  onValueChange={(val) => updateField('course', val)}
+                  style={styles.picker}
+                  enabled={!loading}
+                >
+                  <Picker.Item label="Select your course" value="" />
+                  <Picker.Item label="BSEED" value="BSEED" />
+                  <Picker.Item label="BSIT" value="BSIT" />
+                  <Picker.Item label="BSCPE" value="BSCPE" />
+                  <Picker.Item label="BSFI" value="BSFI" />
+                  <Picker.Item label="BSHM" value="BSHM" />
+                  <Picker.Item label="BSCRIM" value="BSCRIM" />
+                  <Picker.Item label="BSPOLSCI" value="BSPOLSCI" />
+                </Picker>
+              </View>
             </View>
 
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Year Level</Text>
-              <View style={styles.yearLevelContainer}>
-                {['1', '2', '3', '4'].map((year) => (
-                  <TouchableOpacity
-                    key={year}
-                    style={[
-                      styles.yearButton,
-                      formData.year_level === year && styles.yearButtonActive
-                    ]}
-                    onPress={() => updateField('year_level', year)}
-                    disabled={loading}
-                  >
-                    <Text style={[
-                      styles.yearButtonText,
-                      formData.year_level === year && styles.yearButtonTextActive
-                    ]}>
-                      {year}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
+              <View style={styles.pickerContainer}>
+                <Picker
+                  selectedValue={formData.year_level}
+                  onValueChange={(val) => updateField('year_level', val)}
+                  style={styles.picker}
+                  enabled={!loading}
+                >
+                  <Picker.Item label="Select your year level" value="" />
+                  <Picker.Item label="Year 1" value="1" />
+                  <Picker.Item label="Year 2" value="2" />
+                  <Picker.Item label="Year 3" value="3" />
+                  <Picker.Item label="Year 4" value="4" />
+                </Picker>
               </View>
             </View>
 
