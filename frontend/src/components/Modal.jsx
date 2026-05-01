@@ -22,10 +22,10 @@ export default function Modal({ open, onClose, children, title, maxWidth = 'max-
       />
       
       {/* Panel */}
-      <div className={`relative bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-gray-100 dark:border-gray-800 w-full ${maxWidth} max-h-[90vh] overflow-hidden animate-modal-in z-[10000]`}>
+      <div className={`relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border-2 border-green-300 dark:border-gray-800 w-full ${maxWidth} max-h-[90vh] overflow-hidden animate-modal-in z-[10000]`}>
         {/* Header */}
         {title && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800">
+          <div className="flex items-center justify-between px-6 py-4 border-b-2 border-green-300 dark:border-gray-800">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{title}</h2>
             <button
               onClick={onClose}
@@ -41,9 +41,7 @@ export default function Modal({ open, onClose, children, title, maxWidth = 'max-
         
         {/* Content */}
         <div className={`overflow-y-auto ${title ? 'max-h-[calc(90vh-4rem)]' : 'max-h-[90vh]'}`}>
-          <div className="p-6">
-            {children}
-          </div>
+          {children}
         </div>
       </div>
     </div>,

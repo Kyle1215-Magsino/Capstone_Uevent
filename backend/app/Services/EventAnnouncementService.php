@@ -15,7 +15,7 @@ class EventAnnouncementService
     {
         $eventDate = Carbon::parse($event->event_date);
         $now = Carbon::now();
-        $daysUntil = $now->diffInDays($eventDate, false);
+        $daysUntil = (int) $now->diffInDays($eventDate, false);
 
         // Only create announcements for upcoming events
         if ($daysUntil < 0 || $event->status === 'completed' || $event->status === 'cancelled') {
@@ -44,7 +44,7 @@ class EventAnnouncementService
             // Event is within 3 days
             $shouldAnnounce = true;
             $tag = 'Event';
-            $text = "📅 In {$daysUntil} days: {$event->event_name} at {$event->venue}";
+            $text = "📅 In " . floor($daysUntil) . " days: {$event->event_name} at {$event->venue}";
         } elseif ($daysUntil <= 7) {
             // Event is within a week
             $shouldAnnounce = true;

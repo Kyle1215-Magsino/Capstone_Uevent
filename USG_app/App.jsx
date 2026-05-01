@@ -8,6 +8,14 @@ import { styles } from './styles';
 
 const API_URL = 'http://192.168.1.15:8000/api';
 
+const FALLBACK_ANNOUNCEMENTS = [
+  { id: 1, tag: 'Event', text: 'Campus Leadership Summit — April 5, 2026 at the Main Gymnasium. All students are encouraged to attend!' },
+  { id: 2, tag: 'Reminder', text: 'Face enrollment is now open. Visit the Face Enrollment page to register your biometric data.' },
+  { id: 3, tag: 'Info', text: "Barcode scanners are available at the Registrar's Office. Contact admin for assistance." },
+  { id: 4, tag: 'Event', text: 'General Assembly on April 12, 2026 — attendance is mandatory for all enrolled students.' },
+  { id: 5, tag: 'Update', text: 'U-EventTrack v2 is live! Enjoy barcode scanning, facial recognition, and mobile app access.' },
+];
+
 // Dashboard Tab Component
 function DashboardTab({ dashboardData, greeting, attendanceRate, streak, nextEvent, recentCheckins, formatDate }) {
   return (
@@ -334,10 +342,18 @@ export default function App() {
         axios.get(`${API_URL}/events/active`)
       ]);
       
-      setAnnouncements(announcementsRes.data || []);
+      // Use API announcements if available, otherwise use fallback
+      if (announcementsRes.data && announcementsRes.data.length > 0) {
+        setAnnouncements(announcementsRes.data);
+      } else {
+        setAnnouncements(FALLBACK_ANNOUNCEMENTS);
+      }
+      
       setEvents(eventsRes.data || []);
     } catch (error) {
       console.log('Error fetching public data:', error.message);
+      // Only use fallback if API call fails
+      setAnnouncements(FALLBACK_ANNOUNCEMENTS);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -452,7 +468,7 @@ export default function App() {
 
   const current = announcements.length > 0 && announcements[annIdx] 
     ? announcements[annIdx] 
-    : { tag: 'Info', text: 'Welcome to U-EventTrack' };
+    : FALLBACK_ANNOUNCEMENTS[0];
   const tagColor = getTagColor(current.tag);
 
   // If logged in, show dashboard with tabs

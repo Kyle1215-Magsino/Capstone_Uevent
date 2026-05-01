@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, RefreshControl } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, RefreshControl, Animated } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import api from '../config/api';
 
@@ -12,8 +12,11 @@ export default function StudentDashboardScreen({ navigation }) {
     attendanceRate: 0,
   });
   const [recentAttendance, setRecentAttendance] = useState([]);
+  const [announcements, setAnnouncements] = useState([]);
+  const [currentAnnouncementIndex, setCurrentAnnouncementIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const fadeAnim = useState(new Animated.Value(1))[0];
 
   const fetchDashboard = async () => {
     try {
@@ -28,18 +31,66 @@ export default function StudentDashboardScreen({ navigation }) {
     }
   };
 
+  const fetchAnnouncements = async () => {
+    try {
+      const response = await api.get('/announcements/public');
+      if (response.data && response.data.length > 0) {
+        setAnnouncements(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching announcements:', error);
+    }
+  };
+
   useEffect(() => {
     fetchDashboard();
+    fetchAnnouncements();
   }, []);
+
+  // Auto-rotate announcements
+  useEffect(() => {
+    if (announcements.length <= 1) return;
+
+    const interval = setInterval(() => {
+      Animated.sequence([
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]).start();
+
+      setCurrentAnnouncementIndex((prev) => (prev + 1) % announcements.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [announcements]);
 
   const onRefresh = () => {
     setRefreshing(true);
     fetchDashboard();
+    fetchAnnouncements();
   };
 
   const handleLogout = async () => {
     await logout();
     navigation.replace('Home');
+  };
+
+  const getTagColor = (tag) => {
+    const colors = {
+      Event: '#10b981',
+      Reminder: '#f59e0b',
+      Info: '#3b82f6',
+      Update: '#10b981',
+      Alert: '#ef4444',
+    };
+    return colors[tag] || '#6b7280';
   };
 
   return (
@@ -54,6 +105,46 @@ export default function StudentDashboardScreen({ navigation }) {
           <Text style={styles.logoutIcon}>🚪</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Announcement Banner */}
+      {announcements.length > 0 && (
+        <View style={styles.announcementBanner}>
+          <View style={styles.announcementHeader}>
+            <View style={styles.liveIndicator}>
+              <View style={styles.liveDot} />
+              <Text style={styles.liveText}>LIVE</Text>
+            </View>
+            <View style={styles.announcementDots}>
+              {announcements.map((_, index) => (
+                <View
+                  key={index}
+                  style={[
+                    styles.dot,
+                    index === currentAnnouncementIndex && styles.dotActive,
+                  ]}
+                />
+              ))}
+            </View>
+          </View>
+          <Animated.View style={{ opacity: fadeAnim }}>
+            <View style={styles.announcementContent}>
+              <View
+                style={[
+                  styles.announcementTag,
+                  { backgroundColor: getTagColor(announcements[currentAnnouncementIndex]?.tag) },
+                ]}
+              >
+                <Text style={styles.announcementTagText}>
+                  {announcements[currentAnnouncementIndex]?.tag}
+                </Text>
+              </View>
+              <Text style={styles.announcementText} numberOfLines={2}>
+                {announcements[currentAnnouncementIndex]?.text}
+              </Text>
+            </View>
+          </Animated.View>
+        </View>
+      )}
 
       <ScrollView
         style={styles.scrollView}
@@ -299,5 +390,73 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 14,
     color: '#9ca3af',
+  },
+  announcementBanner: {
+    backgroundColor: '#10b981',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  announcementHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  liveIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  liveDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#fbbf24',
+  },
+  liveText: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    color: 'rgba(255, 255, 255, 0.9)',
+    letterSpacing: 1,
+  },
+  announcementDots: {
+    flexDirection: 'row',
+    gap: 6,
+  },
+  dot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  dotActive: {
+    width: 20,
+    backgroundColor: '#fff',
+  },
+  announcementContent: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+  },
+  announcementTag: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  announcementTagText: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    color: '#fff',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  announcementText: {
+    flex: 1,
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#fff',
+    lineHeight: 20,
   },
 });

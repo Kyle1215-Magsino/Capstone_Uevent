@@ -5,9 +5,9 @@ import api from '../config/api';
 const FALLBACK_ANNOUNCEMENTS = [
   { id: 1, tag: 'Event', text: 'Campus Leadership Summit — April 5, 2026 at the Main Gymnasium. All students are encouraged to attend!' },
   { id: 2, tag: 'Reminder', text: 'Face enrollment is now open. Visit the Face Enrollment page to register your biometric data.' },
-  { id: 3, tag: 'Info', text: "RFID cards are available at the Registrar's Office. Present your student ID to claim yours." },
+  { id: 3, tag: 'Info', text: "Barcode scanners are available at the Registrar's Office. Contact admin for assistance." },
   { id: 4, tag: 'Event', text: 'General Assembly on April 12, 2026 — attendance is mandatory for all enrolled students.' },
-  { id: 5, tag: 'Update', text: 'U-EventTrack v2 is live! Enjoy faster check-ins, GPS verification, and real-time dashboards.' },
+  { id: 5, tag: 'Update', text: 'U-EventTrack v2 is live! Enjoy barcode scanning, facial recognition, and mobile app access.' },
 ];
 
 export default function HomeScreen({ navigation }) {
@@ -70,9 +70,9 @@ export default function HomeScreen({ navigation }) {
   const tagColor = getTagColor(current.tag);
 
   const features = [
-    { title: 'Multi-Method Check-In', desc: 'RFID scanning, facial recognition, and manual entry', icon: '✓', color: '#10b981' },
+    { title: 'Multi-Method Check-In', desc: 'Barcode scanning, facial recognition, and manual entry', icon: '✓', color: '#10b981' },
     { title: 'Real-Time Monitoring', desc: 'Live attendance dashboard with instant updates', icon: '⚡', color: '#3b82f6' },
-    { title: 'GPS Verification', desc: 'Location-based validation ensures physical presence', icon: '📍', color: '#f97316' },
+    { title: 'Mobile App Access', desc: 'Native Expo app for students with full dashboard', icon: '📱', color: '#f97316' },
     { title: 'Analytics & Reports', desc: 'Comprehensive reports with charts and graphs', icon: '📊', color: '#8b5cf6' },
   ];
 
@@ -148,7 +148,7 @@ export default function HomeScreen({ navigation }) {
           for USG Events
         </Text>
         <Text style={styles.heroSubtitle}>
-          Streamline event attendance with RFID, facial recognition, and GPS-based check-in — all tracked in real time.
+          Streamline event attendance with barcode scanning, facial recognition, and mobile app — all tracked in real time.
         </Text>
         
         <View style={styles.heroButtons}>
@@ -167,7 +167,7 @@ export default function HomeScreen({ navigation }) {
         </View>
 
         <View style={styles.trustBadges}>
-          {['RFID Scan', 'Face ID', 'GPS Verified', 'Live Dashboard'].map((badge) => (
+          {['Barcode Scan', 'Face Recognition', 'Mobile App', 'Live Dashboard'].map((badge) => (
             <View key={badge} style={styles.trustBadge}>
               <Text style={styles.trustCheck}>✓</Text>
               <Text style={styles.trustText}>{badge}</Text>
@@ -397,6 +397,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    marginLeft: 12,
   },
   announcementTag: {
     paddingHorizontal: 10,
