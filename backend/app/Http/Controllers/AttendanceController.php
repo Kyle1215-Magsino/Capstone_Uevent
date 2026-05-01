@@ -8,6 +8,7 @@ use App\Models\Student;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class AttendanceController extends Controller
 {
@@ -16,19 +17,19 @@ class AttendanceController extends Controller
         $request->validate([
             'student_identifier' => 'required|string',
             'event_id' => 'required|exists:events,id',
-            'verification_method' => 'required|in:rfid,facial,manual',
+            'verification_method' => 'required|in:barcode,facial,manual',
             'location_lat' => 'nullable|numeric',
             'location_lng' => 'nullable|numeric',
         ]);
 
         $event = Event::findOrFail($request->event_id);
 
-        // Find student by rfid_tag or student_id
-        if ($request->verification_method === 'rfid') {
-            $student = Student::where('rfid_tag', $request->student_identifier)->first();
+        // Find student by barcode or student_id
+        if ($request->verification_method === 'barcode') {
+            $student = Student::where('barcode', $request->student_identifier)->first();
         } else {
             $student = Student::where('student_id', $request->student_identifier)
-                ->orWhere('rfid_tag', $request->student_identifier)
+                ->orWhere('barcode', $request->student_identifier)
                 ->first();
         }
 
@@ -76,6 +77,9 @@ class AttendanceController extends Controller
             'status' => $status,
         ]);
 
+        // Clear attendance cache
+        Cache::forget('attendance_logs');
+
         // Auto-update event status to ongoing
         if ($event->status === 'upcoming') {
             $event->update(['status' => 'ongoing']);
@@ -113,9 +117,11 @@ class AttendanceController extends Controller
 
     public function index(): JsonResponse
     {
-        $attendances = Attendance::with(['student', 'event'])
-            ->orderByDesc('check_in_time')
-            ->get();
+        $attendances = Cache::remember('attendance_logs', 300, function () {
+            return Attendance::with(['student:id,student_id,first_name,last_name,course', 'event:id,event_name'])
+                ->orderByDesc('check_in_time')
+                ->get();
+        });
 
         return response()->json($attendances);
     }

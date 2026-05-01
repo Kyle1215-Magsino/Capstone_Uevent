@@ -6,7 +6,7 @@ import Modal from './Modal';
 export default function StudentAddModal({ open, onClose, onCreated }) {
   const [form, setForm] = useState({
     student_id: '', first_name: '', last_name: '', email: '',
-    course: '', year_level: 1, rfid_tag: '',
+    course: '', year_level: 1, barcode: '',
   });
   const [loading, setLoading] = useState(false);
 
@@ -18,7 +18,7 @@ export default function StudentAddModal({ open, onClose, onCreated }) {
       toast.success('Student created successfully.');
       setTimeout(() => {
         onClose();
-        setForm({ student_id: '', first_name: '', last_name: '', email: '', course: '', year_level: 1, rfid_tag: '' });
+        setForm({ student_id: '', first_name: '', last_name: '', email: '', course: '', year_level: 1, barcode: '' });
         onCreated?.();
       }, 600);
     } catch (err) {
@@ -85,8 +85,9 @@ export default function StudentAddModal({ open, onClose, onCreated }) {
             </select>
           </div>
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">RFID Tag (Optional)</label>
-            <input type="text" value={form.rfid_tag} onChange={e => set('rfid_tag', e.target.value)}
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Barcode (Optional)</label>
+            <input type="text" value={form.barcode} onChange={e => set('barcode', e.target.value)}
+              placeholder="e.g. BC-000001"
               className="w-full px-4 py-2.5 border border-green-400 dark:border-green-600 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500" />
           </div>
           <div className="md:col-span-2 flex gap-2 pt-2">

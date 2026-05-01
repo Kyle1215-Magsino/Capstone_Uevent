@@ -30,14 +30,24 @@ export default function AttendanceLogsPage() {
   const [statusFilter, setStatusFilter] = useState('');
 
   useEffect(() => {
-    getAttendanceLogs().then(res => setLogs(res.data)).finally(() => setLoading(false));
+    getAttendanceLogs()
+      .then(res => {
+        const data = Array.isArray(res.data) ? res.data : [];
+        setLogs(data);
+      })
+      .catch(err => {
+        console.error('Error fetching attendance logs:', err);
+        setLogs([]);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   if (loading) return <LoadingSpinner />;
 
-  const courses = [...new Set(logs.map(r => r.student?.course).filter(Boolean))].sort();
+  const logsArray = Array.isArray(logs) ? logs : [];
+  const courses = [...new Set(logsArray.map(r => r.student?.course).filter(Boolean))].sort();
 
-  const filteredLogs = logs.filter(r => {
+  const filteredLogs = logsArray.filter(r => {
     if (courseFilter && r.student?.course !== courseFilter) return false;
     if (statusFilter && r.status !== statusFilter) return false;
     return true;

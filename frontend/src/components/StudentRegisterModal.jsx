@@ -42,9 +42,9 @@ export default function StudentRegisterModal({ open, onClose, onSwitchToLogin })
 
   const set = (key, val) => setForm(f => ({ ...f, [key]: val }));
 
-  const inputCls = "w-full pl-9 pr-3 py-2.5 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-500 transition";
+  const inputCls = "w-full pl-9 pr-3 py-2.5 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 bg-gray-50 dark:bg-gray-800 text-sm text-gray-800 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-500 transition";
   const labelCls = "block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5";
-  const selectCls = "w-full px-3 py-2.5 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-white transition";
+  const selectCls = "w-full px-3 py-2.5 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 bg-gray-50 dark:bg-gray-800 text-sm text-gray-800 dark:text-white transition";
 
   return (
     <Modal open={open} onClose={onClose} maxWidth="max-w-lg">
@@ -131,15 +131,15 @@ export default function StudentRegisterModal({ open, onClose, onSwitchToLogin })
             <div>
               <label className={labelCls}>Password</label>
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400 dark:text-gray-500">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
                 </span>
                 <input type={showPw.pwd ? 'text' : 'password'} required minLength={6} value={form.password}
                   onChange={e => set('password', e.target.value)}
-                  className="w-full pl-9 pr-9 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 bg-white text-sm text-gray-800 placeholder:text-gray-300 transition"
+                  className="w-full pl-9 pr-9 py-2.5 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 bg-gray-50 dark:bg-gray-800 text-sm text-gray-800 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-500 transition"
                   placeholder="Min 6 chars" />
                 <button type="button" onClick={() => setShowPw(v => ({ ...v, pwd: !v.pwd }))}
-                  className="absolute inset-y-0 right-0 flex items-center pr-2.5 text-gray-300 hover:text-gray-500 transition">
+                  className="absolute inset-y-0 right-0 flex items-center pr-2.5 text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 transition">
                   {showPw.pwd ? <EyeOff /> : <EyeOn />}
                 </button>
               </div>
@@ -147,15 +147,15 @@ export default function StudentRegisterModal({ open, onClose, onSwitchToLogin })
             <div>
               <label className={labelCls}>Confirm Password</label>
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400 dark:text-gray-500">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
                 </span>
                 <input type={showPw.confirm ? 'text' : 'password'} required minLength={6} value={form.password_confirmation}
                   onChange={e => set('password_confirmation', e.target.value)}
-                  className="w-full pl-9 pr-9 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 bg-white text-sm text-gray-800 placeholder:text-gray-300 transition"
+                  className="w-full pl-9 pr-9 py-2.5 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 bg-gray-50 dark:bg-gray-800 text-sm text-gray-800 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-500 transition"
                   placeholder="Confirm" />
                 <button type="button" onClick={() => setShowPw(v => ({ ...v, confirm: !v.confirm }))}
-                  className="absolute inset-y-0 right-0 flex items-center pr-2.5 text-gray-300 hover:text-gray-500 transition">
+                  className="absolute inset-y-0 right-0 flex items-center pr-2.5 text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 transition">
                   {showPw.confirm ? <EyeOff /> : <EyeOn />}
                 </button>
               </div>
@@ -163,16 +163,16 @@ export default function StudentRegisterModal({ open, onClose, onSwitchToLogin })
           </div>
 
           <button type="submit" disabled={loading}
-            className="w-full py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold text-sm disabled:opacity-50 transition flex items-center justify-center gap-2">
+            className="w-full py-2.5 bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700 text-white rounded-lg font-semibold text-sm disabled:opacity-50 transition flex items-center justify-center gap-2">
             {loading ? (
               <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />Registering...</>
             ) : 'Create Account'}
           </button>
         </form>
 
-        <p className="text-center mt-4 text-sm text-gray-400">
+        <p className="text-center mt-4 text-sm text-gray-400 dark:text-gray-500">
           Already have an account?{' '}
-          <button onClick={onSwitchToLogin} className="text-green-600 font-semibold hover:text-green-700 transition">
+          <button onClick={onSwitchToLogin} className="text-green-600 dark:text-green-400 font-semibold hover:text-green-700 dark:hover:text-green-500 transition">
             Sign In
           </button>
         </p>

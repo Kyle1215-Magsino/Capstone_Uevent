@@ -23,9 +23,25 @@ export default function StudentsPage() {
   const [search, setSearch] = useState('');
 
   const fetchAll = () => {
+    console.log('Fetching students...');
     setLoading(true);
     Promise.all([getStudents(), getArchivedStudents()])
-      .then(([a, b]) => { setStudents(a.data); setArchived(b.data); })
+      .then(([a, b]) => { 
+        console.log('API Response - Active:', a.data);
+        console.log('API Response - Archived:', b.data);
+        console.log('Students fetched:', a.data?.length || 0, 'active,', b.data?.length || 0, 'archived');
+        setStudents(a.data || []); 
+        setArchived(b.data || []); 
+      })
+      .catch((error) => {
+        console.error('Error fetching students:', error);
+        console.error('Error response:', error.response);
+        if (error.response?.status === 401) {
+          toast.error('Session expired. Please login again.');
+        } else {
+          toast.error('Failed to load students. Please refresh the page.');
+        }
+      })
       .finally(() => setLoading(false));
   };
 

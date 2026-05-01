@@ -46,38 +46,38 @@ export default function LoginModal({ open, onClose, onSwitchToRegister }) {
 
       {/* Form */}
       <div className="px-7 pt-6 pb-7">
-        <h3 className="text-center text-sm font-semibold text-gray-500 mb-5">Sign in to your account</h3>
+        <h3 className="text-center text-sm font-semibold text-gray-500 dark:text-gray-400 mb-5">Sign in to your account</h3>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-gray-500 mb-1.5">Email</label>
+            <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Email</label>
             <div className="relative">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400 dark:text-gray-500">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
               </span>
               <input
                 type="email" required value={form.email}
                 onChange={e => setForm({ ...form, email: e.target.value })}
-                className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 bg-white text-sm text-gray-800 placeholder:text-gray-300 transition"
+                className="w-full pl-9 pr-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 bg-gray-50 dark:bg-gray-800 text-sm text-gray-800 dark:text-gray-100 placeholder:text-gray-300 dark:placeholder:text-gray-600 transition"
                 placeholder="your@email.com"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-500 mb-1.5">Password</label>
+            <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Password</label>
             <div className="relative">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400 dark:text-gray-500">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
               </span>
               <input
                 type={showPw ? 'text' : 'password'} required value={form.password}
                 onChange={e => setForm({ ...form, password: e.target.value })}
-                className="w-full pl-9 pr-10 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 bg-white text-sm text-gray-800 placeholder:text-gray-300 transition"
+                className="w-full pl-9 pr-10 py-2.5 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 bg-gray-50 dark:bg-gray-800 text-sm text-gray-800 dark:text-gray-100 placeholder:text-gray-300 dark:placeholder:text-gray-600 transition"
                 placeholder="Enter your password"
               />
               <button type="button" onClick={() => setShowPw(v => !v)}
-                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-300 hover:text-gray-500 transition">
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 transition">
                 {showPw ? <EyeOff /> : <EyeOn />}
               </button>
             </div>
@@ -86,22 +86,22 @@ export default function LoginModal({ open, onClose, onSwitchToRegister }) {
           <label className="flex items-center gap-2 cursor-pointer select-none">
             <input type="checkbox" checked={form.remember}
               onChange={e => setForm({ ...form, remember: e.target.checked })}
-              className="w-3.5 h-3.5 rounded border-gray-300 text-green-600 focus:ring-green-500"
+              className="w-3.5 h-3.5 rounded border-gray-300 dark:border-gray-600 text-green-600 focus:ring-green-500"
             />
-            <span className="text-xs text-gray-500">Remember me</span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">Remember me</span>
           </label>
 
           <button type="submit" disabled={loading}
-            className="w-full py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold text-sm disabled:opacity-50 transition flex items-center justify-center gap-2">
+            className="w-full py-2.5 bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700 text-white rounded-lg font-semibold text-sm disabled:opacity-50 transition flex items-center justify-center gap-2">
             {loading ? (
               <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />Signing in...</>
             ) : 'Sign In'}
           </button>
         </form>
 
-        <p className="text-center mt-5 text-sm text-gray-400">
+        <p className="text-center mt-5 text-sm text-gray-400 dark:text-gray-500">
           No account?{' '}
-          <button onClick={onSwitchToRegister} className="text-green-600 font-semibold hover:text-green-700 transition">
+          <button onClick={onSwitchToRegister} className="text-green-600 dark:text-green-400 font-semibold hover:text-green-700 dark:hover:text-green-500 transition">
             Register
           </button>
         </p>

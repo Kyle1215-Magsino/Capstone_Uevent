@@ -16,7 +16,7 @@ class Student extends Model
         'email',
         'course',
         'year_level',
-        'rfid_tag',
+        'barcode',
         'face_data',
         'face_enrolled_at',
         'profile_image',

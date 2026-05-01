@@ -10,6 +10,37 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['face-api.js'],
   },
+  build: {
+    // Optimize build output
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          // Vendor chunks for better caching
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+              return 'react-vendor';
+            }
+            if (id.includes('chart')) {
+              return 'chart-vendor';
+            }
+            if (id.includes('face-api')) {
+              return 'face-vendor';
+            }
+            return 'vendor';
+          }
+        },
+      },
+    },
+    // Increase chunk size warning limit
+    chunkSizeWarningLimit: 1000,
+    // Enable minification
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true, // Remove console.logs in production
+      },
+    },
+  },
   server: {
     port: 3000,
     strictPort: true,

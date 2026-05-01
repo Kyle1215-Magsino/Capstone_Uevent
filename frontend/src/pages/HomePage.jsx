@@ -99,7 +99,7 @@ export default function HomePage() {
   const openRegister = () => { setLoginOpen(false); setRegisterOpen(true); };
 
   return (
-    <div className="min-h-screen bg-white font-[Inter,system-ui,sans-serif]">
+    <div className="min-h-screen bg-white dark:bg-gray-950 font-[Inter,system-ui,sans-serif]">
 
       <style>{`
         @keyframes annSlideIn {
@@ -118,19 +118,19 @@ export default function HomePage() {
       `}</style>
 
       {/* ── Navbar ──────────────────────────────────────── */}
-      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100/80 shadow-sm">
+      <nav className="sticky top-0 z-50 bg-white/95 dark:bg-gray-950/95 backdrop-blur-md border-b border-gray-100/80 dark:border-gray-800 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-sm shadow-green-500/30">
               <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
             </div>
             <div>
-              <span className="font-bold text-gray-900 text-base tracking-tight leading-none">U-EventTrack</span>
-              <p className="text-[10px] text-gray-400 leading-none mt-0.5">MinSU Bongabong</p>
+              <span className="font-bold text-gray-900 dark:text-white text-base tracking-tight leading-none">U-EventTrack</span>
+              <p className="text-[10px] text-gray-400 dark:text-gray-500 leading-none mt-0.5">MinSU Bongabong</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button onClick={openLogin} className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-green-700 hover:bg-green-50 rounded-xl transition-colors">
+            <button onClick={openLogin} className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-green-700 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-gray-800 rounded-xl transition-colors">
               Sign In
             </button>
             <button onClick={openRegister} className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl text-sm font-semibold hover:from-green-600 hover:to-emerald-700 transition shadow-sm shadow-green-500/30">
@@ -173,30 +173,26 @@ export default function HomePage() {
       </div>
 
       {/* ── Hero ────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-green-50 via-white to-emerald-50 min-h-[88vh] flex items-center">
+      <section className="relative overflow-hidden bg-gradient-to-br from-green-50 via-white to-emerald-50 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 min-h-[88vh] flex items-center">
         {/* Grid overlay */}
-        <div className="absolute inset-0 opacity-[0.5]"
+        <div className="absolute inset-0 opacity-[0.5] dark:opacity-[0.2]"
           style={{ backgroundImage: 'linear-gradient(rgba(0,128,0,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,128,0,0.04) 1px,transparent 1px)', backgroundSize: '48px 48px' }} />
-        {/* Glow orbs */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[60rem] h-[30rem] bg-green-200/40 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-emerald-200/30 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-1/4 left-0 w-64 h-64 bg-green-100/50 rounded-full blur-2xl pointer-events-none" />
 
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-20 lg:py-24 w-full">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
 
             {/* Left — copy */}
             <div>
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-green-100 border border-green-200 rounded-full text-green-700 text-xs font-semibold mb-6">
-                <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-green-100 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-full text-green-700 dark:text-green-300 text-xs font-semibold mb-6">
+                <span className="w-1.5 h-1.5 bg-green-500 dark:bg-green-400 rounded-full animate-pulse" />
                 Mindoro State University — Bongabong Campus
               </div>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-[1.08] mb-5 tracking-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-white leading-[1.08] mb-5 tracking-tight">
                 Smart<br />
-                <span className="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">Attendance</span><br />
+                <span className="bg-gradient-to-r from-green-600 to-emerald-500 dark:from-green-400 dark:to-emerald-400 bg-clip-text text-transparent">Attendance</span><br />
                 for USG Events
               </h1>
-              <p className="text-base sm:text-lg text-gray-500 mb-8 max-w-md leading-relaxed">
+              <p className="text-base sm:text-lg text-gray-500 dark:text-gray-400 mb-8 max-w-md leading-relaxed">
                 Streamline event attendance with RFID, facial recognition, and GPS-based check-in — all tracked in real time.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 mb-10">
@@ -206,7 +202,7 @@ export default function HomePage() {
                   Sign In
                 </button>
                 <button onClick={openRegister}
-                  className="px-7 py-3.5 bg-white text-green-700 rounded-xl font-semibold border border-green-200 hover:bg-green-50 hover:border-green-300 transition text-sm flex items-center justify-center gap-2 shadow-sm">
+                  className="px-7 py-3.5 bg-white dark:bg-gray-800 text-green-700 dark:text-green-400 rounded-xl font-semibold border border-green-200 dark:border-gray-700 hover:bg-green-50 dark:hover:bg-gray-700 hover:border-green-300 dark:hover:border-gray-600 transition text-sm flex items-center justify-center gap-2 shadow-sm">
                   Register as Student
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                 </button>
@@ -214,8 +210,8 @@ export default function HomePage() {
               {/* Inline trust badges */}
               <div className="flex flex-wrap gap-4">
                 {['RFID Scan', 'Face ID', 'GPS Verified', 'Live Dashboard'].map(b => (
-                  <span key={b} className="flex items-center gap-1.5 text-xs text-gray-600">
-                    <svg className="w-3.5 h-3.5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                  <span key={b} className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400">
+                    <svg className="w-3.5 h-3.5 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
                     {b}
                   </span>
                 ))}
@@ -257,25 +253,25 @@ export default function HomePage() {
       </section>
 
       {/* ── Features ────────────────────────────────────── */}
-      <section className="bg-gray-50 py-24">
+      <section className="bg-gray-50 dark:bg-gray-900 py-24">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-16">
-            <span className="inline-block px-3.5 py-1.5 bg-green-100 text-green-700 rounded-full text-xs font-bold uppercase tracking-widest mb-4">Features</span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">Everything You Need</h2>
-            <p className="text-gray-500 max-w-lg mx-auto text-sm leading-relaxed">
+            <span className="inline-block px-3.5 py-1.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full text-xs font-bold uppercase tracking-widest mb-4">Features</span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4 tracking-tight">Everything You Need</h2>
+            <p className="text-gray-500 dark:text-gray-400 max-w-lg mx-auto text-sm leading-relaxed">
               Modern tools designed for efficient, campus-wide USG event attendance management.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             {features.map((f, i) => (
-              <div key={f.title} className="group relative bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 overflow-hidden">
+              <div key={f.title} className="group relative bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700 hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 overflow-hidden">
                 {/* subtle gradient top border */}
                 <div className={`absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r ${f.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-                <div className={`w-12 h-12 ${f.light} rounded-xl flex items-center justify-center mb-5`}>
+                <div className={`w-12 h-12 ${f.light} dark:bg-opacity-20 rounded-xl flex items-center justify-center mb-5`}>
                   {f.icon}
                 </div>
-                <h3 className="font-bold text-gray-900 mb-2 text-sm">{f.title}</h3>
-                <p className="text-xs text-gray-500 leading-relaxed">{f.description}</p>
+                <h3 className="font-bold text-gray-900 dark:text-white mb-2 text-sm">{f.title}</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{f.description}</p>
               </div>
             ))}
           </div>
@@ -283,25 +279,25 @@ export default function HomePage() {
       </section>
 
       {/* ── How It Works ────────────────────────────────── */}
-      <section className="bg-white py-24">
+      <section className="bg-white dark:bg-gray-950 py-24">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-16">
-            <span className="inline-block px-3.5 py-1.5 bg-green-100 text-green-700 rounded-full text-xs font-bold uppercase tracking-widest mb-4">How It Works</span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">Three Simple Steps</h2>
-            <p className="text-gray-500 max-w-md mx-auto text-sm leading-relaxed">
+            <span className="inline-block px-3.5 py-1.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full text-xs font-bold uppercase tracking-widest mb-4">How It Works</span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4 tracking-tight">Three Simple Steps</h2>
+            <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto text-sm leading-relaxed">
               From event setup to detailed attendance reports in minutes.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-            <div className="hidden md:block absolute top-10 left-[33%] w-[34%] h-px bg-gradient-to-r from-green-300 to-green-200" />
+            <div className="hidden md:block absolute top-10 left-[33%] w-[34%] h-px bg-gradient-to-r from-green-300 to-green-200 dark:from-green-800 dark:to-green-900" />
             {steps.map((s, i) => (
               <div key={s.step} className="relative flex flex-col items-center text-center group">
                 <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-2xl flex flex-col items-center justify-center mb-5 shadow-xl shadow-green-500/25 group-hover:shadow-green-500/40 transition-shadow duration-300">
                   <div className="text-white/80 mb-1">{s.icon}</div>
                   <span className="text-[10px] font-black tracking-widest text-green-200">{s.step}</span>
                 </div>
-                <h3 className="font-bold text-gray-900 mb-2">{s.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed max-w-[13rem]">{s.desc}</p>
+                <h3 className="font-bold text-gray-900 dark:text-white mb-2">{s.title}</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed max-w-[13rem]">{s.desc}</p>
               </div>
             ))}
           </div>
@@ -309,23 +305,23 @@ export default function HomePage() {
       </section>
 
       {/* ── Roles Section ───────────────────────────────── */}
-      <section className="bg-gray-50 py-24">
+      <section className="bg-gray-50 dark:bg-gray-900 py-24">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-16">
-            <span className="inline-block px-3.5 py-1.5 bg-green-100 text-green-700 rounded-full text-xs font-bold uppercase tracking-widest mb-4">Access Levels</span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">Built for Every Role</h2>
-            <p className="text-gray-500 max-w-md mx-auto text-sm leading-relaxed">
+            <span className="inline-block px-3.5 py-1.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full text-xs font-bold uppercase tracking-widest mb-4">Access Levels</span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4 tracking-tight">Built for Every Role</h2>
+            <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto text-sm leading-relaxed">
               Tailored experiences for admins, officers, and students.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {roles.map(r => (
-              <div key={r.role} className={`rounded-2xl p-6 border ${r.color}`}>
+              <div key={r.role} className={`rounded-2xl p-6 border ${r.color} dark:bg-gray-800 dark:border-gray-700`}>
                 <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold mb-4 ${r.badge}`}>{r.role}</span>
                 <ul className="space-y-2.5">
                   {r.perks.map(p => (
-                    <li key={p} className="flex items-center gap-2 text-sm text-gray-700">
-                      <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                    <li key={p} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                      <svg className="w-4 h-4 text-green-500 dark:text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
                       {p}
                     </li>
                   ))}
@@ -337,16 +333,15 @@ export default function HomePage() {
       </section>
 
       {/* ── CTA Banner ──────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-green-600 to-emerald-600 py-24">
+      <section className="relative overflow-hidden bg-gradient-to-br from-green-600 to-emerald-600 dark:from-green-700 dark:to-emerald-700 py-24">
         <div className="absolute inset-0 opacity-[0.07]"
           style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[40rem] h-40 bg-white/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-white/15 border border-white/20 rounded-full text-white text-xs font-semibold mb-6">
             <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> Ready to go digital?
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4 tracking-tight">Join U-EventTrack Today</h2>
-          <p className="text-green-100 mb-8 text-sm leading-relaxed max-w-md mx-auto">
+          <p className="text-green-100 dark:text-green-50 mb-8 text-sm leading-relaxed max-w-md mx-auto">
             Join Mindoro State University's digital attendance system for USG events.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -363,7 +358,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Footer ──────────────────────────────────────── */}
-      <footer className="bg-gray-950 border-t border-white/5 py-10">
+      <footer className="bg-gray-950 dark:bg-black border-t border-white/5 dark:border-gray-900 py-10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-3">
@@ -374,13 +369,13 @@ export default function HomePage() {
               </div>
               <div>
                 <p className="text-white font-bold text-sm leading-none">U-EventTrack</p>
-                <p className="text-gray-500 text-[11px] mt-0.5">MinSU Bongabong Campus</p>
+                <p className="text-gray-500 dark:text-gray-600 text-[11px] mt-0.5">MinSU Bongabong Campus</p>
               </div>
             </div>
-            <p className="text-gray-600 text-xs text-center">
+            <p className="text-gray-600 dark:text-gray-700 text-xs text-center">
               © {new Date().getFullYear()} Mindoro State University — Bongabong Campus. All rights reserved.
             </p>
-            <div className="flex items-center gap-4 text-xs text-gray-600">
+            <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-gray-700">
               <span>RFID · Face ID · GPS</span>
             </div>
           </div>

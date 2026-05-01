@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
@@ -96,13 +97,67 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid credentials.'], 401);
         }
 
-        $request->session()->regenerate();
-
         $user = Auth::user()->load('studentRecord');
+
+        // Check if user is archived
+        if ($user->archived) {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return response()->json(['message' => 'This account has been archived and cannot log in.'], 403);
+        }
+
+        // Check if student record is archived (for student role)
+        if ($user->role === 'student' && $user->studentRecord && $user->studentRecord->archived) {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return response()->json(['message' => 'This student account has been archived and cannot log in.'], 403);
+        }
+
+        $request->session()->regenerate();
 
         AuditLog::record('login', "User logged in", 'User', $user->id, $user->id, $request->ip());
 
         return response()->json([
+            'user' => $user,
+            'role' => $user->role,
+        ]);
+    }
+
+    public function mobileLogin(Request $request): JsonResponse
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json(['message' => 'Invalid credentials.'], 401);
+        }
+
+        // Check if user is archived
+        if ($user->archived) {
+            return response()->json(['message' => 'This account has been archived and cannot log in.'], 403);
+        }
+
+        // Load student record
+        $user->load('studentRecord');
+
+        // Check if student record is archived (for student role)
+        if ($user->role === 'student' && $user->studentRecord && $user->studentRecord->archived) {
+            return response()->json(['message' => 'This student account has been archived and cannot log in.'], 403);
+        }
+
+        // Create token for mobile app
+        $token = $user->createToken('mobile-app')->plainTextToken;
+
+        AuditLog::record('login', "User logged in via mobile", 'User', $user->id, $user->id, $request->ip());
+
+        return response()->json([
+            'token' => $token,
             'user' => $user,
             'role' => $user->role,
         ]);
@@ -173,6 +228,16 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
             'role' => 'student',
             'student_record_id' => $student->id,
+        ]);
+
+        // Clear students cache so desktop admin sees new student immediately
+        Cache::forget('students_active');
+        
+        // Log for debugging
+        \Log::info('Student registered from mobile app', [
+            'student_id' => $student->student_id,
+            'name' => $student->first_name . ' ' . $student->last_name,
+            'email' => $student->email
         ]);
 
         return response()->json(['user' => $user, 'message' => 'Student account created.'], 201);
@@ -306,15 +371,15 @@ class AuthController extends Controller
             'totalLate' => $totalLate,
             'totalEvents' => $totalEvents,
             'attendedEvents' => $attendedEvents,
-            'attendanceRecords' => $attendances,
-            'upcomingEvents' => $upcomingEvents,
+            'attendanceRecords' => $attendances->values()->toArray(),
+            'upcomingEvents' => $upcomingEvents->toArray(),
             'chartLabels' => $chartLabels,
             'chartPresent' => $chartPresent,
             'chartLate' => $chartLate,
             'student' => $student,
             'methodBreakdown' => $methodBreakdown,
             'streak' => $streak,
-            'allPastEvents' => $allPastEvents,
+            'allPastEvents' => $allPastEvents->toArray(),
             'nextEvent' => $nextEvent,
         ]);
     }
@@ -346,6 +411,7 @@ class AuthController extends Controller
     public function studentEvents(Request $request): JsonResponse
     {
         $student = $request->user()->studentRecord;
+        
         $events = Event::whereIn('status', ['upcoming', 'ongoing'])
             ->orderBy('event_date')
             ->get();

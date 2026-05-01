@@ -98,7 +98,7 @@ export default function EventAddModal({ open, onClose, onCreated }) {
           </div>
           <div className="md:col-span-2 flex gap-2 pt-2">
             <button type="submit" disabled={loading}
-              className="px-6 py-2.5 bg-green-500 text-white rounded-xl font-semibold hover:bg-green-600 disabled:opacity-50 transition text-sm shadow-lg shadow-green-200">
+              className="px-6 py-2.5 bg-green-500 text-white rounded-xl font-semibold hover:bg-green-600 disabled:opacity-50 transition text-sm">
               {loading ? 'Creating...' : 'Create Event'}
             </button>
             <button type="button" onClick={onClose}

@@ -7,14 +7,18 @@ use App\Models\AuditLog;
 use App\Models\Student;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class StudentController extends Controller
 {
     public function index(): JsonResponse
     {
-        $students = Student::where('archived', false)
-            ->orderBy('last_name')
-            ->get();
+        $students = Cache::remember('students_active', 300, function () {
+            return Student::where('archived', false)
+                ->orderBy('last_name')
+                ->get()
+                ->toArray();
+        });
 
         return response()->json($students);
     }
@@ -22,6 +26,9 @@ class StudentController extends Controller
     public function store(StudentRequest $request): JsonResponse
     {
         $student = Student::create($request->validated());
+
+        // Clear cache
+        Cache::forget('students_active');
 
         AuditLog::record('created', "Added student: {$student->first_name} {$student->last_name}", 'Student', $student->id, $request->user()?->id, $request->ip());
 
@@ -40,6 +47,9 @@ class StudentController extends Controller
         $student = Student::findOrFail($id);
         $student->update($request->validated());
 
+        // Clear cache
+        Cache::forget('students_active');
+
         AuditLog::record('updated', "Updated student: {$student->first_name} {$student->last_name}", 'Student', $student->id, $request->user()?->id, $request->ip());
 
         return response()->json(['student' => $student, 'message' => 'Student updated.']);
@@ -49,6 +59,9 @@ class StudentController extends Controller
     {
         $student = Student::findOrFail($id);
         $student->update(['archived' => true]);
+
+        // Clear cache
+        Cache::forget('students_active');
 
         AuditLog::record('deleted', "Archived student: {$student->first_name} {$student->last_name}", 'Student', $student->id, $request->user()?->id, $request->ip());
 
@@ -68,6 +81,9 @@ class StudentController extends Controller
     {
         $student = Student::findOrFail($id);
         $student->update(['archived' => false, 'status' => 'active']);
+
+        // Clear cache
+        Cache::forget('students_active');
 
         AuditLog::record('restored', "Restored student: {$student->first_name} {$student->last_name}", 'Student', $student->id, $request->user()?->id, $request->ip());
 

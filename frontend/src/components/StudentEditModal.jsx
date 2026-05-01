@@ -17,7 +17,7 @@ export default function StudentEditModal({ studentId, open, onClose, onUpdated }
         setForm({
           student_id: s.student_id, first_name: s.first_name, last_name: s.last_name,
           email: s.email, course: s.course, year_level: s.year_level,
-          rfid_tag: s.rfid_tag || '', status: s.status,
+          barcode: s.barcode || '', status: s.status,
         });
       }).finally(() => setLoading(false));
     }
@@ -91,8 +91,8 @@ export default function StudentEditModal({ studentId, open, onClose, onUpdated }
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">RFID Tag</label>
-              <input type="text" value={form.rfid_tag} onChange={e => set('rfid_tag', e.target.value)} className={inputCls} />
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Barcode</label>
+              <input type="text" value={form.barcode} onChange={e => set('barcode', e.target.value)} placeholder="e.g. BC-000001" className={inputCls} />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>

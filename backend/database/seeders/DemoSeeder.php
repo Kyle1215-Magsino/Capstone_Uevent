@@ -54,7 +54,7 @@ class DemoSeeder extends Seeder
                 'course' => $course,
                 'year_level' => rand(1, 4),
                 'status' => 'active',
-                'rfid_tag' => 'RFID-' . str_pad($i + 1, 6, '0', STR_PAD_LEFT),
+                'barcode' => 'BC-' . str_pad($i + 1, 6, '0', STR_PAD_LEFT),
                 'archived' => false,
             ]);
         }
@@ -95,7 +95,7 @@ class DemoSeeder extends Seeder
         }
 
         // Create attendance records for past/ongoing events
-        $methods = ['manual', 'rfid', 'facial'];
+        $methods = ['manual', 'barcode', 'facial'];
         foreach ($events as $event) {
             if ($event->status === 'upcoming') continue;
 

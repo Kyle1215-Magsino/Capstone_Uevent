@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('course');
             $table->integer('year_level');
-            $table->string('rfid_tag')->unique()->nullable();
+            $table->string('barcode')->unique()->nullable();
             $table->longText('face_data')->nullable();
             $table->string('profile_image')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active');

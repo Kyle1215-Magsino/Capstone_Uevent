@@ -1,4 +1,4 @@
-﻿import { useState, useMemo } from 'react';
+﻿import { useState, useMemo, useEffect } from 'react';
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
 
@@ -10,9 +10,10 @@ export default function DataTable({ columns, data, searchable = true, pageSize: 
   const [pageSize, setPageSize] = useState(defaultPageSize);
 
   const filtered = useMemo(() => {
-    if (!search) return data;
+    const dataArray = Array.isArray(data) ? data : [];
+    if (!search) return dataArray;
     const lower = search.toLowerCase();
-    return data.filter(row =>
+    return dataArray.filter(row =>
       columns.some(col => {
         const val = col.accessor ? (typeof col.accessor === 'function' ? col.accessor(row) : row[col.accessor]) : '';
         return String(val ?? '').toLowerCase().includes(lower);
@@ -21,10 +22,11 @@ export default function DataTable({ columns, data, searchable = true, pageSize: 
   }, [data, search, columns]);
 
   const sorted = useMemo(() => {
-    if (!sortKey) return filtered;
+    const arr = Array.isArray(filtered) ? filtered : [];
+    if (!sortKey) return arr;
     const col = columns.find(c => c.key === sortKey);
-    if (!col) return filtered;
-    return [...filtered].sort((a, b) => {
+    if (!col) return arr;
+    return [...arr].sort((a, b) => {
       const aVal = typeof col.accessor === 'function' ? col.accessor(a) : a[col.accessor];
       const bVal = typeof col.accessor === 'function' ? col.accessor(b) : b[col.accessor];
       if (aVal < bVal) return sortDir === 'asc' ? -1 : 1;
@@ -33,8 +35,15 @@ export default function DataTable({ columns, data, searchable = true, pageSize: 
     });
   }, [filtered, sortKey, sortDir, columns]);
 
-  const totalPages = Math.max(1, Math.ceil(sorted.length / pageSize));
-  const paginated = sorted.slice((page - 1) * pageSize, page * pageSize);
+  const totalPages = Math.max(1, Math.ceil((sorted?.length || 0) / pageSize));
+  const paginated = Array.isArray(sorted) ? sorted.slice((page - 1) * pageSize, page * pageSize) : [];
+
+  // Reset to page 1 if current page exceeds total pages
+  useEffect(() => {
+    if (page > totalPages && totalPages > 0) {
+      setPage(1);
+    }
+  }, [page, totalPages]);
 
   const handleSort = (key) => {
     if (sortKey === key) {
@@ -48,6 +57,7 @@ export default function DataTable({ columns, data, searchable = true, pageSize: 
   // Generate page numbers with ellipsis
   const getPageNumbers = () => {
     const pages = [];
+    
     if (totalPages <= 7) {
       for (let i = 1; i <= totalPages; i++) pages.push(i);
     } else {
@@ -134,7 +144,7 @@ export default function DataTable({ columns, data, searchable = true, pageSize: 
         </table>
       </div>
 
-      {sorted.length > 0 && (
+      {sorted && sorted.length > 0 && (
         <div className="flex flex-wrap items-center justify-between gap-3 mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
           <span className="text-sm text-gray-600 dark:text-gray-400">
             Showing {(page - 1) * pageSize + 1}–{Math.min(page * pageSize, sorted.length)} of {sorted.length} entries
@@ -146,18 +156,18 @@ export default function DataTable({ columns, data, searchable = true, pageSize: 
               className="px-2.5 py-1.5 text-sm text-gray-700 dark:text-gray-300 border border-green-400 dark:border-gray-700 rounded-lg disabled:opacity-40 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 transition-colors"
               title="First page"
             >
-              «
+              &laquo;
             </button>
             <button
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1}
               className="px-2.5 py-1.5 text-sm text-gray-700 dark:text-gray-300 border border-green-400 dark:border-gray-700 rounded-lg disabled:opacity-40 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 transition-colors"
             >
-              ‹
+              &lsaquo;
             </button>
             {getPageNumbers().map((p, i) =>
               p === '...' ? (
-                <span key={`ellip-${i}`} className="px-2 py-1.5 text-sm text-gray-400 dark:text-gray-500">…</span>
+                <span key={`ellip-${i}`} className="px-2 py-1.5 text-sm text-gray-400 dark:text-gray-500">&hellip;</span>
               ) : (
                 <button
                   key={p}
@@ -177,7 +187,7 @@ export default function DataTable({ columns, data, searchable = true, pageSize: 
               disabled={page === totalPages}
               className="px-2.5 py-1.5 text-sm text-gray-700 dark:text-gray-300 border border-green-400 dark:border-gray-700 rounded-lg disabled:opacity-40 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 transition-colors"
             >
-              ›
+              &rsaquo;
             </button>
             <button
               onClick={() => setPage(totalPages)}
@@ -185,7 +195,7 @@ export default function DataTable({ columns, data, searchable = true, pageSize: 
               className="px-2.5 py-1.5 text-sm text-gray-700 dark:text-gray-300 border border-green-400 dark:border-gray-700 rounded-lg disabled:opacity-40 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 transition-colors"
               title="Last page"
             >
-              »
+              &raquo;
             </button>
           </div>
         </div>

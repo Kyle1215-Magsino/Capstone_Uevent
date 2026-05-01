@@ -4,6 +4,7 @@ use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CacheController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TwoFactorController;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 
 // Public auth routes
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/mobile/login', [AuthController::class, 'mobileLogin']);
 Route::post('/register-student', [AuthController::class, 'registerStudent']);
 Route::get('/announcements/public', [AnnouncementController::class, 'public']);
 
@@ -68,6 +70,7 @@ Route::middleware('auth:sanctum')->group(function () {
         // Audit Logs (admin only)
         Route::middleware('role:admin')->group(function () {
             Route::get('/audit-logs', [AuditLogController::class, 'index']);
+            Route::post('/cache/clear', [CacheController::class, 'clear']);
 
             // Announcements
             Route::get('/announcements', [AnnouncementController::class, 'index']);

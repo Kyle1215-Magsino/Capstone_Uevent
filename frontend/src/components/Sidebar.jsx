@@ -22,13 +22,13 @@ function NavItem({ to, icon, label, onClick }) {
         `group flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 animate-staggerIn ${
           isActive
             ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-l-2 border-green-500 pl-[11px]'
-            : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-800 dark:hover:text-gray-200 border-l-2 border-transparent pl-[11px]'
+            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 border-l-2 border-transparent pl-[11px]'
         }`
       }
     >
       {({ isActive }) => (
         <>
-          <span className={isActive ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300'}>
+          <span className={isActive ? 'text-green-600 dark:text-green-400' : 'text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200'}>
             {icon}
           </span>
           {label}
@@ -39,7 +39,7 @@ function NavItem({ to, icon, label, onClick }) {
 }
 
 function SectionLabel({ label }) {
-  return <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 px-3 pt-5 pb-1.5">{label}</p>;
+  return <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-gray-400 px-3 pt-5 pb-1.5">{label}</p>;
 }
 
 export default function Sidebar({ onNavigate }) {
@@ -100,8 +100,8 @@ export default function Sidebar({ onNavigate }) {
             </div>
             <div style={{ animationDelay: '0.3s' }}>
               <button onClick={() => setRegisterOpen(true)}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-800 dark:hover:text-gray-200 transition-all duration-150 animate-staggerIn">
-                <span className="text-gray-400 dark:text-gray-500"><PlusUserIcon /></span>
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 transition-all duration-150 animate-staggerIn">
+                <span className="text-gray-600 dark:text-gray-400"><PlusUserIcon /></span>
                 Register Officer
               </button>
             </div>
@@ -111,8 +111,8 @@ export default function Sidebar({ onNavigate }) {
 
       {/* Footer */}
       <div className="px-4 py-3 border-t border-green-200 dark:border-gray-800 flex-shrink-0 animate-fadeIn" style={{ animationDelay: '0.35s' }}>
-        <p className="text-xs text-gray-400 dark:text-gray-500 truncate">{user?.name}</p>
-        <p className="text-[10px] text-gray-300 dark:text-gray-600 capitalize">{user?.role}</p>
+        <p className="text-xs text-gray-600 dark:text-gray-400 truncate">{user?.name}</p>
+        <p className="text-[10px] text-gray-500 dark:text-gray-500 capitalize">{user?.role}</p>
       </div>
 
       <RegisterOfficerModal open={registerOpen} onClose={() => setRegisterOpen(false)} />

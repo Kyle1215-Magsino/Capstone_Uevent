@@ -28,7 +28,7 @@ export default function StudentSidebar({ onNavigate }) {
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-4 overflow-y-auto">
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 px-3 pb-1.5">Menu</p>
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-gray-400 px-3 pb-1.5">Menu</p>
         {links.map((link, index) => (
           <div key={link.to} style={{ animationDelay: `${0.03 + index * 0.03}s` }}>
             <NavLink to={link.to} onClick={onNavigate}
@@ -36,13 +36,13 @@ export default function StudentSidebar({ onNavigate }) {
                 `group flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 animate-staggerIn ${
                   isActive
                     ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-l-2 border-green-500 pl-[11px]'
-                    : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-800 dark:hover:text-gray-200 border-l-2 border-transparent pl-[11px]'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 border-l-2 border-transparent pl-[11px]'
                 }`
               }
             >
               {({ isActive }) => (
                 <>
-                  <span className={isActive ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300'}>{link.icon}</span>
+                  <span className={isActive ? 'text-green-600 dark:text-green-400' : 'text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200'}>{link.icon}</span>
                   {link.label}
                 </>
               )}

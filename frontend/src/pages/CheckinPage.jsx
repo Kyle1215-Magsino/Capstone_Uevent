@@ -15,8 +15,15 @@ export default function CheckinPage() {
   const [clock, setClock] = useState(new Date());
   const [useLocation, setUseLocation] = useState(false);
   const [coords, setCoords] = useState(null);
-  const rfidRef = useRef(null);
+  const barcodeRef = useRef(null);
   const manualRef = useRef(null);
+  
+  // Autocomplete state
+  const [allStudents, setAllStudents] = useState([]);
+  const [filteredStudents, setFilteredStudents] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const dropdownRef = useRef(null);
 
   // Face recognition state
   const [modelsReady, setModelsReady] = useState(false);
@@ -34,6 +41,13 @@ export default function CheckinPage() {
   // Load active events
   useEffect(() => {
     getActiveEvents().then(res => setEvents(res.data));
+  }, []);
+
+  // Load all students for autocomplete
+  useEffect(() => {
+    import('../api/studentApi').then(({ getStudents }) => {
+      getStudents().then(res => setAllStudents(res.data || [])).catch(() => {});
+    });
   }, []);
 
   // Live clock
@@ -61,10 +75,40 @@ export default function CheckinPage() {
     }
   }, [useLocation]);
 
-  // Auto-focus RFID input
+  // Auto-focus Barcode input
   useEffect(() => {
-    if (method === 'rfid' && rfidRef.current) rfidRef.current.focus();
+    if (method === 'barcode' && barcodeRef.current) barcodeRef.current.focus();
   }, [method]);
+
+  // Filter students based on input
+  useEffect(() => {
+    if (method === 'manual' && identifier.trim().length > 0) {
+      const query = identifier.toLowerCase();
+      const matches = allStudents.filter(s => 
+        s.student_id?.toLowerCase().includes(query) ||
+        s.first_name?.toLowerCase().includes(query) ||
+        s.last_name?.toLowerCase().includes(query) ||
+        `${s.first_name} ${s.last_name}`.toLowerCase().includes(query)
+      ).slice(0, 8);
+      setFilteredStudents(matches);
+      setShowDropdown(matches.length > 0);
+      setSelectedIndex(-1);
+    } else {
+      setShowDropdown(false);
+      setFilteredStudents([]);
+    }
+  }, [identifier, method, allStudents]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Load face models when facial tab selected
   useEffect(() => {
@@ -228,17 +272,42 @@ export default function CheckinPage() {
       setLoading(false);
       setTimeout(() => {
         if (method === 'manual') manualRef.current?.focus();
-        else if (method === 'rfid') rfidRef.current?.focus();
+        else if (method === 'barcode') barcodeRef.current?.focus();
       }, 50);
     }
   };
 
   const handleManualSubmit = (e) => {
     e.preventDefault();
+    setShowDropdown(false);
     handleCheckin(identifier);
   };
 
-  const handleRfidKeyDown = (e) => {
+  const handleManualKeyDown = (e) => {
+    if (!showDropdown) return;
+    
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setSelectedIndex(prev => (prev < filteredStudents.length - 1 ? prev + 1 : prev));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setSelectedIndex(prev => (prev > 0 ? prev - 1 : -1));
+    } else if (e.key === 'Enter' && selectedIndex >= 0) {
+      e.preventDefault();
+      selectStudent(filteredStudents[selectedIndex]);
+    } else if (e.key === 'Escape') {
+      setShowDropdown(false);
+    }
+  };
+
+  const selectStudent = (student) => {
+    setIdentifier(student.student_id);
+    setShowDropdown(false);
+    setSelectedIndex(-1);
+    setTimeout(() => handleCheckin(student.student_id), 100);
+  };
+
+  const handleBarcodeKeyDown = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       handleCheckin(identifier);
@@ -288,13 +357,13 @@ export default function CheckinPage() {
           {/* Method tabs */}
           <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-green-300 dark:border-gray-800">
             <div className="flex border-b border-gray-100 dark:border-gray-800">
-              {['manual', 'rfid', 'facial'].map(m => (
+              {['manual', 'barcode', 'facial'].map(m => (
                 <button
                   key={m}
                   onClick={() => { setMethod(m); setIdentifier(''); }}
                   className={`flex-1 py-3 text-sm font-medium capitalize ${method === m ? 'border-b-2 border-forest-400 text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'}`}
                 >
-                  {m === 'facial' ? 'Face Recognition' : m.toUpperCase()}
+                  {m === 'facial' ? 'Face Recognition' : m === 'barcode' ? 'BARCODE' : m.toUpperCase()}
                 </button>
               ))}
             </div>
@@ -303,38 +372,76 @@ export default function CheckinPage() {
               {method === 'manual' && (
                 <form onSubmit={handleManualSubmit}>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Student ID</label>
-                  <div className="flex gap-2">
-                    <input
-                      ref={manualRef}
-                      type="text"
-                      value={identifier}
-                      onChange={e => setIdentifier(e.target.value)}
-                      placeholder="Enter student ID..."
-                      className="flex-1 px-4 py-2.5 border border-green-400 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-200 text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500"
-                      autoFocus
-                    />
-                    <button
-                      type="submit"
-                      disabled={loading || !selectedEvent || !identifier.trim()}
-                      className="px-6 py-2.5 bg-green-500 text-white text-sm font-medium rounded-xl hover:bg-green-600 transition-colors disabled:opacity-50"
-                    >
-                      {loading ? 'Processing...' : 'Check In'}
-                    </button>
+                  <div className="relative" ref={dropdownRef}>
+                    <div className="flex gap-2">
+                      <input
+                        ref={manualRef}
+                        type="text"
+                        value={identifier}
+                        onChange={e => setIdentifier(e.target.value)}
+                        onKeyDown={handleManualKeyDown}
+                        placeholder="Enter student ID or name..."
+                        className="flex-1 px-4 py-2.5 border border-green-400 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-200 text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                        autoComplete="off"
+                        autoFocus
+                      />
+                      <button
+                        type="submit"
+                        disabled={loading || !selectedEvent || !identifier.trim()}
+                        className="px-6 py-2.5 bg-green-500 text-white text-sm font-medium rounded-xl hover:bg-green-600 transition-colors disabled:opacity-50"
+                      >
+                        {loading ? 'Processing...' : 'Check In'}
+                      </button>
+                    </div>
+                    
+                    {/* Autocomplete Dropdown */}
+                    {showDropdown && filteredStudents.length > 0 && (
+                      <div className="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-green-300 dark:border-gray-700 rounded-xl shadow-lg max-h-64 overflow-y-auto">
+                        {filteredStudents.map((student, idx) => (
+                          <button
+                            key={student.id}
+                            type="button"
+                            onClick={() => selectStudent(student)}
+                            className={`w-full px-4 py-3 text-left hover:bg-green-50 dark:hover:bg-gray-700 transition-colors border-b border-gray-100 dark:border-gray-700 last:border-b-0 ${
+                              idx === selectedIndex ? 'bg-green-50 dark:bg-gray-700' : ''
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
+                                {student.first_name?.[0]}{student.last_name?.[0]}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="font-medium text-gray-900 dark:text-white text-sm">
+                                  {student.first_name} {student.last_name}
+                                </p>
+                                <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                                  <span className="font-mono">{student.student_id}</span>
+                                  <span>•</span>
+                                  <span>{student.course}</span>
+                                  <span>•</span>
+                                  <span>Year {student.year_level}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </form>
               )}
 
-              {method === 'rfid' && (
+              {method === 'barcode' && (
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Scan RFID tag or type &amp; press Enter:</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Scan student ID barcode or type &amp; press Enter:</p>
                   <div className="flex gap-2">
                     <input
-                      ref={rfidRef}
+                      ref={barcodeRef}
                       type="text"
                       value={identifier}
                       onChange={e => setIdentifier(e.target.value)}
-                      onKeyDown={handleRfidKeyDown}
-                      placeholder="Waiting for RFID scan..."
+                      onKeyDown={handleBarcodeKeyDown}
+                      placeholder="Waiting for barcode scan..."
                       className="flex-1 px-3 py-3 border-2 border-forest-300 dark:border-gray-700 rounded-lg text-lg font-mono bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-200 focus:border-forest-400"
                       autoFocus
                     />

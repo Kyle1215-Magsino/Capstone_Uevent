@@ -50,7 +50,7 @@ export default function FaceEnrollmentPage() {
 
   useEffect(() => {
     Promise.all([
-      getStudents().then(res => setStudents(res.data)),
+      getStudents().then(res => setStudents(Array.isArray(res.data) ? res.data : [])),
       loadModels().then(() => setModelsReady(true)),
     ]).finally(() => setLoading(false));
     return () => stopCamera();
@@ -89,7 +89,8 @@ export default function FaceEnrollmentPage() {
     }
   };
 
-  const filteredStudents = students.filter(s =>
+  const studentsArray = Array.isArray(students) ? students : [];
+  const filteredStudents = studentsArray.filter(s =>
     `${s.student_id} ${s.first_name} ${s.last_name}`.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -498,11 +499,11 @@ export default function FaceEnrollmentPage() {
           <h3 className="font-semibold text-gray-900 dark:text-white mb-4">
             Enrolled Students
             <span className="ml-2 text-sm font-normal text-gray-500 dark:text-gray-400">
-              ({students.filter(s => s.face_data).length})
+              ({studentsArray.filter(s => s.face_data).length})
             </span>
           </h3>
           <div className="space-y-2 max-h-[600px] overflow-y-auto">
-            {students.filter(s => s.face_data).map(s => (
+            {studentsArray.filter(s => s.face_data).map(s => (
               <div key={s.id} className="flex items-center justify-between p-3 bg-green-50 dark:bg-gray-800 rounded-xl hover:bg-green-50 dark:hover:bg-gray-800 transition group">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
@@ -526,7 +527,7 @@ export default function FaceEnrollmentPage() {
                 </button>
               </div>
             ))}
-            {students.filter(s => s.face_data).length === 0 && (
+            {studentsArray.filter(s => s.face_data).length === 0 && (
               <div className="text-center py-10 text-gray-400 dark:text-gray-500">
                 <svg className="w-12 h-12 mx-auto mb-3 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
