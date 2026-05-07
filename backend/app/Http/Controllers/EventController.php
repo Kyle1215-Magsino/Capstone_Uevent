@@ -6,13 +6,52 @@ use App\Http\Requests\EventRequest;
 use App\Models\AuditLog;
 use App\Models\Event;
 use App\Services\EventAnnouncementService;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
+    /**
+     * Update event statuses based on current date/time
+     */
+    private function updateEventStatuses(): void
+    {
+        $now = Carbon::now();
+        $today = $now->toDateString();
+        $currentTime = $now->toTimeString();
+
+        // Update completed events (past end time)
+        Event::where('status', '!=', 'cancelled')
+            ->where(function ($query) use ($today, $currentTime) {
+                // Events before today
+                $query->where('event_date', '<', $today)
+                    // OR events today but past end time
+                    ->orWhere(function ($q) use ($today, $currentTime) {
+                        $q->where('event_date', '=', $today)
+                            ->where('end_time', '<', $currentTime);
+                    });
+            })
+            ->update(['status' => 'completed']);
+
+        // Update ongoing events (between start and end time today)
+        Event::where('status', 'upcoming')
+            ->where('event_date', '=', $today)
+            ->where('start_time', '<=', $currentTime)
+            ->where('end_time', '>=', $currentTime)
+            ->update(['status' => 'ongoing']);
+
+        // Update future ongoing events back to upcoming (fix incorrect statuses)
+        Event::where('status', 'ongoing')
+            ->where('event_date', '>', $today)
+            ->update(['status' => 'upcoming']);
+    }
+
     public function index(Request $request): JsonResponse
     {
+        // Update event statuses before fetching
+        $this->updateEventStatuses();
+
         $query = Event::with('organizer');
 
         if ($request->filled('status')) {
@@ -89,8 +128,22 @@ class EventController extends Controller
 
     public function active(): JsonResponse
     {
-        $events = Event::whereIn('status', ['upcoming', 'ongoing'])
+        // Update event statuses before fetching
+        $this->updateEventStatuses();
+
+        $today = Carbon::today()->toDateString();
+        
+        $events = Event::where(function ($query) use ($today) {
+                // Ongoing events (any date)
+                $query->where('status', 'ongoing')
+                    // OR upcoming events that are TODAY
+                    ->orWhere(function ($q) use ($today) {
+                        $q->where('status', 'upcoming')
+                            ->where('event_date', '=', $today);
+                    });
+            })
             ->orderBy('event_date')
+            ->orderBy('start_time')
             ->get();
 
         return response()->json($events);

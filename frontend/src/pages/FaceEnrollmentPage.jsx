@@ -293,9 +293,9 @@ export default function FaceEnrollmentPage() {
 
             {/* Dropdown list */}
             {showDropdown && !selectedStudent && (
-              <ul className="absolute z-20 w-full mt-1 bg-white border border-green-200 rounded-xl shadow-lg max-h-52 overflow-y-auto">
+              <ul className="absolute z-20 w-full mt-1 bg-white dark:bg-gray-800 border border-green-200 dark:border-gray-700 rounded-xl shadow-lg max-h-52 overflow-y-auto">
                 {filteredStudents.length === 0 ? (
-                  <li className="px-4 py-3 text-sm text-gray-400 text-center">No students found</li>
+                  <li className="px-4 py-3 text-sm text-gray-400 dark:text-gray-500 text-center">No students found</li>
                 ) : (
                   filteredStudents.map(s => (
                     <li
@@ -306,10 +306,10 @@ export default function FaceEnrollmentPage() {
                         setSearch(`${s.last_name}, ${s.first_name} (${s.student_id})`);
                         setShowDropdown(false);
                       }}
-                      className="flex items-center justify-between px-4 py-2.5 text-sm text-gray-900 hover:bg-green-50 cursor-pointer first:rounded-t-xl last:rounded-b-xl select-none"
+                      className="flex items-center justify-between px-4 py-2.5 text-sm text-gray-900 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-gray-700 cursor-pointer first:rounded-t-xl last:rounded-b-xl select-none"
                     >
-                      <span>{s.last_name}, {s.first_name} <span className="text-gray-400">({s.student_id})</span></span>
-                      {s.face_data && <span className="text-xs text-green-600 font-medium">enrolled</span>}
+                      <span>{s.last_name}, {s.first_name} <span className="text-gray-400 dark:text-gray-500">({s.student_id})</span></span>
+                      {s.face_data && <span className="text-xs text-green-600 dark:text-green-400 font-medium">enrolled</span>}
                     </li>
                   ))
                 )}
@@ -321,17 +321,17 @@ export default function FaceEnrollmentPage() {
               const s = students.find(st => st.id === parseInt(selectedStudent));
               if (!s) return null;
               return (
-                <div className="mt-2 flex items-center gap-2 px-3 py-2.5 bg-green-50 border border-green-200 rounded-xl">
-                  <div className="w-9 h-9 bg-green-100 text-green-700 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
+                <div className="mt-2 flex items-center gap-2 px-3 py-2.5 bg-green-50 dark:bg-gray-800 border border-green-200 dark:border-gray-700 rounded-xl">
+                  <div className="w-9 h-9 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
                     {s.first_name?.[0]}{s.last_name?.[0]}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-gray-800 truncate">{s.first_name} {s.last_name}</p>
-                    <p className="text-xs text-gray-500">{s.student_id} · {s.course}</p>
+                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 truncate">{s.first_name} {s.last_name}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{s.student_id} · {s.course}</p>
                   </div>
                   {s.face_data
-                    ? <span className="text-xs text-green-600 font-medium px-2 py-0.5 bg-green-100 rounded-full border border-green-200">Re-enroll</span>
-                    : <span className="text-xs text-orange-500 font-medium px-2 py-0.5 bg-orange-50 rounded-full border border-orange-200">Not enrolled</span>
+                    ? <span className="text-xs text-green-600 dark:text-green-400 font-medium px-2 py-0.5 bg-green-100 dark:bg-green-900/30 rounded-full border border-green-200 dark:border-green-800">Re-enroll</span>
+                    : <span className="text-xs text-orange-500 dark:text-orange-400 font-medium px-2 py-0.5 bg-orange-50 dark:bg-orange-900/30 rounded-full border border-orange-200 dark:border-orange-800">Not enrolled</span>
                   }
                 </div>
               );
@@ -452,9 +452,9 @@ export default function FaceEnrollmentPage() {
 
           {/* How-to instructions */}
           {!enrolling && !enrollSuccess && !enrollFailMsg && (
-            <div className="p-4 bg-green-50 rounded-lg border border-forest-100 mb-4">
-              <h4 className="text-sm font-semibold text-forest-700 mb-2">How to Enroll</h4>
-              <ol className="text-xs text-green-700 space-y-1 list-decimal list-inside">
+            <div className="p-4 bg-green-50 dark:bg-gray-800 rounded-lg border border-green-100 dark:border-gray-700 mb-4">
+              <h4 className="text-sm font-semibold text-green-700 dark:text-green-400 mb-2">How to Enroll</h4>
+              <ol className="text-xs text-green-700 dark:text-gray-300 space-y-1 list-decimal list-inside">
                 <li>Search and select a student above</li>
                 <li>Click <strong>"Start Face Enrollment"</strong></li>
                 <li>Follow the on-screen instructions: look straight, turn right, turn left</li>
@@ -469,15 +469,15 @@ export default function FaceEnrollmentPage() {
               onClick={() => setFrontLight(f => !f)}
               className={`px-3 py-2.5 text-sm font-medium rounded-xl border transition flex items-center gap-1.5 ${
                 frontLight
-                  ? 'bg-yellow-100 border-yellow-300 text-yellow-700 shadow-inner'
-                  : 'bg-gray-100 border-gray-300 text-gray-600 hover:bg-yellow-50 hover:border-yellow-200'
+                  ? 'bg-yellow-100 dark:bg-yellow-900/30 border-yellow-300 dark:border-yellow-700 text-yellow-700 dark:text-yellow-400 shadow-inner'
+                  : 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 hover:border-yellow-200 dark:hover:border-yellow-800'
               }`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" /></svg>
               {frontLight ? 'Light On' : 'Front Light'}
             </button>
             {cameraActive && !enrolling && !enrollSuccess && (
-              <button onClick={stopCamera} className="px-4 py-2.5 bg-gray-500 text-white text-sm font-medium rounded-xl hover:bg-gray-600 transition">
+              <button onClick={stopCamera} className="px-4 py-2.5 bg-gray-500 dark:bg-gray-700 text-white text-sm font-medium rounded-xl hover:bg-gray-600 dark:hover:bg-gray-600 transition">
                 Stop Camera
               </button>
             )}

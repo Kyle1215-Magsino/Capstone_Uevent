@@ -25,7 +25,12 @@ class StudentController extends Controller
 
     public function store(StudentRequest $request): JsonResponse
     {
-        $student = Student::create($request->validated());
+        $data = $request->validated();
+        
+        // Auto-generate barcode with format: MBC2023-{student_id}
+        $data['barcode'] = 'MBC2023-' . $data['student_id'];
+        
+        $student = Student::create($data);
 
         // Clear cache
         Cache::forget('students_active');
@@ -45,7 +50,12 @@ class StudentController extends Controller
     public function update(StudentRequest $request, int $id): JsonResponse
     {
         $student = Student::findOrFail($id);
-        $student->update($request->validated());
+        $data = $request->validated();
+        
+        // Auto-generate barcode with format: MBC2023-{student_id}
+        $data['barcode'] = 'MBC2023-' . $data['student_id'];
+        
+        $student->update($data);
 
         // Clear cache
         Cache::forget('students_active');

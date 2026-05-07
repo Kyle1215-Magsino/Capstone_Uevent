@@ -80,7 +80,7 @@ export default function StudentProfileModal({ open, onClose }) {
     <div className="fixed inset-0 z-[9998] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={handleClose} />
 
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-scaleIn">
+      <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-scaleIn">
 
         {/* Header */}
         <div className="bg-gradient-to-br from-green-500 to-green-600 px-6 py-6 text-center relative">
@@ -117,10 +117,10 @@ export default function StudentProfileModal({ open, onClose }) {
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-green-100">
+        <div className="flex border-b border-green-100 dark:border-gray-700 px-6">
           {['info', 'password'].map(t => (
             <button key={t} onClick={() => setTab(t)}
-              className={`flex-1 py-3 text-sm font-medium transition-colors ${tab === t ? 'text-green-600 border-b-2 border-green-500' : 'text-gray-400 hover:text-gray-600'}`}>
+              className={`flex-1 py-3 text-sm font-medium transition-colors ${tab === t ? 'text-green-600 dark:text-green-400 border-b-2 border-green-500' : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'}`}>
               {t === 'info' ? 'Profile Info' : 'Change Password'}
             </button>
           ))}
@@ -136,11 +136,11 @@ export default function StudentProfileModal({ open, onClose }) {
                 { label: 'Course', value: student?.course, icon: <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg> },
                 { label: 'Year Level', value: `Year ${student?.year_level}`, icon: <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg> },
               ].map(item => (
-                <div key={item.label} className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-green-50/50 transition-colors">
-                  <div className="w-9 h-9 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0">{item.icon}</div>
+                <div key={item.label} className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-green-50/50 dark:hover:bg-gray-700/50 transition-colors">
+                  <div className="w-9 h-9 bg-green-50 dark:bg-gray-700 rounded-lg flex items-center justify-center flex-shrink-0">{item.icon}</div>
                   <div className="min-w-0">
-                    <p className="text-xs text-gray-400">{item.label}</p>
-                    <p className="text-sm font-medium text-gray-800 truncate">{item.value}</p>
+                    <p className="text-xs text-gray-400 dark:text-gray-500">{item.label}</p>
+                    <p className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">{item.value}</p>
                   </div>
                 </div>
               ))}
@@ -153,9 +153,9 @@ export default function StudentProfileModal({ open, onClose }) {
                 { name: 'password_confirmation', label: 'Confirm New Password', key: 'confirm' },
               ].map(field => (
                 <div key={field.name}>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{field.label}</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{field.label}</label>
                   <div className="relative">
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
                     </div>
                     <input
@@ -163,11 +163,11 @@ export default function StudentProfileModal({ open, onClose }) {
                       name={field.name}
                       value={form[field.name]}
                       onChange={handleChange}
-                      className={inputCls}
+                      className={inputCls + ' dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400'}
                       placeholder={`Enter ${field.label.toLowerCase()}`}
                     />
                     <button type="button" onClick={() => setShowPw(v => ({ ...v, [field.key]: !v[field.key] }))}
-                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600">
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
                       {showPw[field.key] ? <EyeOff /> : <EyeOn />}
                     </button>
                   </div>

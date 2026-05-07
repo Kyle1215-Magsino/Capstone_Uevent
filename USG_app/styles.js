@@ -1,9 +1,10 @@
 import { StyleSheet } from 'react-native';
 
-export const styles = StyleSheet.create({
+// Create dynamic styles based on theme
+export const createStyles = (colors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.background,
   },
   // Navbar
   navbar: {
@@ -13,22 +14,22 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 50,
     paddingBottom: 16,
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    backgroundColor: colors.card,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(229, 231, 235, 0.8)',
+    borderBottomColor: colors.border,
   },
   logoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   logo: {
-    width: 36,
-    height: 36,
+    width: 52,
+    height: 52,
     backgroundColor: '#10b981',
-    borderRadius: 12,
+    borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: 14,
     overflow: 'hidden',
   },
   logoImage: {
@@ -36,16 +37,16 @@ export const styles = StyleSheet.create({
     height: '100%',
   },
   logoIcon: {
-    fontSize: 20,
+    fontSize: 28,
   },
   title: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#111827',
+    color: colors.text,
   },
   subtitle: {
-    fontSize: 10,
-    color: '#9ca3af',
+    fontSize: 12,
+    color: colors.textSecondary,
     marginTop: 2,
   },
   signInBtn: {
@@ -145,7 +146,7 @@ export const styles = StyleSheet.create({
   // Hero
   hero: {
     padding: 24,
-    backgroundColor: '#f0fdf4',
+    backgroundColor: colors.background,
     minHeight: 400,
   },
   heroBadge: {
@@ -191,7 +192,7 @@ export const styles = StyleSheet.create({
   heroTitle: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: '#111827',
+    color: colors.text,
     marginBottom: 20,
     lineHeight: 44,
   },
@@ -200,7 +201,7 @@ export const styles = StyleSheet.create({
   },
   heroSubtitle: {
     fontSize: 16,
-    color: '#6b7280',
+    color: colors.textSecondary,
     lineHeight: 24,
     marginBottom: 32,
   },
@@ -224,7 +225,7 @@ export const styles = StyleSheet.create({
     marginLeft: 8,
   },
   secondaryButton: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.card,
     paddingVertical: 14,
     paddingHorizontal: 28,
     borderRadius: 12,
@@ -283,11 +284,11 @@ export const styles = StyleSheet.create({
   // Events Section
   eventsSection: {
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: colors.card,
   },
   // Events Banner Section
   eventsBannerSection: {
-    backgroundColor: '#f9fafb',
+    backgroundColor: colors.cardSecondary,
     paddingVertical: 24,
   },
   eventsBannerHeader: {
@@ -302,12 +303,12 @@ export const styles = StyleSheet.create({
   eventsBannerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#111827',
+    color: colors.text,
     marginLeft: 8,
   },
   eventsBannerSubtitle: {
     fontSize: 12,
-    color: '#6b7280',
+    color: colors.textSecondary,
     marginLeft: 28,
   },
   eventsBannerScroll: {
@@ -316,7 +317,7 @@ export const styles = StyleSheet.create({
   },
   eventBannerCard: {
     width: 280,
-    backgroundColor: '#fff',
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 16,
     marginRight: 16,
@@ -352,13 +353,13 @@ export const styles = StyleSheet.create({
   eventBannerName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#111827',
+    color: colors.text,
     marginBottom: 8,
     lineHeight: 24,
   },
   eventBannerDescription: {
     fontSize: 13,
-    color: '#6b7280',
+    color: colors.textSecondary,
     marginBottom: 12,
     lineHeight: 18,
   },
@@ -372,7 +373,7 @@ export const styles = StyleSheet.create({
   },
   eventBannerDetailText: {
     fontSize: 12,
-    color: '#6b7280',
+    color: colors.textSecondary,
     flex: 1,
   },
   eventsBannerLoading: {
@@ -387,18 +388,18 @@ export const styles = StyleSheet.create({
   eventsBannerEmptyText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#6b7280',
+    color: colors.textSecondary,
     marginTop: 16,
   },
   eventsBannerEmptySubtext: {
     fontSize: 13,
-    color: '#9ca3af',
+    color: colors.textTertiary,
     marginTop: 4,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#111827',
+    color: colors.text,
     marginLeft: 8,
   },
   sectionHeaderRow: {
@@ -407,7 +408,7 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
   },
   eventCard: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
@@ -433,32 +434,33 @@ export const styles = StyleSheet.create({
   eventCardName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#111827',
+    color: colors.text,
     marginBottom: 8,
   },
   eventDescription: {
     fontSize: 14,
-    color: '#6b7280',
+    color: colors.textSecondary,
     marginBottom: 12,
     lineHeight: 20,
   },
   eventDetailText: {
     fontSize: 13,
-    color: '#6b7280',
-    marginLeft: 6,
+    color: colors.textSecondary,
+    marginLeft: 8,
+    flex: 1,
   },
   eventDetailRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 4,
+    marginBottom: 6,
   },
   // Features Section
   featuresSection: {
     padding: 20,
-    backgroundColor: '#f9fafb',
+    backgroundColor: colors.cardSecondary,
   },
   featureCard: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 24,
     marginBottom: 16,
@@ -484,12 +486,12 @@ export const styles = StyleSheet.create({
   featureTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#111827',
+    color: colors.text,
     marginBottom: 8,
   },
   featureDesc: {
     fontSize: 14,
-    color: '#6b7280',
+    color: colors.textSecondary,
     lineHeight: 20,
   },
   // CTA Banner
@@ -514,7 +516,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   ctaPrimaryButton: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.card,
     paddingVertical: 14,
     paddingHorizontal: 28,
     borderRadius: 12,
@@ -576,16 +578,16 @@ export const styles = StyleSheet.create({
   loadingText: {
     marginTop: 12,
     fontSize: 14,
-    color: '#6b7280',
+    color: colors.textSecondary,
   },
   // Dashboard
   dashboardHeader: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.card,
     paddingTop: 50,
     paddingBottom: 16,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: colors.border,
   },
   headerRow: {
     flexDirection: 'row',
@@ -617,11 +619,11 @@ export const styles = StyleSheet.create({
   dashboardGreeting: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#111827',
+    color: colors.text,
   },
   dashboardDate: {
     fontSize: 11,
-    color: '#9ca3af',
+    color: colors.textSecondary,
     marginTop: 2,
   },
   logoutBtn: {
@@ -640,7 +642,7 @@ export const styles = StyleSheet.create({
   },
   dashboardContent: {
     flex: 1,
-    backgroundColor: '#f9fafb',
+    backgroundColor: colors.cardSecondary,
     padding: 20,
   },
   // Next Event Banner
@@ -703,7 +705,7 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
   },
   statCardInner: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 20,
     borderWidth: 2,
@@ -723,16 +725,16 @@ export const styles = StyleSheet.create({
   statValue: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#111827',
+    color: colors.text,
     marginBottom: 4,
   },
   statLabel: {
     fontSize: 11,
-    color: '#6b7280',
+    color: colors.textSecondary,
   },
   // Attendance Card
   attendanceCard: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 20,
     borderWidth: 2,
@@ -760,7 +762,7 @@ export const styles = StyleSheet.create({
   attendancePercent: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#111827',
+    color: colors.text,
   },
   attendanceInfo: {
     flex: 1,
@@ -768,16 +770,16 @@ export const styles = StyleSheet.create({
   attendanceTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#111827',
+    color: colors.text,
     marginBottom: 4,
   },
   attendanceSubtitle: {
     fontSize: 12,
-    color: '#6b7280',
+    color: colors.textSecondary,
   },
   // Section
   section: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 20,
     borderWidth: 2,
@@ -812,12 +814,12 @@ export const styles = StyleSheet.create({
   checkinEventName: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#111827',
+    color: colors.text,
     marginBottom: 4,
   },
   checkinTime: {
     fontSize: 11,
-    color: '#9ca3af',
+    color: colors.textTertiary,
   },
   // Event Item
   eventItem: {
@@ -847,12 +849,12 @@ export const styles = StyleSheet.create({
   eventName: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#111827',
+    color: colors.text,
     marginBottom: 4,
   },
   eventDetails: {
     fontSize: 11,
-    color: '#9ca3af',
+    color: colors.textTertiary,
   },
   eventBadge: {
     paddingHorizontal: 10,
@@ -868,18 +870,18 @@ export const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 14,
-    color: '#9ca3af',
+    color: colors.textTertiary,
     textAlign: 'center',
     paddingVertical: 20,
   },
   // Modal Styles
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: colors.overlay,
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.card,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     maxHeight: '80%',
@@ -900,24 +902,24 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: colors.border,
   },
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#111827',
+    color: colors.text,
   },
   closeButton: {
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: colors.borderLight,
     justifyContent: 'center',
     alignItems: 'center',
   },
   closeButtonText: {
     fontSize: 18,
-    color: '#6b7280',
+    color: colors.textSecondary,
   },
   modalBody: {
     padding: 20,
@@ -928,16 +930,34 @@ export const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#374151',
+    color: colors.text,
     marginBottom: 8,
   },
   input: {
     borderWidth: 2,
-    borderColor: '#10b981',
+    borderColor: colors.inputBorder,
     borderRadius: 12,
     padding: 16,
     fontSize: 16,
-    backgroundColor: '#fff',
+    backgroundColor: colors.inputBackground,
+    color: colors.text,
+  },
+  passwordInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: colors.inputBorder,
+    borderRadius: 12,
+    backgroundColor: colors.inputBackground,
+  },
+  passwordInput: {
+    flex: 1,
+    padding: 16,
+    fontSize: 16,
+    color: colors.text,
+  },
+  eyeIcon: {
+    padding: 16,
   },
   inputFocused: {
     borderColor: '#10b981',
@@ -964,11 +984,39 @@ export const styles = StyleSheet.create({
   buttonDisabled: {
     opacity: 0.6,
   },
+  // Remember Me Styles
+  rememberMeContainer: {
+    marginBottom: 16,
+  },
+  rememberMeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: '#10b981',
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  checkboxChecked: {
+    backgroundColor: '#10b981',
+    borderColor: '#10b981',
+  },
+  rememberMeText: {
+    fontSize: 14,
+    color: colors.text,
+    fontWeight: '500',
+  },
   pickerContainer: {
     borderWidth: 1,
-    borderColor: '#d1d5db',
+    borderColor: colors.border,
     borderRadius: 12,
-    backgroundColor: '#fff',
+    backgroundColor: colors.card,
     overflow: 'hidden',
   },
   picker: {
@@ -977,9 +1025,15 @@ export const styles = StyleSheet.create({
   // Bottom Tab Navigation
   bottomTabs: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
-    borderTopWidth: 1,
-    borderTopColor: '#e5e7eb',
+    backgroundColor: colors.card,
+    borderTopWidth: 4,
+    borderTopColor: '#10b981',
+    borderLeftWidth: 4,
+    borderLeftColor: '#10b981',
+    borderRightWidth: 4,
+    borderRightColor: '#10b981',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     paddingBottom: 20,
     paddingTop: 8,
     shadowColor: '#000',
@@ -987,6 +1041,8 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 8,
     elevation: 8,
+    position: 'relative',
+    overflow: 'visible',
   },
   tab: {
     flex: 1,
@@ -998,7 +1054,7 @@ export const styles = StyleSheet.create({
   },
   tabText: {
     fontSize: 11,
-    color: '#6b7280',
+    color: colors.textSecondary,
     marginTop: 4,
     fontWeight: '500',
   },
@@ -1006,10 +1062,46 @@ export const styles = StyleSheet.create({
     color: '#10b981',
     fontWeight: '600',
   },
+  // Scanner Button (Middle Tab)
+  scannerButtonContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: -30,
+  },
+  scannerButtonOuter: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: '#10b981',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#10b981',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  scannerButton: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: '#10b981',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 4,
+    borderColor: colors.card,
+  },
+  scannerButtonText: {
+    fontSize: 10,
+    color: colors.textSecondary,
+    marginTop: 4,
+    fontWeight: '500',
+  },
   // Attendance Tabs
   attendanceTabs: {
     flexDirection: 'row',
-    backgroundColor: '#f9fafb',
+    backgroundColor: colors.cardSecondary,
     padding: 4,
     borderRadius: 12,
     marginBottom: 20,
@@ -1020,6 +1112,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 8,
     alignItems: 'center',
+    backgroundColor: 'transparent',
   },
   attendanceTabActive: {
     backgroundColor: '#10b981',
@@ -1030,7 +1123,7 @@ export const styles = StyleSheet.create({
   attendanceTabText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#6b7280',
+    color: colors.textSecondary,
   },
   attendanceTabTextActive: {
     color: '#fff',
@@ -1062,7 +1155,7 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#fecaca',
     borderRadius: 12,
-    backgroundColor: '#fef2f2',
+    backgroundColor: colors.card,
     marginBottom: 12,
   },
   absentEventInfo: {
@@ -1071,12 +1164,12 @@ export const styles = StyleSheet.create({
   absentEventName: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#111827',
+    color: colors.text,
     marginBottom: 4,
   },
   absentEventDetails: {
     fontSize: 11,
-    color: '#6b7280',
+    color: colors.textSecondary,
   },
   absentBadge: {
     paddingHorizontal: 10,
@@ -1102,7 +1195,7 @@ export const styles = StyleSheet.create({
   },
   emptyStateGoodSubtext: {
     fontSize: 13,
-    color: '#6b7280',
+    color: colors.textSecondary,
     marginTop: 4,
   },
   // Attendance Record Card
@@ -1124,12 +1217,12 @@ export const styles = StyleSheet.create({
   attendanceRecordEvent: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#111827',
+    color: colors.text,
     marginBottom: 4,
   },
   attendanceRecordDetails: {
     fontSize: 11,
-    color: '#9ca3af',
+    color: colors.textTertiary,
     marginBottom: 6,
   },
   attendanceRecordMeta: {
@@ -1149,7 +1242,164 @@ export const styles = StyleSheet.create({
   },
   attendanceRecordMethod: {
     fontSize: 11,
-    color: '#6b7280',
+    color: colors.textSecondary,
     textTransform: 'capitalize',
   },
+  // Tap hint for event cards
+  tapHint: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    marginTop: 8,
+    gap: 4,
+  },
+  tapHintText: {
+    fontSize: 12,
+    color: '#9ca3af',
+    fontWeight: '500',
+  },
+  // Ended date container
+  endedDateContainer: {
+    marginLeft: 6,
+  },
+  endedLabel: {
+    fontSize: 10,
+    color: '#9ca3af',
+    marginBottom: 2,
+  },
+  // Settings Tab Styles
+  settingsContent: {
+    flex: 1,
+    backgroundColor: colors.cardSecondary,
+    padding: 20,
+  },
+  profileInfoCard: {
+    backgroundColor: colors.card,
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  profileInfoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.borderLight,
+  },
+  profileInfoLabel: {
+    fontSize: 13,
+    color: colors.textSecondary,
+    fontWeight: '500',
+  },
+  profileInfoValue: {
+    fontSize: 14,
+    color: colors.text,
+    fontWeight: '600',
+  },
+  settingItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: colors.card,
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  settingItemLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  settingIconBox: {
+    width: 40,
+    height: 40,
+    backgroundColor: '#dcfce7',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  settingItemText: {
+    flex: 1,
+  },
+  settingItemTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.text,
+    marginBottom: 2,
+  },
+  settingItemSubtitle: {
+    fontSize: 12,
+    color: colors.textSecondary,
+  },
+  aboutCard: {
+    backgroundColor: colors.card,
+    borderRadius: 12,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: colors.border,
+    alignItems: 'center',
+  },
+  aboutTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: colors.text,
+    marginBottom: 12,
+  },
+  aboutDescription: {
+    fontSize: 13,
+    color: colors.textSecondary,
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 16,
+  },
+  aboutFeatures: {
+    width: '100%',
+    gap: 8,
+  },
+  aboutFeatureItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  aboutFeatureText: {
+    fontSize: 13,
+    color: colors.text,
+    fontWeight: '500',
+  },
+  settingsFooter: {
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  settingsFooterText: {
+    fontSize: 12,
+    color: colors.textSecondary,
+  },
+});
+
+// Export static styles for backward compatibility
+export const styles = createStyles({
+  background: '#f0fdf4',
+  card: '#ffffff',
+  cardSecondary: '#f9fafb',
+  text: '#111827',
+  textSecondary: '#6b7280',
+  textTertiary: '#9ca3af',
+  primary: '#10b981',
+  primaryDark: '#059669',
+  primaryLight: '#34d399',
+  success: '#10b981',
+  warning: '#f59e0b',
+  error: '#ef4444',
+  info: '#3b82f6',
+  border: '#e5e7eb',
+  borderLight: '#f3f4f6',
+  overlay: 'rgba(0, 0, 0, 0.5)',
+  shadow: 'rgba(0, 0, 0, 0.1)',
+  inputBackground: '#ffffff',
+  inputBorder: '#10b981',
+  placeholder: '#6b7280',
 });

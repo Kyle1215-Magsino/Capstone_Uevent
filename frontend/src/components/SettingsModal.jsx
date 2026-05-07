@@ -4,12 +4,44 @@ import Modal from './Modal';
 
 export default function SettingsModal({ open, onClose }) {
   const { darkMode, toggleDarkMode } = useTheme();
-  const [fontSize, setFontSize] = useState(1); // Default 1rem (medium)
+  const [fontSize, setFontSize] = useState(() => {
+    const saved = localStorage.getItem('fontSize');
+    return saved ? parseFloat(saved) : 1;
+  });
+  const [density, setDensity] = useState(() => {
+    const saved = localStorage.getItem('tableDensity');
+    return saved || 'comfortable';
+  });
 
   useEffect(() => {
+    // Save to localStorage whenever fontSize changes
+    localStorage.setItem('fontSize', fontSize.toString());
     // Apply font size to document root
-    document.documentElement.style.fontSize = `${fontSize}rem`;
+    document.documentElement.style.fontSize = `${fontSize * 16}px`;
   }, [fontSize]);
+
+  useEffect(() => {
+    // Save density to localStorage
+    localStorage.setItem('tableDensity', density);
+    // Apply density class to body
+    document.body.setAttribute('data-density', density);
+  }, [density]);
+
+  // Load saved font size on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('fontSize');
+    if (saved) {
+      const size = parseFloat(saved);
+      setFontSize(size);
+      document.documentElement.style.fontSize = `${size * 16}px`;
+    }
+    
+    const savedDensity = localStorage.getItem('tableDensity');
+    if (savedDensity) {
+      setDensity(savedDensity);
+      document.body.setAttribute('data-density', savedDensity);
+    }
+  }, []);
 
   const handleFontSizeChange = (e) => {
     setFontSize(Number(e.target.value));
@@ -21,9 +53,22 @@ export default function SettingsModal({ open, onClose }) {
     return 'Medium';
   };
 
+  const resetFontSize = () => {
+    setFontSize(1);
+    localStorage.setItem('fontSize', '1');
+    document.documentElement.style.fontSize = '16px';
+  };
+
+  const resetAll = () => {
+    resetFontSize();
+    setDensity('comfortable');
+    localStorage.setItem('tableDensity', 'comfortable');
+    document.body.setAttribute('data-density', 'comfortable');
+  };
+
   return (
     <Modal open={open} onClose={onClose} title="Settings" maxWidth="max-w-lg">
-      <div className="space-y-6">
+      <div className="space-y-6 p-6">
         {/* Appearance Section */}
         <div>
           <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
@@ -123,6 +168,84 @@ export default function SettingsModal({ open, onClose }) {
           </div>
         </div>
 
+        {/* Display Density Section */}
+        <div>
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+            <svg className="w-4 h-4 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            Display Density
+          </h3>
+          
+          <div className="grid grid-cols-3 gap-2">
+            <button
+              onClick={() => setDensity('compact')}
+              className={`p-3 rounded-lg border-2 transition-all ${
+                density === 'compact'
+                  ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
+                  : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+              }`}
+            >
+              <div className="space-y-1 mb-2">
+                <div className="h-1 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                <div className="h-1 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                <div className="h-1 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                <div className="h-1 bg-gray-300 dark:bg-gray-600 rounded"></div>
+              </div>
+              <p className={`text-xs font-medium ${
+                density === 'compact' ? 'text-green-600 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'
+              }`}>
+                Compact
+              </p>
+            </button>
+
+            <button
+              onClick={() => setDensity('comfortable')}
+              className={`p-3 rounded-lg border-2 transition-all ${
+                density === 'comfortable'
+                  ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
+                  : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+              }`}
+            >
+              <div className="space-y-1.5 mb-2">
+                <div className="h-1.5 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                <div className="h-1.5 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                <div className="h-1.5 bg-gray-300 dark:bg-gray-600 rounded"></div>
+              </div>
+              <p className={`text-xs font-medium ${
+                density === 'comfortable' ? 'text-green-600 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'
+              }`}>
+                Comfortable
+              </p>
+            </button>
+
+            <button
+              onClick={() => setDensity('spacious')}
+              className={`p-3 rounded-lg border-2 transition-all ${
+                density === 'spacious'
+                  ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
+                  : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+              }`}
+            >
+              <div className="space-y-2 mb-2">
+                <div className="h-2 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                <div className="h-2 bg-gray-300 dark:bg-gray-600 rounded"></div>
+              </div>
+              <p className={`text-xs font-medium ${
+                density === 'spacious' ? 'text-green-600 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'
+              }`}>
+                Spacious
+              </p>
+            </button>
+          </div>
+          
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">
+            {density === 'compact' && 'More rows visible, less spacing'}
+            {density === 'comfortable' && 'Balanced spacing (recommended)'}
+            {density === 'spacious' && 'More spacing, easier to read'}
+          </p>
+        </div>
+
         {/* Preview Section */}
         <div className="p-4 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-2 mb-2">
@@ -142,6 +265,12 @@ export default function SettingsModal({ open, onClose }) {
 
         {/* Action Buttons */}
         <div className="flex gap-3 pt-2">
+          <button
+            onClick={resetAll}
+            className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-lg font-medium transition-colors"
+          >
+            Reset All
+          </button>
           <button
             onClick={onClose}
             className="flex-1 px-4 py-2.5 bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700 text-white rounded-lg font-medium transition-colors shadow-sm hover:shadow-md"

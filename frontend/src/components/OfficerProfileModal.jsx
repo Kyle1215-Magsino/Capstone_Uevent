@@ -3,7 +3,6 @@ import { createPortal } from 'react-dom';
 import { useAuth } from '../context/AuthContext';
 import { uploadUserProfileImage, updateUserPassword } from '../api/authApi';
 import { toast } from 'react-toastify';
-import TwoFactorPanel from './TwoFactorPanel';
 
 export default function OfficerProfileModal({ open, onClose }) {
   const { user, fetchUser } = useAuth();
@@ -87,7 +86,7 @@ export default function OfficerProfileModal({ open, onClose }) {
     <div className="fixed inset-0 z-[9998] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={handleClose} />
 
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+      <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
         {/* Header */}
         <div className="bg-gradient-to-br from-green-500 to-green-600 px-6 py-6 text-center relative">
           <button
@@ -135,11 +134,11 @@ export default function OfficerProfileModal({ open, onClose }) {
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-green-100 overflow-x-auto">
+        <div className="flex border-b border-green-100 dark:border-gray-700 overflow-x-auto px-6">
           <button
             onClick={() => setTab('info')}
             className={`flex-1 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
-              tab === 'info' ? 'text-green-600 border-b-2 border-green-500' : 'text-gray-400 hover:text-gray-600'
+              tab === 'info' ? 'text-green-600 dark:text-green-400 border-b-2 border-green-500' : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'
             }`}
           >
             Profile Info
@@ -147,18 +146,10 @@ export default function OfficerProfileModal({ open, onClose }) {
           <button
             onClick={() => setTab('password')}
             className={`flex-1 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
-              tab === 'password' ? 'text-green-600 border-b-2 border-green-500' : 'text-gray-400 hover:text-gray-600'
+              tab === 'password' ? 'text-green-600 dark:text-green-400 border-b-2 border-green-500' : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'
             }`}
           >
             Change Password
-          </button>
-          <button
-            onClick={() => setTab('security')}
-            className={`flex-1 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
-              tab === 'security' ? 'text-green-600 border-b-2 border-green-500' : 'text-gray-400 hover:text-gray-600'
-            }`}
-          >
-            Security
           </button>
         </div>
 
@@ -185,13 +176,13 @@ export default function OfficerProfileModal({ open, onClose }) {
                   icon: <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>,
                 },
               ].map(item => (
-                <div key={item.label} className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-green-50/50 transition-colors">
-                  <div className="w-9 h-9 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                <div key={item.label} className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-green-50/50 dark:hover:bg-gray-700/50 transition-colors">
+                  <div className="w-9 h-9 bg-green-50 dark:bg-gray-700 rounded-lg flex items-center justify-center flex-shrink-0">
                     {item.icon}
                   </div>
                   <div className="min-w-0">
-                    <p className="text-xs text-gray-400">{item.label}</p>
-                    <p className="text-sm font-medium text-gray-800 truncate">{item.value}</p>
+                    <p className="text-xs text-gray-400 dark:text-gray-500">{item.label}</p>
+                    <p className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">{item.value}</p>
                   </div>
                 </div>
               ))}
@@ -199,13 +190,13 @@ export default function OfficerProfileModal({ open, onClose }) {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Current Password</label>
                 <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
                   </div>
-                  <input type={showPw.current ? 'text' : 'password'} name="current_password" value={form.current_password} onChange={handleChange} className={inputCls + ' pr-10'} placeholder="Enter current password" />
-                  <button type="button" onClick={() => setShowPw(v => ({ ...v, current: !v.current }))} className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600">
+                  <input type={showPw.current ? 'text' : 'password'} name="current_password" value={form.current_password} onChange={handleChange} className={inputCls + ' pr-10 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400'} placeholder="Enter current password" />
+                  <button type="button" onClick={() => setShowPw(v => ({ ...v, current: !v.current }))} className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
                     {showPw.current ? (
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
                     ) : (
@@ -216,13 +207,13 @@ export default function OfficerProfileModal({ open, onClose }) {
                 {errors.current_password && <p className="text-xs text-red-500 mt-1">{errors.current_password[0]}</p>}
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">New Password</label>
                 <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" /></svg>
                   </div>
-                  <input type={showPw.pwd ? 'text' : 'password'} name="password" value={form.password} onChange={handleChange} className={inputCls + ' pr-10'} placeholder="Enter new password" />
-                  <button type="button" onClick={() => setShowPw(v => ({ ...v, pwd: !v.pwd }))} className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600">
+                  <input type={showPw.pwd ? 'text' : 'password'} name="password" value={form.password} onChange={handleChange} className={inputCls + ' pr-10 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400'} placeholder="Enter new password" />
+                  <button type="button" onClick={() => setShowPw(v => ({ ...v, pwd: !v.pwd }))} className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
                     {showPw.pwd ? (
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
                     ) : (
@@ -233,13 +224,13 @@ export default function OfficerProfileModal({ open, onClose }) {
                 {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password[0]}</p>}
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Confirm New Password</label>
                 <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
                   </div>
-                  <input type={showPw.confirm ? 'text' : 'password'} name="password_confirmation" value={form.password_confirmation} onChange={handleChange} className={inputCls + ' pr-10'} placeholder="Confirm new password" />
-                  <button type="button" onClick={() => setShowPw(v => ({ ...v, confirm: !v.confirm }))} className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600">
+                  <input type={showPw.confirm ? 'text' : 'password'} name="password_confirmation" value={form.password_confirmation} onChange={handleChange} className={inputCls + ' pr-10 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400'} placeholder="Confirm new password" />
+                  <button type="button" onClick={() => setShowPw(v => ({ ...v, confirm: !v.confirm }))} className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
                     {showPw.confirm ? (
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
                     ) : (
@@ -256,9 +247,6 @@ export default function OfficerProfileModal({ open, onClose }) {
                 {saving ? 'Updating…' : 'Update Password'}
               </button>
             </form>
-          )}
-          {tab === 'security' && (
-            <TwoFactorPanel />
           )}
         </div>
       </div>

@@ -29,6 +29,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user/two-factor-qr-code', [TwoFactorController::class, 'qrCode']);
     Route::get('/user/two-factor-recovery-codes', [TwoFactorController::class, 'recoveryCodes']);
 
+    // Check-in (available to all authenticated users - students, officers, admins)
+    Route::post('/checkin', [AttendanceController::class, 'processCheckin']);
+
     // Officer and admin routes
     Route::middleware('role:officer,admin')->group(function () {
         Route::post('/register', [AuthController::class, 'register']);
@@ -61,8 +64,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/events/{id}', [EventController::class, 'update']);
         Route::delete('/events/{id}', [EventController::class, 'destroy']);
 
-        // Attendance
-        Route::post('/checkin', [AttendanceController::class, 'processCheckin']);
+        // Attendance (admin/officer only)
         Route::get('/attendance/live/{eventId}', [AttendanceController::class, 'liveAttendance']);
         Route::get('/attendance', [AttendanceController::class, 'index']);
         Route::get('/reports', [AttendanceController::class, 'reports']);

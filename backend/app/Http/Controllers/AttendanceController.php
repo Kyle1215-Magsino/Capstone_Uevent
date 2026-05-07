@@ -24,14 +24,11 @@ class AttendanceController extends Controller
 
         $event = Event::findOrFail($request->event_id);
 
-        // Find student by barcode or student_id
-        if ($request->verification_method === 'barcode') {
-            $student = Student::where('barcode', $request->student_identifier)->first();
-        } else {
-            $student = Student::where('student_id', $request->student_identifier)
-                ->orWhere('barcode', $request->student_identifier)
-                ->first();
-        }
+        // Find student by student_id, barcode, or email
+        $student = Student::where('student_id', $request->student_identifier)
+            ->orWhere('barcode', $request->student_identifier)
+            ->orWhere('email', $request->student_identifier)
+            ->first();
 
         if (!$student) {
             return response()->json(['message' => 'Student not found.'], 404);

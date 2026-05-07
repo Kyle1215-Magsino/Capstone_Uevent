@@ -16,6 +16,27 @@
     background-color: #0a0a0a;
     color: #f9fafb;
   }
+
+  /* Global dark mode fixes for common elements */
+  .dark input:not([type="checkbox"]):not([type="radio"]),
+  .dark textarea,
+  .dark select {
+    background-color: #374151;
+    border-color: #4b5563;
+    color: #f9fafb;
+  }
+
+  .dark input:not([type="checkbox"]):not([type="radio"])::placeholder,
+  .dark textarea::placeholder {
+    color: #9ca3af;
+  }
+
+  .dark input:not([type="checkbox"]):not([type="radio"]):focus,
+  .dark textarea:focus,
+  .dark select:focus {
+    border-color: #10b981;
+    background-color: #374151;
+  }
 }
 
 @layer utilities {

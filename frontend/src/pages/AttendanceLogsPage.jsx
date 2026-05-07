@@ -6,7 +6,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 function exportCSV(rows) {
   const headers = ['Student ID', 'Student Name', 'Course', 'Event', 'Check-in Time', 'Status', 'Method', 'Location Verified'];
   const lines = rows.map(r => [
-    r.student?.student_id ?? '',
+    r.student?.student_id ? `MBC2023-${r.student.student_id}` : '',
     `${r.student?.first_name ?? ''} ${r.student?.last_name ?? ''}`.trim(),
     r.student?.course ?? '',
     r.event?.event_name ?? '',
@@ -54,7 +54,7 @@ export default function AttendanceLogsPage() {
   });
 
   const columns = [
-    { key: 'student_id', label: 'Student ID', accessor: row => row.student?.student_id },
+    { key: 'student_id', label: 'Student ID', accessor: row => `MBC2023-${row.student?.student_id}` },
     { key: 'student_name', label: 'Student Name', accessor: row => `${row.student?.first_name} ${row.student?.last_name}` },
     { key: 'course', label: 'Course', accessor: row => row.student?.course },
     { key: 'event_name', label: 'Event', accessor: row => row.event?.event_name },

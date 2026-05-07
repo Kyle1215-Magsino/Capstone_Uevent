@@ -17,6 +17,41 @@ use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
+    /**
+     * Update event statuses based on current date/time
+     */
+    private function updateEventStatuses(): void
+    {
+        $now = Carbon::now();
+        $today = $now->toDateString();
+        $currentTime = $now->toTimeString();
+
+        // Update completed events (past end time)
+        Event::where('status', '!=', 'cancelled')
+            ->where(function ($query) use ($today, $currentTime) {
+                // Events before today
+                $query->where('event_date', '<', $today)
+                    // OR events today but past end time
+                    ->orWhere(function ($q) use ($today, $currentTime) {
+                        $q->where('event_date', '=', $today)
+                            ->where('end_time', '<', $currentTime);
+                    });
+            })
+            ->update(['status' => 'completed']);
+
+        // Update ongoing events (between start and end time today)
+        Event::where('status', 'upcoming')
+            ->where('event_date', '=', $today)
+            ->where('start_time', '<=', $currentTime)
+            ->where('end_time', '>=', $currentTime)
+            ->update(['status' => 'ongoing']);
+
+        // Update future ongoing events back to upcoming (fix incorrect statuses)
+        Event::where('status', 'ongoing')
+            ->where('event_date', '>', $today)
+            ->update(['status' => 'upcoming']);
+    }
+
     public function getUsers(Request $request): JsonResponse
     {
         $users = User::whereIn('role', ['admin', 'officer'])
@@ -302,6 +337,9 @@ class AuthController extends Controller
 
     public function studentDashboard(Request $request): JsonResponse
     {
+        // Update event statuses before fetching
+        $this->updateEventStatuses();
+
         $user = $request->user()->load('studentRecord');
         $student = $user->studentRecord;
 
@@ -410,10 +448,14 @@ class AuthController extends Controller
 
     public function studentEvents(Request $request): JsonResponse
     {
+        // Update event statuses before fetching
+        $this->updateEventStatuses();
+
         $student = $request->user()->studentRecord;
         
         $events = Event::whereIn('status', ['upcoming', 'ongoing'])
             ->orderBy('event_date')
+            ->orderBy('start_time')
             ->get();
 
         // Attach check-in status for this student

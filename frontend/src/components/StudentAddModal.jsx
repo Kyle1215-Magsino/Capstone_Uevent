@@ -67,11 +67,13 @@ export default function StudentAddModal({ open, onClose, onCreated }) {
             <select required value={form.course} onChange={e => set('course', e.target.value)}
               className="w-full px-4 py-2.5 border border-green-400 dark:border-green-600 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500">
               <option value="">Select Course</option>
+              <option value="BSEED">BSEED</option>
               <option value="BSIT">BSIT</option>
-              <option value="BSCS">BSCS</option>
-              <option value="BSED">BSED</option>
-              <option value="BEED">BEED</option>
-              <option value="BSA">BSA</option>
+              <option value="BSCPE">BSCPE</option>
+              <option value="BSFI">BSFI</option>
+              <option value="BSHM">BSHM</option>
+              <option value="BSCRIM">BSCRIM</option>
+              <option value="BSPOLSCI">BSPOLSCI</option>
             </select>
           </div>
           <div>

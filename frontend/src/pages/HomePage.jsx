@@ -5,10 +5,10 @@ import StudentRegisterModal from '../components/StudentRegisterModal';
 import { getPublicAnnouncements } from '../api/announcementApi';
 
 const FALLBACK_ANNOUNCEMENTS = [
-  { id: 1, tag: 'Event',    text: 'Campus Leadership Summit — April 5, 2026 at the Main Gymnasium. All students are encouraged to attend!' },
+  { id: 1, tag: 'Event',    text: 'Campus Leadership Summit on April 5, 2026 at the Main Gymnasium. All students are encouraged to attend!' },
   { id: 2, tag: 'Reminder', text: 'Face enrollment is now open. Visit the Face Enrollment page to register your biometric data.' },
   { id: 3, tag: 'Info',     text: "Barcode scanners are available at the Registrar's Office. Contact admin for assistance." },
-  { id: 4, tag: 'Event',    text: 'General Assembly on April 12, 2026 — attendance is mandatory for all enrolled students.' },
+  { id: 4, tag: 'Event',    text: 'General Assembly on April 12, 2026. Attendance is mandatory for all enrolled students.' },
   { id: 5, tag: 'Update',   text: 'U-EventTrack v2 is live! Enjoy barcode scanning, facial recognition, and mobile app access.' },
 ];
 
@@ -145,17 +145,16 @@ export default function HomePage() {
             <div className="space-y-8">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 border border-green-200 rounded-full">
                 <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                <span className="text-green-700 text-sm font-semibold">Mindoro State University — Bongabong Campus</span>
+                <span className="text-green-700 text-sm font-semibold">Mindoro State University, Bongabong Campus</span>
               </div>
               
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-gray-900 leading-tight">
-                Smart<br />
                 <span className="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">Attendance</span><br />
                 for USG Events
               </h1>
               
               <p className="text-lg text-gray-600 leading-relaxed max-w-xl">
-                Streamline event attendance with <span className="font-semibold text-green-600">barcode scanning</span>, <span className="font-semibold text-green-600">facial recognition</span>, and <span className="font-semibold text-green-600">mobile app</span> — all tracked in real time.
+                Streamline event attendance with <span className="font-semibold text-green-600">barcode scanning</span>, <span className="font-semibold text-green-600">facial recognition</span>, and <span className="font-semibold text-green-600">mobile app</span>, all tracked in real time.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4">
@@ -377,7 +376,7 @@ export default function HomePage() {
             </div>
             
             <p className="text-gray-400 text-sm text-center">
-              © {new Date().getFullYear()} Mindoro State University — Bongabong Campus. All rights reserved.
+              © {new Date().getFullYear()} Mindoro State University, Bongabong Campus. All rights reserved.
             </p>
             
             <div className="flex items-center gap-3 text-sm text-gray-400">

@@ -1,0 +1,58 @@
+/* Display Density Styles */
+
+/* Compact Density */
+body[data-density="compact"] table tbody tr td,
+body[data-density="compact"] table thead tr th {
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
+body[data-density="compact"] .space-y-4 > * + * {
+  margin-top: 0.75rem !important;
+}
+
+body[data-density="compact"] .space-y-6 > * + * {
+  margin-top: 1rem !important;
+}
+
+/* Comfortable Density (Default) */
+body[data-density="comfortable"] table tbody tr td,
+body[data-density="comfortable"] table thead tr th {
+  padding-top: 0.75rem !important;
+  padding-bottom: 0.75rem !important;
+}
+
+/* Spacious Density */
+body[data-density="spacious"] table tbody tr td,
+body[data-density="spacious"] table thead tr th {
+  padding-top: 1.25rem !important;
+  padding-bottom: 1.25rem !important;
+}
+
+body[data-density="spacious"] .space-y-4 > * + * {
+  margin-top: 1.25rem !important;
+}
+
+body[data-density="spacious"] .space-y-6 > * + * {
+  margin-top: 2rem !important;
+}
+
+/* Card spacing */
+body[data-density="compact"] .bg-white.rounded-xl.shadow-sm {
+  padding: 1rem !important;
+}
+
+body[data-density="spacious"] .bg-white.rounded-xl.shadow-sm {
+  padding: 1.75rem !important;
+}
+
+/* List items */
+body[data-density="compact"] .divide-y > * {
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
+body[data-density="spacious"] .divide-y > * {
+  padding-top: 1.25rem !important;
+  padding-bottom: 1.25rem !important;
+}

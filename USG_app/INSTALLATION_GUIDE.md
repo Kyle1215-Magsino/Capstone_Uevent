@@ -475,9 +475,4 @@ eas build:list
 ## Need Help?
 
 1. Check build logs in Expo dashboard
-2. Read error messages carefully
-3. Search Expo forums
-4. Ask in Expo Discord
-5. Check this guide again
-
-Good luck with your app deployment! 🚀
+2. Read error mess

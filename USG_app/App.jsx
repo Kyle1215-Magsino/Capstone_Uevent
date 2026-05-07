@@ -1,23 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, ActivityIndicator, Modal, TextInput, KeyboardAvoidingView, Platform, Alert, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, ActivityIndicator, Modal, TextInput, KeyboardAvoidingView, Platform, Alert, Image, Switch } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons, MaterialIcons, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
-import { styles } from './styles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Location from 'expo-location';
+import { createStyles } from './styles';
+import EventDetailsModal from './src/components/EventDetailsModal';
+import BarcodeScanner from './src/components/BarcodeScanner';
+import { useTheme } from './src/context/ThemeContext';
 
-const API_URL = 'http://192.168.1.15:8000/api';
+const API_URL = 'http://192.168.1.17:8000/api';
+
+// Configure axios timeout
+axios.defaults.timeout = 10000; // 10 seconds timeout
 
 const FALLBACK_ANNOUNCEMENTS = [
-  { id: 1, tag: 'Event', text: 'Campus Leadership Summit — April 5, 2026 at the Main Gymnasium. All students are encouraged to attend!' },
+  { id: 1, tag: 'Event', text: 'Campus Leadership Summit on April 5, 2026 at the Main Gymnasium. All students are encouraged to attend!' },
   { id: 2, tag: 'Reminder', text: 'Face enrollment is now open. Visit the Face Enrollment page to register your biometric data.' },
   { id: 3, tag: 'Info', text: "Barcode scanners are available at the Registrar's Office. Contact admin for assistance." },
-  { id: 4, tag: 'Event', text: 'General Assembly on April 12, 2026 — attendance is mandatory for all enrolled students.' },
+  { id: 4, tag: 'Event', text: 'General Assembly on April 12, 2026. Attendance is mandatory for all enrolled students.' },
   { id: 5, tag: 'Update', text: 'U-EventTrack v2 is live! Enjoy barcode scanning, facial recognition, and mobile app access.' },
 ];
 
 // Dashboard Tab Component
-function DashboardTab({ dashboardData, greeting, attendanceRate, streak, nextEvent, recentCheckins, formatDate }) {
+function DashboardTab({ dashboardData, greeting, attendanceRate, streak, nextEvent, recentCheckins, formatDate, formatTime, styles }) {
   return (
     <>
       {/* Next Event Banner */}
@@ -30,7 +38,7 @@ function DashboardTab({ dashboardData, greeting, attendanceRate, streak, nextEve
             <Text style={styles.nextEventLabel}>Next Upcoming Event</Text>
             <Text style={styles.nextEventName}>{nextEvent.event_name}</Text>
             <Text style={styles.nextEventDetails}>
-              {nextEvent.event_date} • {nextEvent.start_time}–{nextEvent.end_time}
+              {formatDate(nextEvent.event_date)} • {formatTime(nextEvent.start_time)}–{formatTime(nextEvent.end_time)}
             </Text>
           </View>
         </View>
@@ -114,7 +122,7 @@ function DashboardTab({ dashboardData, greeting, attendanceRate, streak, nextEve
             </View>
             <View style={styles.eventInfo}>
               <Text style={styles.eventName}>{e.event_name}</Text>
-              <Text style={styles.eventDetails}>{e.event_date} • {e.venue}</Text>
+              <Text style={styles.eventDetails}>{formatDate(e.event_date)} • {e.venue}</Text>
             </View>
             <View style={styles.eventBadge}>
               <Text style={styles.eventBadgeText}>{e.status}</Text>
@@ -130,7 +138,7 @@ function DashboardTab({ dashboardData, greeting, attendanceRate, streak, nextEve
 }
 
 // Events Tab Component
-function EventsTab({ dashboardData, formatDate }) {
+function EventsTab({ dashboardData, formatDate, formatTime, onEventPress, styles }) {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -158,14 +166,23 @@ function EventsTab({ dashboardData, formatDate }) {
         <Text style={styles.sectionTitle}>Available Events</Text>
       </View>
       {events.map(e => (
-        <View key={e.id} style={styles.eventCard}>
+        <TouchableOpacity 
+          key={e.id} 
+          style={styles.eventCard}
+          onPress={() => onEventPress(e)}
+          activeOpacity={0.7}
+        >
           <View style={[
             styles.statusBadge,
-            { backgroundColor: e.status === 'ongoing' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(59, 130, 246, 0.1)' }
+            { backgroundColor: e.status === 'ongoing' ? 'rgba(16, 185, 129, 0.1)' : 
+                              e.status === 'completed' ? 'rgba(107, 114, 128, 0.1)' : 
+                              'rgba(59, 130, 246, 0.1)' }
           ]}>
             <Text style={[
               styles.statusText,
-              { color: e.status === 'ongoing' ? '#10b981' : '#3b82f6' }
+              { color: e.status === 'ongoing' ? '#10b981' : 
+                       e.status === 'completed' ? '#6b7280' : 
+                       '#3b82f6' }
             ]}>
               {e.status.toUpperCase()}
             </Text>
@@ -177,12 +194,19 @@ function EventsTab({ dashboardData, formatDate }) {
             </Text>
           )}
           <View style={styles.eventDetailRow}>
-            <Ionicons name="calendar-outline" size={14} color="#6b7280" />
-            <Text style={styles.eventDetailText}>{e.event_date}</Text>
+            <Ionicons name="calendar-outline" size={16} color="#10b981" />
+            {e.status === 'completed' ? (
+              <View style={styles.endedDateContainer}>
+                <Text style={styles.endedLabel}>Ended</Text>
+                <Text style={styles.eventDetailText}>{formatDate(e.event_date)}</Text>
+              </View>
+            ) : (
+              <Text style={styles.eventDetailText}>{formatDate(e.event_date)}</Text>
+            )}
           </View>
           {e.venue && (
             <View style={styles.eventDetailRow}>
-              <Ionicons name="location-outline" size={14} color="#6b7280" />
+              <Ionicons name="location-outline" size={16} color="#10b981" />
               <Text style={styles.eventDetailText}>{e.venue}</Text>
             </View>
           )}
@@ -192,7 +216,11 @@ function EventsTab({ dashboardData, formatDate }) {
               <Text style={styles.checkedInText}>Checked In</Text>
             </View>
           )}
-        </View>
+          <View style={styles.tapHint}>
+            <Text style={styles.tapHintText}>Tap for details</Text>
+            <Ionicons name="chevron-forward" size={16} color="#9ca3af" />
+          </View>
+        </TouchableOpacity>
       ))}
       {events.length === 0 && (
         <Text style={styles.emptyText}>No events available</Text>
@@ -202,7 +230,7 @@ function EventsTab({ dashboardData, formatDate }) {
 }
 
 // Attendance Tab Component
-function AttendanceTab({ dashboardData, formatDate }) {
+function AttendanceTab({ dashboardData, formatDate, formatTime, styles }) {
   const [tab, setTab] = useState('all');
   const records = dashboardData.attendanceRecords || [];
   const absentEvents = dashboardData.allPastEvents?.filter(e => 
@@ -262,7 +290,7 @@ function AttendanceTab({ dashboardData, formatDate }) {
                 <View style={styles.absentEventInfo}>
                   <Text style={styles.absentEventName}>{e.event_name}</Text>
                   <Text style={styles.absentEventDetails}>
-                    {e.event_date} • {e.start_time}–{e.end_time}
+                    {formatDate(e.event_date)} • {formatTime(e.start_time)}–{formatTime(e.end_time)}
                   </Text>
                 </View>
                 <View style={styles.absentBadge}>
@@ -322,7 +350,116 @@ function AttendanceTab({ dashboardData, formatDate }) {
   );
 }
 
+// Settings Tab Component
+function SettingsTab({ user, dashboardData, styles }) {
+  const { isDark, toggleTheme } = useTheme();
+  const student = dashboardData?.student;
+
+  return (
+    <View style={styles.settingsContent}>
+      {/* Profile Section */}
+      <View style={styles.section}>
+        <View style={styles.sectionHeaderRow}>
+          <Ionicons name="person" size={20} color="#10b981" />
+          <Text style={styles.sectionTitle}>Profile Information</Text>
+        </View>
+        
+        <View style={styles.profileInfoCard}>
+          <View style={styles.profileInfoRow}>
+            <Text style={styles.profileInfoLabel}>Name</Text>
+            <Text style={styles.profileInfoValue}>
+              {student?.first_name} {student?.last_name}
+            </Text>
+          </View>
+          <View style={styles.profileInfoRow}>
+            <Text style={styles.profileInfoLabel}>Student ID</Text>
+            <Text style={styles.profileInfoValue}>{student?.student_id}</Text>
+          </View>
+          <View style={styles.profileInfoRow}>
+            <Text style={styles.profileInfoLabel}>Email</Text>
+            <Text style={styles.profileInfoValue}>{student?.email || user?.email}</Text>
+          </View>
+          <View style={styles.profileInfoRow}>
+            <Text style={styles.profileInfoLabel}>Course</Text>
+            <Text style={styles.profileInfoValue}>{student?.course}</Text>
+          </View>
+          <View style={styles.profileInfoRow}>
+            <Text style={styles.profileInfoLabel}>Year Level</Text>
+            <Text style={styles.profileInfoValue}>Year {student?.year_level}</Text>
+          </View>
+        </View>
+      </View>
+
+      {/* Appearance Section */}
+      <View style={styles.section}>
+        <View style={styles.sectionHeaderRow}>
+          <Ionicons name="color-palette" size={20} color="#10b981" />
+          <Text style={styles.sectionTitle}>Appearance</Text>
+        </View>
+        
+        <View style={styles.settingItem}>
+          <View style={styles.settingItemLeft}>
+            <View style={styles.settingIconBox}>
+              <Ionicons name={isDark ? "moon" : "sunny"} size={20} color="#10b981" />
+            </View>
+            <View style={styles.settingItemText}>
+              <Text style={styles.settingItemTitle}>Dark Mode</Text>
+              <Text style={styles.settingItemSubtitle}>
+                {isDark ? 'Dark theme enabled' : 'Light theme enabled'}
+              </Text>
+            </View>
+          </View>
+          <Switch
+            value={isDark}
+            onValueChange={toggleTheme}
+            trackColor={{ false: '#d1d5db', true: '#10b981' }}
+            thumbColor={isDark ? '#fff' : '#f3f4f6'}
+          />
+        </View>
+      </View>
+
+      {/* About Section */}
+      <View style={styles.section}>
+        <View style={styles.sectionHeaderRow}>
+          <Ionicons name="information-circle" size={20} color="#10b981" />
+          <Text style={styles.sectionTitle}>About</Text>
+        </View>
+        
+        <View style={styles.aboutCard}>
+          <Text style={styles.aboutTitle}>U-EventTrack</Text>
+          <Text style={styles.aboutDescription}>
+            Digital attendance system for Mindoro State University, Bongabong Campus USG events.
+          </Text>
+          <View style={styles.aboutFeatures}>
+            <View style={styles.aboutFeatureItem}>
+              <Ionicons name="checkmark-circle" size={16} color="#10b981" />
+              <Text style={styles.aboutFeatureText}>Face Recognition</Text>
+            </View>
+            <View style={styles.aboutFeatureItem}>
+              <Ionicons name="qr-code" size={16} color="#10b981" />
+              <Text style={styles.aboutFeatureText}>QR Code Scanning</Text>
+            </View>
+            <View style={styles.aboutFeatureItem}>
+              <Ionicons name="location" size={16} color="#10b981" />
+              <Text style={styles.aboutFeatureText}>GPS Verification</Text>
+            </View>
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.settingsFooter}>
+        <Text style={styles.settingsFooterText}>
+          © {new Date().getFullYear()} MinSU Bongabong Campus
+        </Text>
+      </View>
+    </View>
+  );
+}
+
 export default function App() {
+  const { colors, isDark } = useTheme();
+  const styles = createStyles(colors);
+  
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -334,13 +471,23 @@ export default function App() {
   const [refreshing, setRefreshing] = useState(false);
   const [annIdx, setAnnIdx] = useState(0);
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [showEventDetails, setShowEventDetails] = useState(false);
+  const [showScanner, setShowScanner] = useState(false);
 
   const fetchPublicData = async () => {
     try {
-      const [announcementsRes, eventsRes] = await Promise.all([
+      // Add timeout to prevent hanging
+      const timeout = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Request timeout')), 10000)
+      );
+      
+      const fetchData = Promise.all([
         axios.get(`${API_URL}/announcements/public`),
         axios.get(`${API_URL}/events/active`)
       ]);
+      
+      const [announcementsRes, eventsRes] = await Promise.race([fetchData, timeout]);
       
       // Use API announcements if available, otherwise use fallback
       if (announcementsRes.data && announcementsRes.data.length > 0) {
@@ -352,8 +499,9 @@ export default function App() {
       setEvents(eventsRes.data || []);
     } catch (error) {
       console.log('Error fetching public data:', error.message);
-      // Only use fallback if API call fails
+      // Use fallback if API call fails
       setAnnouncements(FALLBACK_ANNOUNCEMENTS);
+      setEvents([]);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -393,21 +541,48 @@ export default function App() {
 
   const handleLogin = async (email, password) => {
     try {
+      console.log('Attempting login with:', email);
+      console.log('API URL:', `${API_URL}/mobile/login`);
+      
       const response = await axios.post(`${API_URL}/mobile/login`, {
         email: email.trim(),
         password: password,
       });
+
+      console.log('Login response:', response.data);
 
       if (response.data.user && response.data.token) {
         setToken(response.data.token);
         setUser(response.data.user);
         axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
         return { success: true, user: response.data.user };
+      } else {
+        console.log('Login response missing user or token');
+        return { success: false, message: 'Invalid response from server' };
       }
     } catch (error) {
+      console.log('Login error:', error);
+      console.log('Error response:', error.response?.data);
+      console.log('Error status:', error.response?.status);
+      console.log('Error message:', error.message);
+      
+      let errorMessage = 'Login failed';
+      
+      if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+        errorMessage = 'Connection timeout. Please check if the backend server is running.';
+      } else if (error.code === 'ERR_NETWORK' || error.message.includes('Network Error')) {
+        errorMessage = 'Network error. Please check your connection and ensure the backend server is running at ' + API_URL;
+      } else if (error.response?.status === 401) {
+        errorMessage = 'Invalid email or password';
+      } else if (error.response?.status === 403) {
+        errorMessage = error.response?.data?.message || 'Account is archived';
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+      
       return {
         success: false,
-        message: error.response?.data?.message || 'Login failed',
+        message: errorMessage,
       };
     }
   };
@@ -466,6 +641,137 @@ export default function App() {
     });
   };
 
+  const formatTime = (timeString) => {
+    if (!timeString) return '';
+    // Handle both "HH:MM:SS" and "HH:MM" formats
+    const [hours, minutes] = timeString.split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour % 12 || 12;
+    return `${displayHour}:${minutes} ${ampm}`;
+  };
+
+  const handleEventPress = (event) => {
+    setSelectedEvent(event);
+    setShowEventDetails(true);
+  };
+
+  const handleBarcodeScan = async (barcode) => {
+    try {
+      // Check if user is logged in
+      if (!token) {
+        Alert.alert('Error', 'Please login first to check in to events');
+        return;
+      }
+
+      let eventId = null;
+      let studentIdentifier = null;
+
+      // Check if it's an event barcode (EVENT-{event_id})
+      if (barcode.startsWith('EVENT-')) {
+        eventId = parseInt(barcode.replace('EVENT-', ''));
+        studentIdentifier = dashboardData?.student?.student_id;
+      }
+      // Check if it's a student barcode (MBC2023-{student_id})
+      else if (barcode.startsWith('MBC2023-')) {
+        // For student barcode, we need to know which event to check in to
+        // We'll use the next upcoming event or let user select
+        const upcomingEvents = dashboardData?.upcomingEvents || [];
+        
+        if (upcomingEvents.length === 0) {
+          Alert.alert('No Events', 'There are no upcoming events to check in to.');
+          return;
+        }
+        
+        // If there's only one upcoming event, use it
+        if (upcomingEvents.length === 1) {
+          eventId = upcomingEvents[0].id;
+          studentIdentifier = barcode; // Use the scanned barcode as identifier
+        } else {
+          // Multiple events - show selection
+          Alert.alert(
+            'Select Event',
+            'Multiple events available. Which event are you checking in to?',
+            upcomingEvents.map(event => ({
+              text: event.event_name,
+              onPress: () => {
+                performCheckin(event.id, barcode);
+              }
+            })).concat([{ text: 'Cancel', style: 'cancel' }])
+          );
+          return;
+        }
+      }
+      // Try parsing as just event ID number
+      else {
+        const parsedId = parseInt(barcode);
+        if (!isNaN(parsedId)) {
+          eventId = parsedId;
+          studentIdentifier = dashboardData?.student?.student_id;
+        } else {
+          Alert.alert('Invalid Barcode', 'This barcode format is not recognized.');
+          return;
+        }
+      }
+
+      if (!eventId || isNaN(eventId)) {
+        Alert.alert('Invalid Barcode', 'Could not determine event from barcode.');
+        return;
+      }
+
+      await performCheckin(eventId, studentIdentifier);
+    } catch (error) {
+      console.log('Check-in error:', error);
+      const message = error.response?.data?.message || 'Failed to check in. Please try again.';
+      Alert.alert('Check-in Failed', message);
+    }
+  };
+
+  const performCheckin = async (eventId, studentIdentifier) => {
+    try {
+      // Call the check-in API
+      const response = await axios.post(
+        `${API_URL}/checkin`,
+        {
+          student_identifier: studentIdentifier,
+          event_id: eventId,
+          verification_method: 'barcode',
+          location_lat: null,
+          location_lng: null,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data.attendance) {
+        const status = response.data.status === 'late' ? '(Late)' : '';
+        
+        Alert.alert(
+          'Check-in Successful!',
+          `You have been checked in ${status}`,
+          [
+            {
+              text: 'OK',
+              onPress: () => {
+                // Refresh dashboard data
+                fetchDashboard();
+              },
+            },
+          ]
+        );
+      } else {
+        Alert.alert('Error', response.data.message || 'Check-in failed');
+      }
+    } catch (error) {
+      console.log('Check-in error:', error);
+      const message = error.response?.data?.message || 'Failed to check in. Please try again.';
+      Alert.alert('Check-in Failed', message);
+    }
+  };
+
   const current = announcements.length > 0 && announcements[annIdx] 
     ? announcements[annIdx] 
     : FALLBACK_ANNOUNCEMENTS[0];
@@ -486,7 +792,11 @@ export default function App() {
 
     return (
       <View style={styles.container}>
-        <StatusBar style="auto" />
+        <StatusBar 
+          style={isDark ? "light" : "dark"} 
+          backgroundColor="transparent"
+          translucent={false}
+        />
         
         {/* Dashboard Header */}
         <View style={styles.dashboardHeader}>
@@ -518,9 +828,10 @@ export default function App() {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#10b981']} />
           }
         >
-          {activeTab === 'dashboard' && <DashboardTab dashboardData={dashboardData} greeting={greeting} attendanceRate={attendanceRate} streak={streak} nextEvent={nextEvent} recentCheckins={recentCheckins} formatDate={formatDate} />}
-          {activeTab === 'events' && <EventsTab dashboardData={dashboardData} formatDate={formatDate} />}
-          {activeTab === 'attendance' && <AttendanceTab dashboardData={dashboardData} formatDate={formatDate} />}
+          {activeTab === 'dashboard' && <DashboardTab dashboardData={dashboardData} greeting={greeting} attendanceRate={attendanceRate} streak={streak} nextEvent={nextEvent} recentCheckins={recentCheckins} formatDate={formatDate} formatTime={formatTime} styles={styles} />}
+          {activeTab === 'events' && <EventsTab dashboardData={dashboardData} formatDate={formatDate} formatTime={formatTime} onEventPress={handleEventPress} styles={styles} />}
+          {activeTab === 'attendance' && <AttendanceTab dashboardData={dashboardData} formatDate={formatDate} formatTime={formatTime} styles={styles} />}
+          {activeTab === 'settings' && <SettingsTab user={user} dashboardData={dashboardData} styles={styles} />}
         </ScrollView>
 
         {/* Bottom Tab Navigation */}
@@ -541,6 +852,20 @@ export default function App() {
             <Text style={[styles.tabText, activeTab === 'events' && styles.tabTextActive]}>Events</Text>
           </TouchableOpacity>
           
+          {/* Scanner Button (Middle) */}
+          <View style={styles.scannerButtonContainer}>
+            <View style={styles.scannerButtonOuter}>
+              <TouchableOpacity 
+                style={styles.scannerButton}
+                onPress={() => setShowScanner(true)}
+                activeOpacity={0.8}
+              >
+                <Ionicons name="qr-code" size={32} color="#fff" />
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.scannerButtonText}>Scan</Text>
+          </View>
+          
           <TouchableOpacity 
             style={[styles.tab, activeTab === 'attendance' && styles.tabActive]}
             onPress={() => setActiveTab('attendance')}
@@ -548,7 +873,35 @@ export default function App() {
             <Ionicons name={activeTab === 'attendance' ? 'clipboard' : 'clipboard-outline'} size={24} color={activeTab === 'attendance' ? '#10b981' : '#6b7280'} />
             <Text style={[styles.tabText, activeTab === 'attendance' && styles.tabTextActive]}>Attendance</Text>
           </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.tab, activeTab === 'settings' && styles.tabActive]}
+            onPress={() => setActiveTab('settings')}
+          >
+            <Ionicons name={activeTab === 'settings' ? 'settings' : 'settings-outline'} size={24} color={activeTab === 'settings' ? '#10b981' : '#6b7280'} />
+            <Text style={[styles.tabText, activeTab === 'settings' && styles.tabTextActive]}>Settings</Text>
+          </TouchableOpacity>
         </View>
+
+        {/* Event Details Modal */}
+        <EventDetailsModal
+          visible={showEventDetails}
+          event={selectedEvent}
+          onClose={() => {
+            setShowEventDetails(false);
+            setSelectedEvent(null);
+          }}
+          formatDate={formatDate}
+          formatTime={formatTime}
+        />
+
+        {/* Barcode Scanner Modal */}
+        <BarcodeScanner
+          visible={showScanner}
+          onClose={() => setShowScanner(false)}
+          onScan={handleBarcodeScan}
+          token={token}
+        />
       </View>
     );
   }
@@ -557,6 +910,11 @@ export default function App() {
   if (loading) {
     return (
       <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <StatusBar 
+          style={isDark ? "light" : "dark"} 
+          backgroundColor="transparent"
+          translucent={false}
+        />
         <ActivityIndicator size="large" color="#10b981" />
         <Text style={{ marginTop: 12, color: '#6b7280' }}>Loading...</Text>
       </View>
@@ -565,7 +923,11 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <StatusBar style="auto" />
+      <StatusBar 
+        style={isDark ? "light" : "dark"} 
+        backgroundColor="transparent"
+        translucent={false}
+      />
       
       {/* Navbar */}
       <View style={styles.navbar}>
@@ -610,7 +972,7 @@ export default function App() {
                   {events.map((event, index) => (
                     <View key={event.id} style={styles.eventTickerItem}>
                       <Text style={styles.eventTickerText}>
-                        {event.event_name} • {event.event_date} • {event.venue}
+                        {event.event_name} • {formatDate(event.event_date)} • {event.venue}
                       </Text>
                       {index < events.length - 1 && (
                         <View style={styles.eventTickerDivider} />
@@ -643,7 +1005,7 @@ export default function App() {
         <View style={styles.hero}>
           <View style={styles.heroBadge}>
             <View style={styles.heroBadgeDot} />
-            <Text style={styles.heroBadgeText}>Mindoro State University — Bongabong Campus</Text>
+            <Text style={styles.heroBadgeText}>Mindoro State University, Bongabong Campus</Text>
           </View>
           
           {/* Large Logo */}
@@ -656,12 +1018,11 @@ export default function App() {
           </View>
           
           <Text style={styles.heroTitle}>
-            Smart{'\n'}
             <Text style={styles.heroTitleGradient}>Attendance</Text>{'\n'}
             for USG Events
           </Text>
           <Text style={styles.heroSubtitle}>
-            Streamline event attendance with RFID, facial recognition, and GPS-based check-in — all tracked in real time.
+            Streamline event attendance with facial recognition and GPS-based check-in, all tracked in real time.
           </Text>
           
           <TouchableOpacity style={styles.primaryButton} onPress={() => setShowLoginModal(true)}>
@@ -701,14 +1062,14 @@ export default function App() {
         {/* Features */}
         <View style={styles.featuresSection}>
           <View style={styles.sectionHeaderRow}>
-            <Ionicons name="sparkles" size={24} color="#10b981" />
+            <Ionicons name="star" size={24} color="#10b981" />
             <Text style={styles.sectionTitle}>Everything You Need</Text>
           </View>
           {[
-            { title: 'Multi-Method Check-In', desc: 'RFID scanning, facial recognition, and manual entry', icon: 'checkmark-circle', color: '#10b981' },
+            { title: 'Multi-Method Check-In', desc: 'Facial recognition and manual entry', icon: 'checkmark-circle', color: '#10b981' },
             { title: 'Real-Time Monitoring', desc: 'Live attendance dashboard with instant updates', icon: 'flash', color: '#3b82f6' },
             { title: 'GPS Verification', desc: 'Location-based validation ensures physical presence', icon: 'location', color: '#f97316' },
-            { title: 'Analytics & Reports', desc: 'Comprehensive reports with charts and graphs', icon: 'bar-chart', color: '#8b5cf6' },
+            { title: 'Analytics & Reports', desc: 'Comprehensive reports with charts and graphs', icon: 'stats-chart', color: '#8b5cf6' },
           ].map((feature) => (
             <View key={feature.title} style={styles.featureCard}>
               <View style={[styles.featureIconBox, { backgroundColor: feature.color + '20' }]}>
@@ -740,9 +1101,9 @@ export default function App() {
         {/* Footer */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            © {new Date().getFullYear()} Mindoro State University — Bongabong Campus
+            © {new Date().getFullYear()} Mindoro State University, Bongabong Campus
           </Text>
-          <Text style={styles.footerTech}>RFID · Face ID · GPS</Text>
+          <Text style={styles.footerTech}>Face ID · GPS</Text>
         </View>
       </ScrollView>
 
@@ -767,6 +1128,18 @@ export default function App() {
           setShowLoginModal(true);
         }}
       />
+
+      {/* Event Details Modal */}
+      <EventDetailsModal
+        visible={showEventDetails}
+        event={selectedEvent}
+        onClose={() => {
+          setShowEventDetails(false);
+          setSelectedEvent(null);
+        }}
+        formatDate={formatDate}
+        formatTime={formatTime}
+      />
     </View>
   );
 }
@@ -774,9 +1147,38 @@ export default function App() {
 
 // Login Modal Component
 function LoginModal({ visible, onClose, onLogin, onSuccess }) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+
+  // Load saved credentials when modal opens
+  useEffect(() => {
+    if (visible) {
+      loadSavedCredentials();
+    }
+  }, [visible]);
+
+  const loadSavedCredentials = async () => {
+    try {
+      const savedEmail = await AsyncStorage.getItem('savedEmail');
+      const savedPassword = await AsyncStorage.getItem('savedPassword');
+      const savedRememberMe = await AsyncStorage.getItem('rememberMe');
+      
+      if (savedRememberMe === 'true' && savedEmail && savedPassword) {
+        setEmail(savedEmail);
+        setPassword(savedPassword);
+        setRememberMe(true);
+      }
+    } catch (error) {
+      console.log('Error loading saved credentials:', error);
+      // Ignore AsyncStorage errors - continue without saved credentials
+    }
+  };
 
   const handleSubmit = async () => {
     if (!email || !password) {
@@ -789,9 +1191,30 @@ function LoginModal({ visible, onClose, onLogin, onSuccess }) {
     setLoading(false);
 
     if (result.success) {
+      // Save credentials if Remember Me is checked
+      if (rememberMe) {
+        try {
+          await AsyncStorage.setItem('savedEmail', email);
+          await AsyncStorage.setItem('savedPassword', password);
+          await AsyncStorage.setItem('rememberMe', 'true');
+        } catch (error) {
+          console.log('Error saving credentials:', error);
+        }
+      } else {
+        // Clear saved credentials if Remember Me is unchecked
+        try {
+          await AsyncStorage.removeItem('savedEmail');
+          await AsyncStorage.removeItem('savedPassword');
+          await AsyncStorage.removeItem('rememberMe');
+        } catch (error) {
+          console.log('Error clearing credentials:', error);
+        }
+      }
+
       onSuccess(result.user);
       setEmail('');
       setPassword('');
+      setRememberMe(false);
     } else {
       Alert.alert('Login Failed', result.message);
     }
@@ -817,6 +1240,7 @@ function LoginModal({ visible, onClose, onLogin, onSuccess }) {
               <TextInput
                 style={styles.input}
                 placeholder="your.email@minsu.edu.ph"
+                placeholderTextColor={colors.placeholder}
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
@@ -828,15 +1252,44 @@ function LoginModal({ visible, onClose, onLogin, onSuccess }) {
 
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Password</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Enter your password"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-                autoCapitalize="none"
-                editable={!loading}
-              />
+              <View style={styles.passwordInputContainer}>
+                <TextInput
+                  style={styles.passwordInput}
+                  placeholder="Enter your password"
+                  placeholderTextColor={colors.placeholder}
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                  autoCapitalize="none"
+                  editable={!loading}
+                />
+                <TouchableOpacity 
+                  style={styles.eyeIcon}
+                  onPress={() => setShowPassword(!showPassword)}
+                >
+                  <Ionicons 
+                    name={showPassword ? 'eye-off' : 'eye'} 
+                    size={20} 
+                    color="#6b7280" 
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Remember Me Checkbox */}
+            <View style={styles.rememberMeContainer}>
+              <TouchableOpacity 
+                style={styles.rememberMeRow}
+                onPress={() => setRememberMe(!rememberMe)}
+                activeOpacity={0.7}
+              >
+                <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
+                  {rememberMe && (
+                    <Ionicons name="checkmark" size={16} color="#fff" />
+                  )}
+                </View>
+                <Text style={styles.rememberMeText}>Remember Me</Text>
+              </TouchableOpacity>
             </View>
 
             <TouchableOpacity 
@@ -859,6 +1312,9 @@ function LoginModal({ visible, onClose, onLogin, onSuccess }) {
 
 // Register Modal Component
 function RegisterModal({ visible, onClose, onSuccess }) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
+  
   const [formData, setFormData] = useState({
     student_id: '',
     first_name: '',
@@ -870,6 +1326,8 @@ function RegisterModal({ visible, onClose, onSuccess }) {
     password_confirmation: '',
   });
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const updateField = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -951,6 +1409,7 @@ function RegisterModal({ visible, onClose, onSuccess }) {
               <TextInput
                 style={styles.input}
                 placeholder="e.g., 2021-00123"
+                placeholderTextColor={colors.placeholder}
                 value={formData.student_id}
                 onChangeText={(val) => updateField('student_id', val)}
                 autoCapitalize="none"
@@ -963,6 +1422,7 @@ function RegisterModal({ visible, onClose, onSuccess }) {
               <TextInput
                 style={styles.input}
                 placeholder="Juan"
+                placeholderTextColor={colors.placeholder}
                 value={formData.first_name}
                 onChangeText={(val) => updateField('first_name', val)}
                 editable={!loading}
@@ -974,6 +1434,7 @@ function RegisterModal({ visible, onClose, onSuccess }) {
               <TextInput
                 style={styles.input}
                 placeholder="Dela Cruz"
+                placeholderTextColor={colors.placeholder}
                 value={formData.last_name}
                 onChangeText={(val) => updateField('last_name', val)}
                 editable={!loading}
@@ -985,6 +1446,7 @@ function RegisterModal({ visible, onClose, onSuccess }) {
               <TextInput
                 style={styles.input}
                 placeholder="juan.delacruz@minsu.edu.ph"
+                placeholderTextColor={colors.placeholder}
                 value={formData.email}
                 onChangeText={(val) => updateField('email', val)}
                 keyboardType="email-address"
@@ -1034,28 +1496,54 @@ function RegisterModal({ visible, onClose, onSuccess }) {
 
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Password</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="At least 6 characters"
-                value={formData.password}
-                onChangeText={(val) => updateField('password', val)}
-                secureTextEntry
-                autoCapitalize="none"
-                editable={!loading}
-              />
+              <View style={styles.passwordInputContainer}>
+                <TextInput
+                  style={styles.passwordInput}
+                  placeholder="At least 6 characters"
+                  placeholderTextColor={colors.placeholder}
+                  value={formData.password}
+                  onChangeText={(val) => updateField('password', val)}
+                  secureTextEntry={!showPassword}
+                  autoCapitalize="none"
+                  editable={!loading}
+                />
+                <TouchableOpacity 
+                  style={styles.eyeIcon}
+                  onPress={() => setShowPassword(!showPassword)}
+                >
+                  <Ionicons 
+                    name={showPassword ? 'eye-off' : 'eye'} 
+                    size={20} 
+                    color="#6b7280" 
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
 
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Confirm Password</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Re-enter password"
-                value={formData.password_confirmation}
-                onChangeText={(val) => updateField('password_confirmation', val)}
-                secureTextEntry
-                autoCapitalize="none"
-                editable={!loading}
-              />
+              <View style={styles.passwordInputContainer}>
+                <TextInput
+                  style={styles.passwordInput}
+                  placeholder="Re-enter password"
+                  placeholderTextColor={colors.placeholder}
+                  value={formData.password_confirmation}
+                  onChangeText={(val) => updateField('password_confirmation', val)}
+                  secureTextEntry={!showConfirmPassword}
+                  autoCapitalize="none"
+                  editable={!loading}
+                />
+                <TouchableOpacity 
+                  style={styles.eyeIcon}
+                  onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  <Ionicons 
+                    name={showConfirmPassword ? 'eye-off' : 'eye'} 
+                    size={20} 
+                    color="#6b7280" 
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
 
             <TouchableOpacity 

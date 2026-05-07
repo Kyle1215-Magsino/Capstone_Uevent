@@ -88,7 +88,7 @@ export default function EventViewPage() {
             <tbody className="divide-y">
               {event.attendances?.map(a => (
                 <tr key={a.id}>
-                  <td className="px-3 py-2">{a.student?.student_id}</td>
+                  <td className="px-3 py-2">MBC2023-{a.student?.student_id}</td>
                   <td className="px-3 py-2">{a.student?.first_name} {a.student?.last_name}</td>
                   <td className="px-3 py-2">{new Date(a.check_in_time).toLocaleString()}</td>
                   <td className="px-3 py-2">

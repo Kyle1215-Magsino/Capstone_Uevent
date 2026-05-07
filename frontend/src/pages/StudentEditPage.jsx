@@ -74,11 +74,13 @@ export default function StudentEditPage() {
             <select required value={form.course} onChange={e => set('course', e.target.value)}
               className="w-full px-4 py-2.5 border border-green-400 rounded-xl bg-gray-50 text-gray-900 text-sm focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder:text-gray-400">
               <option value="">Select Course</option>
+              <option value="BSEED">BSEED</option>
               <option value="BSIT">BSIT</option>
-              <option value="BSCS">BSCS</option>
-              <option value="BSED">BSED</option>
-              <option value="BEED">BEED</option>
-              <option value="BSA">BSA</option>
+              <option value="BSCPE">BSCPE</option>
+              <option value="BSFI">BSFI</option>
+              <option value="BSHM">BSHM</option>
+              <option value="BSCRIM">BSCRIM</option>
+              <option value="BSPOLSCI">BSPOLSCI</option>
             </select>
           </div>
           <div>

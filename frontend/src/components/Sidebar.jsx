@@ -49,16 +49,16 @@ export default function Sidebar({ onNavigate }) {
   return (
     <aside className="w-64 bg-white dark:bg-gray-900 h-screen flex flex-col border-r border-green-200 dark:border-gray-800 animate-slideInDrawer">
       {/* Logo */}
-      <div className="px-5 h-14 flex items-center border-b border-green-200 dark:border-gray-800 flex-shrink-0 animate-fadeIn">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
+      <div className="px-5 h-16 flex items-center border-b border-green-200 dark:border-gray-800 flex-shrink-0 animate-fadeIn">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
             <img 
               src="/usg-logo.png" 
               alt="USG Logo" 
               className="w-full h-full object-cover"
             />
           </div>
-          <span className="font-bold text-gray-900 dark:text-white text-sm tracking-tight">U-EventTrack</span>
+          <span className="font-bold text-gray-900 dark:text-white text-lg tracking-tight">U-EventTrack</span>
         </div>
       </div>
 

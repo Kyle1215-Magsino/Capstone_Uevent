@@ -74,11 +74,13 @@ export default function StudentEditModal({ studentId, open, onClose, onUpdated }
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Course</label>
               <select required value={form.course} onChange={e => set('course', e.target.value)} className={inputCls}>
                 <option value="">Select Course</option>
+                <option value="BSEED">BSEED</option>
                 <option value="BSIT">BSIT</option>
-                <option value="BSCS">BSCS</option>
-                <option value="BSED">BSED</option>
-                <option value="BEED">BEED</option>
-                <option value="BSA">BSA</option>
+                <option value="BSCPE">BSCPE</option>
+                <option value="BSFI">BSFI</option>
+                <option value="BSHM">BSHM</option>
+                <option value="BSCRIM">BSCRIM</option>
+                <option value="BSPOLSCI">BSPOLSCI</option>
               </select>
             </div>
             <div>

@@ -15,10 +15,16 @@ export default function EventEditModal({ eventId, open, onClose, onUpdated }) {
       getEvent(eventId).then(res => {
         const e = res.data.event;
         setForm({
-          event_name: e.event_name, description: e.description || '', event_date: e.event_date,
-          start_time: e.start_time, end_time: e.end_time, venue: e.venue,
-          venue_lat: e.venue_lat || '', venue_lng: e.venue_lng || '',
-          venue_radius: e.venue_radius, status: e.status,
+          event_name: e.event_name, 
+          description: e.description || '', 
+          event_date: e.event_date,
+          start_time: e.start_time.substring(0, 5), // Convert HH:MM:SS to HH:MM
+          end_time: e.end_time.substring(0, 5), // Convert HH:MM:SS to HH:MM
+          venue: e.venue,
+          venue_lat: e.venue_lat || '', 
+          venue_lng: e.venue_lng || '',
+          venue_radius: e.venue_radius, 
+          status: e.status,
         });
       }).finally(() => setLoading(false));
     }

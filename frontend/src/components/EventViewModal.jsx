@@ -6,6 +6,20 @@ export default function EventViewModal({ eventId, open, onClose, onEdit }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const formatTime = (timeString) => {
+    if (!timeString) return '';
+    const [hours, minutes] = timeString.split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour % 12 || 12;
+    return `${displayHour}:${minutes} ${ampm}`;
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  };
+
   useEffect(() => {
     if (open && eventId) {
       setLoading(true);
@@ -51,8 +65,8 @@ export default function EventViewModal({ eventId, open, onClose, onEdit }) {
               <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-xl border border-green-200 dark:border-green-800">
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-3 text-sm uppercase tracking-wide">Details</h3>
                 <dl className="space-y-2 text-sm">
-                  <div><dt className="text-gray-500 dark:text-gray-400">Date</dt><dd className="font-medium text-gray-900 dark:text-gray-100">{event.event_date}</dd></div>
-                  <div><dt className="text-gray-500 dark:text-gray-400">Time</dt><dd className="font-medium text-gray-900 dark:text-gray-100">{event.start_time} – {event.end_time}</dd></div>
+                  <div><dt className="text-gray-500 dark:text-gray-400">Date</dt><dd className="font-medium text-gray-900 dark:text-gray-100">{formatDate(event.event_date)}</dd></div>
+                  <div><dt className="text-gray-500 dark:text-gray-400">Time</dt><dd className="font-medium text-gray-900 dark:text-gray-100">{formatTime(event.start_time)} – {formatTime(event.end_time)}</dd></div>
                   <div><dt className="text-gray-500 dark:text-gray-400">Venue</dt><dd className="font-medium text-gray-900 dark:text-gray-100">{event.venue}</dd></div>
                   <div>
                     <dt className="text-gray-500 dark:text-gray-400">Status</dt>
@@ -101,7 +115,7 @@ export default function EventViewModal({ eventId, open, onClose, onEdit }) {
                 <tbody className="divide-y divide-green-100 dark:divide-green-800">
                   {event.attendances?.map(a => (
                     <tr key={a.id} className="hover:bg-green-50 dark:hover:bg-green-900/10">
-                      <td className="px-3 py-2 text-gray-900 dark:text-gray-100">{a.student?.student_id}</td>
+                      <td className="px-3 py-2 text-gray-900 dark:text-gray-100">MBC2023-{a.student?.student_id}</td>
                       <td className="px-3 py-2 text-gray-900 dark:text-gray-100">{a.student?.first_name} {a.student?.last_name}</td>
                       <td className="px-3 py-2 text-gray-900 dark:text-gray-100">{new Date(a.check_in_time).toLocaleString()}</td>
                       <td className="px-3 py-2">

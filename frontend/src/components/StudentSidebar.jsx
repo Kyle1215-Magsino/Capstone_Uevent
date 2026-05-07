@@ -17,12 +17,12 @@ export default function StudentSidebar({ onNavigate }) {
   return (
     <aside className="w-64 bg-white dark:bg-gray-900 h-screen flex flex-col border-r border-green-200 dark:border-gray-800 animate-slideInDrawer">
       {/* Logo */}
-      <div className="px-5 h-14 flex items-center border-b border-green-200 dark:border-gray-800 flex-shrink-0 animate-fadeIn">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 bg-green-600 dark:bg-green-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
-            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+      <div className="px-5 h-16 flex items-center border-b border-green-200 dark:border-gray-800 flex-shrink-0 animate-fadeIn">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-green-600 dark:bg-green-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
           </div>
-          <span className="font-bold text-gray-900 dark:text-white text-sm tracking-tight">U-EventTrack</span>
+          <span className="font-bold text-gray-900 dark:text-white text-lg tracking-tight">U-EventTrack</span>
         </div>
       </div>
 

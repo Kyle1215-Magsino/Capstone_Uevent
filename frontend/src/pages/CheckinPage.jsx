@@ -611,16 +611,29 @@ export default function CheckinPage() {
             <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Live Feed</h3>
             <div className="space-y-2">
               {liveData.attendances.map(a => (
-                <div key={a.id} className="flex items-center justify-between p-2 bg-green-50 dark:bg-gray-800 rounded text-sm">
-                  <div>
-                    <p className="font-medium text-gray-900 dark:text-white">{a.student?.first_name} {a.student?.last_name}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">{a.student?.student_id}</p>
-                  </div>
-                  <div className="text-right">
-                    <span className={`px-2 py-1 rounded text-xs ${a.status === 'present' ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' : 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300'}`}>
+                <div key={a.id} className="p-3 bg-green-50 dark:bg-gray-800 rounded-lg border border-green-200 dark:border-gray-700">
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex-1">
+                      <p className="font-semibold text-gray-900 dark:text-white text-sm">
+                        {a.student?.first_name} {a.student?.last_name}
+                      </p>
+                      <div className="flex items-center gap-2 mt-1 text-xs text-gray-600 dark:text-gray-400">
+                        <span className="font-mono bg-white dark:bg-gray-900 px-2 py-0.5 rounded border border-green-200 dark:border-gray-700">
+                          MBC2023-{a.student?.student_id}
+                        </span>
+                        <span>•</span>
+                        <span>Year {a.student?.year_level}</span>
+                        <span>•</span>
+                        <span className="font-medium">{a.student?.course}</span>
+                      </div>
+                    </div>
+                    <span className={`px-2 py-1 rounded text-xs font-medium ${a.status === 'present' ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' : 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300'}`}>
                       {a.status}
                     </span>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{new Date(a.check_in_time).toLocaleTimeString()}</p>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                    <span className="capitalize">{a.verification_method}</span>
+                    <span>{new Date(a.check_in_time).toLocaleTimeString()}</span>
                   </div>
                 </div>
               ))}

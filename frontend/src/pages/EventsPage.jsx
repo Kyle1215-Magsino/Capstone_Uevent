@@ -6,6 +6,7 @@ import Modal from '../components/Modal';
 import EventAddModal from '../components/EventAddModal';
 import EventViewModal from '../components/EventViewModal';
 import EventEditModal from '../components/EventEditModal';
+import BarcodeModal from '../components/BarcodeModal';
 import { toast } from 'react-toastify';
 
 export default function EventsPage() {
@@ -18,10 +19,20 @@ export default function EventsPage() {
   const [editId, setEditId] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [barcodeEvent, setBarcodeEvent] = useState(null);
 
   const status = searchParams.get('status') || '';
   const search = searchParams.get('search') || '';
   const page = searchParams.get('page') || 1;
+
+  const formatTime = (timeString) => {
+    if (!timeString) return '';
+    const [hours, minutes] = timeString.split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour % 12 || 12;
+    return `${displayHour}:${minutes} ${ampm}`;
+  };
 
   const fetchEvents = () => {
     setLoading(true);
@@ -107,14 +118,27 @@ export default function EventsPage() {
               {events.map(e => (
                 <tr key={e.id} className="hover:bg-green-50 dark:hover:bg-gray-800">
                   <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">{e.event_name}</td>
-                  <td className="px-4 py-3 text-gray-600 dark:text-gray-300">{e.event_date}</td>
-                  <td className="px-4 py-3 text-gray-600 dark:text-gray-300">{e.start_time} - {e.end_time}</td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-300">
+                    {e.status === 'completed' ? (
+                      <div>
+                        <div className="text-gray-500 dark:text-gray-400 text-xs">Ended</div>
+                        <div>{new Date(e.event_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</div>
+                      </div>
+                    ) : (
+                      new Date(e.event_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-300">{formatTime(e.start_time)} - {formatTime(e.end_time)}</td>
                   <td className="px-4 py-3 text-gray-600 dark:text-gray-300">{e.venue}</td>
                   <td className="px-4 py-3">
                     <span className={`px-2 py-1 rounded text-xs ${statusColors[e.status]}`}>{e.status}</span>
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1">
+                      {/* Barcode */}
+                      <button onClick={() => setBarcodeEvent(e)} title="View Barcode" className="p-1.5 rounded-lg text-purple-600 hover:bg-purple-50 transition-colors">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" /></svg>
+                      </button>
                       {/* View */}
                       <button onClick={() => setViewId(e.id)} title="View" className="p-1.5 rounded-lg text-green-600 hover:bg-green-50 transition-colors">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
@@ -171,6 +195,10 @@ export default function EventsPage() {
         open={!!editId}
         onClose={() => setEditId(null)}
         onUpdated={fetchEvents}
+      />
+      <BarcodeModal
+        event={barcodeEvent}
+        onClose={() => setBarcodeEvent(null)}
       />
 
       {/* Delete confirmation */}

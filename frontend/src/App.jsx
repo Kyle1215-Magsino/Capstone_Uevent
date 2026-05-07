@@ -5,6 +5,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AppLayout from './components/AppLayout';
 import LoadingSpinner from './components/LoadingSpinner';
+import './density.css';
 
 // Import all pages directly
 import HomePage from './pages/HomePage';
