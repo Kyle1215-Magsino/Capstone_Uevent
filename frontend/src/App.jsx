@@ -15,6 +15,7 @@ import EventsPage from './pages/EventsPage';
 import CheckinPage from './pages/CheckinPage';
 import FaceEnrollmentPage from './pages/FaceEnrollmentPage';
 import AttendanceLogsPage from './pages/AttendanceLogsPage';
+import FinesPage from './pages/FinesPage';
 import ReportsPage from './pages/ReportsPage';
 import ArchivePage from './pages/ArchivePage';
 import UsersPage from './pages/UsersPage';
@@ -46,6 +47,7 @@ export default function App() {
                 <Route path="/checkin" element={<CheckinPage />} />
                 <Route path="/face-enrollment" element={<FaceEnrollmentPage />} />
                 <Route path="/attendance" element={<AttendanceLogsPage />} />
+                <Route path="/fines" element={<FinesPage />} />
                 <Route path="/reports" element={<ReportsPage />} />
                 <Route path="/archive" element={<ArchivePage />} />
                 <Route path="/users" element={<UsersPage />} />

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: 'http://localhost:8000/api',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
@@ -13,7 +13,7 @@ let csrfFetched = false;
 
 const fetchCsrf = async () => {
   if (!csrfFetched) {
-    await axios.get('/sanctum/csrf-cookie', { withCredentials: true });
+    await axios.get('http://localhost:8000/sanctum/csrf-cookie', { withCredentials: true });
     csrfFetched = true;
   }
 };

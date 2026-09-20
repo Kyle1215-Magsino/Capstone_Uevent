@@ -6,6 +6,7 @@ use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CacheController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\FineController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TwoFactorController;
 use Illuminate\Support\Facades\Route;
@@ -69,6 +70,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/attendance', [AttendanceController::class, 'index']);
         Route::get('/reports', [AttendanceController::class, 'reports']);
 
+        // Fines Management (admin/officer only)
+        Route::get('/fines', [FineController::class, 'index']);
+        Route::get('/fines/statistics', [FineController::class, 'statistics']);
+        Route::get('/fines/report', [FineController::class, 'report']);
+        Route::post('/fines/{fine}/pay', [FineController::class, 'markAsPaid']);
+        Route::post('/fines/{fine}/waive', [FineController::class, 'waive']);
+
         // Audit Logs (admin only)
         Route::middleware('role:admin')->group(function () {
             Route::get('/audit-logs', [AuditLogController::class, 'index']);
@@ -94,5 +102,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/student-profile', [AuthController::class, 'studentProfile']);
         Route::put('/student-password', [AuthController::class, 'updateStudentPassword']);
         Route::post('/student-profile-image', [AuthController::class, 'uploadProfileImage']);
+        
+        // Student fines
+        Route::get('/student-fines', [FineController::class, 'studentFines']);
     });
 });
